@@ -1,0 +1,853 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang>
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css">
+
+
+  <meta name="keywords" content="node,">
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0">
+
+
+
+
+
+
+<meta name="description" content="TL;DR npm -l 查看所有命令用法 npm (command) -l  某命令的快捷用法 npm install 安装模块 npm uninstall 卸载模块 npm update 更新模块 npm outdated 检查模块是否已经过时 npm ls 查看安装的模块 npm init 在项目中引导创建一个package.json文件 npm help 查看某条命令的详细帮助 npm r">
+<meta name="keywords" content="node">
+<meta property="og:type" content="article">
+<meta property="og:title" content="npm的简单玩法">
+<meta property="og:url" content="http://yoursite.com/2017/08/25/how-to-npm/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="TL;DR npm -l 查看所有命令用法 npm (command) -l  某命令的快捷用法 npm install 安装模块 npm uninstall 卸载模块 npm update 更新模块 npm outdated 检查模块是否已经过时 npm ls 查看安装的模块 npm init 在项目中引导创建一个package.json文件 npm help 查看某条命令的详细帮助 npm r">
+<meta property="og:locale" content="default">
+<meta property="og:updated_time" content="2019-03-28T06:29:32.879Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="npm的简单玩法">
+<meta name="twitter:description" content="TL;DR npm -l 查看所有命令用法 npm (command) -l  某命令的快捷用法 npm install 安装模块 npm uninstall 卸载模块 npm update 更新模块 npm outdated 检查模块是否已经过时 npm ls 查看安装的模块 npm init 在项目中引导创建一个package.json文件 npm help 查看某条命令的详细帮助 npm r">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    sidebar: {"position":"right","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2017/08/25/how-to-npm/">
+
+
+
+
+
+  <title> npm的简单玩法 | Hexo </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="default">
+
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?60f2cb5747a596a24f2a053f1650c30b";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-right page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Hexo</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <h1 class="site-subtitle" itemprop="description"></h1>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            Tags
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/08/25/how-to-npm/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="John Doe">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="http://omizt4opc.bkt.clouddn.com/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hexo">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+            
+            
+              
+                npm的简单玩法
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-08-25T17:17:28+08:00">
+                2017-08-25
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/node/" itemprop="url" rel="index">
+                    <span itemprop="name">node</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2017/08/25/how-to-npm/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2017/08/25/how-to-npm/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="TL-DR"><a href="#TL-DR" class="headerlink" title="TL;DR"></a>TL;DR</h2><ul>
+<li>npm -l 查看所有命令用法</li>
+<li>npm (command) -l  某命令的快捷用法</li>
+<li>npm install 安装模块</li>
+<li>npm uninstall 卸载模块</li>
+<li>npm update 更新模块</li>
+<li>npm outdated 检查模块是否已经过时</li>
+<li>npm ls 查看安装的模块</li>
+<li>npm init 在项目中引导创建一个package.json文件</li>
+<li>npm help 查看某条命令的详细帮助</li>
+<li>npm run  运行脚本</li>
+</ul>
+<a id="more"></a>
+<h2 id="介绍npm"><a href="#介绍npm" class="headerlink" title="介绍npm"></a>介绍npm</h2><p>npm是Node.js的包管理工具，包就是指各种 javascript 库。<br>可以管理项目中的各种包包。<br>可以发布自己的包包。<br>官网下载node.js，npm便会一起安装。<br><a href="https://docs.npmjs.com/" target="_blank" rel="noopener">祭上官网文档</a></p>
+<h2 id="新手可以借助how-to-npm"><a href="#新手可以借助how-to-npm" class="headerlink" title="新手可以借助how-to-npm"></a>新手可以借助how-to-npm</h2><p>直接安装这个插件，按照教程走。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install -g how-to-npm</span><br></pre></td></tr></table></figure></p>
+<p>安装完之后，输入<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">how-to-npm</span><br></pre></td></tr></table></figure></p>
+<p>就会看到12个小练习，也就是基本命令的使用了。</p>
+<ul>
+<li>how-to-npm print 重新显示当前的练习</li>
+<li>how-to-npm verify 验证是否完成一个练习</li>
+<li>how-to-npm solution 显示当前练习的解决方案</li>
+</ul>
+<h2 id="npm本身的一些命令"><a href="#npm本身的一些命令" class="headerlink" title="npm本身的一些命令"></a>npm本身的一些命令</h2><p>对于一般的包，以下命令也是适用的。如<code>webpack -h</code></p>
+<h3 id="检测npm的版本（通常也会用这个来测试是否安装成功）"><a href="#检测npm的版本（通常也会用这个来测试是否安装成功）" class="headerlink" title="检测npm的版本（通常也会用这个来测试是否安装成功）"></a>检测npm的版本（通常也会用这个来测试是否安装成功）</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm -v</span><br></pre></td></tr></table></figure>
+<h3 id="查看所有命令的用法-统揽使用命令）"><a href="#查看所有命令的用法-统揽使用命令）" class="headerlink" title="!!!查看所有命令的用法(统揽使用命令）"></a>!!!查看所有命令的用法(统揽使用命令）</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm -l</span><br></pre></td></tr></table></figure>
+<h3 id="查看某命令的快捷使用方法"><a href="#查看某命令的快捷使用方法" class="headerlink" title="!!!查看某命令的快捷使用方法"></a>!!!查看某命令的快捷使用方法</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm &lt;command&gt; -h</span><br></pre></td></tr></table></figure>
+<h3 id="查看npm所有命令"><a href="#查看npm所有命令" class="headerlink" title="查看npm所有命令"></a>查看npm所有命令</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm -h</span><br></pre></td></tr></table></figure>
+<p>大概有以下命令<br>access, adduser, bin, bugs, c, cache, completion, config,<br>ddp, dedupe, deprecate, dist-tag, docs, doctor, edit,<br>explore, get, help, help-search, i, init, install,<br>install-test, it, link, list, ln, login, logout, ls,<br>outdated, owner, pack, ping, prefix, prune, publish, rb,<br>rebuild, repo, restart, root, run, run-script, s, se,<br>search, set, shrinkwrap, star, stars, start, stop, t, team,<br>test, tst, un, uninstall, unpublish, unstar, up, update, v,<br>version, view, whoami</p>
+<h3 id="查看某命令的具体用法"><a href="#查看某命令的具体用法" class="headerlink" title="查看某命令的具体用法"></a>查看某命令的具体用法</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm help &lt;command&gt;</span><br></pre></td></tr></table></figure>
+<h3 id="管理配置文件"><a href="#管理配置文件" class="headerlink" title="管理配置文件"></a>管理配置文件</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm config -h</span><br></pre></td></tr></table></figure>
+<p>运行命令看下有些使用方式，一般用于设置配置的一些参数。</p>
+<h3 id="升级npm"><a href="#升级npm" class="headerlink" title="升级npm"></a>升级npm</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install npm -g</span><br></pre></td></tr></table></figure>
+<h3 id="查看npm的介绍"><a href="#查看npm的介绍" class="headerlink" title="查看npm的介绍"></a>查看npm的介绍</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm help npm</span><br></pre></td></tr></table></figure>
+<h2 id="package-json"><a href="#package-json" class="headerlink" title="package.json"></a>package.json</h2><p>使用 npm 来管理的 javascript 项目一般都有一个package.json文件。它定义了这个项目所依赖的各种包，以及项目的配置信息（比如名称、版本、依赖等元数据）</p>
+<h3 id="重要字段"><a href="#重要字段" class="headerlink" title="重要字段"></a>重要字段</h3><ul>
+<li>name - 包名。</li>
+<li>version - 包的版本号。</li>
+<li>description - 包的描述。</li>
+<li>homepage - 包的官网 url 。</li>
+<li>author - 包的作者姓名。</li>
+<li>contributors - 包的其他贡献者姓名。</li>
+<li>dependencies - 指定项目运行所依赖的模块。</li>
+<li>devDependencies - 指定项目开发所依赖的模块。</li>
+<li>repository - 包代码存放的地方的类型，可以是 git 或 svn，git 可在 Github 上。</li>
+<li>main - main 字段是一个模块ID，它是一个指向你程序的主要项目。就是说，如果你包的名字叫 * express，然后用户安装它，然后require(“express”)。</li>
+<li>keywords - 关键字</li>
+<li>bin - 用来指定各个内部命令对应的可执行文件的位置。</li>
+<li>scripts - 指定了运行脚本命令的npm命令行缩写。</li>
+<li>engines - 依赖node和npm版本,如果小于这个版本就好抛错。一般加上这个。npm升级挺快。<h3 id="一个完整的package-json"><a href="#一个完整的package-json" class="headerlink" title="一个完整的package.json"></a>一个完整的package.json</h3><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="string">"name"</span>: <span class="string">"reactnotes"</span>,</span><br><span class="line">  <span class="string">"version"</span>: <span class="string">"1.0.0"</span>,</span><br><span class="line">  <span class="string">"description"</span>: <span class="string">"react 教程"</span>,</span><br><span class="line">  <span class="string">"main"</span>: <span class="string">"./index.js"</span>,</span><br><span class="line">  <span class="string">"dependencies"</span>: &#123;</span><br><span class="line">    <span class="string">"react"</span>: <span class="string">"^15.4.1"</span>,</span><br><span class="line">    <span class="string">"react-dom"</span>: <span class="string">"^15.4.1"</span></span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="string">"devDependencies"</span>: &#123;</span><br><span class="line">    <span class="string">"webpack-dev-server"</span>: <span class="string">"^1.16.2"</span></span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="string">"scripts"</span>: &#123;</span><br><span class="line">    <span class="string">"start"</span>: <span class="string">"node index.js"</span></span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="string">"repository"</span>: &#123;</span><br><span class="line">    <span class="string">"type"</span>: <span class="string">"git"</span>,</span><br><span class="line">    <span class="string">"url"</span>: <span class="string">"git+https://github.com/atlantis1024/ReactNotes.git"</span></span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="string">"author"</span>: <span class="string">"victor"</span>,</span><br><span class="line">  <span class="string">"license"</span>: <span class="string">"Apache-2.0"</span>,</span><br><span class="line">  <span class="string">"bugs"</span>: &#123;</span><br><span class="line">    <span class="string">"url"</span>: <span class="string">"https://github.com/atlantis1024/ReactNotes/issues"</span></span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="string">"homepage"</span>: <span class="string">"https://github.com/atlantis1024/ReactNotes#readme"</span>,</span><br><span class="line">  <span class="string">"engines"</span>: &#123;</span><br><span class="line">      <span class="string">"node"</span>: <span class="string">"&gt;= 6.9.0"</span>,</span><br><span class="line">      <span class="string">"npm"</span>: <span class="string">"&gt;= 3.0.0"</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h3 id="package-json里面的版本声明"><a href="#package-json里面的版本声明" class="headerlink" title="package.json里面的版本声明"></a>package.json里面的版本声明</h3><p>dependencies 和 devDependencies是依赖的包包及其版本号。<br>但是版本号的声明各种各样，前三者，最常见，一般默认是<code>^version</code>。</p>
+<ul>
+<li>version ：安装一个确定的版本，遵循“大版本.次要版本.小版本”的格式规定。如：1.0.0。</li>
+<li>~version ：以 ~1.0.0 来举例，表示安装1.0.x的最新版本（不低于1.0.0）。但是大版本号和次要版本号不能变。</li>
+<li>^version ：以 ^1.0.0 来举例，表示安装1.x.x的最新版本（不低于1.0.0），但是大版本号不能变。</li>
+<li>1.2.x ：表示安装1.2.x。</li>
+<li><blockquote>
+<p>、&gt;=、&lt;、&lt;= ：可以像数组比较一样，使用比较符来限定版本范围。</p>
+</blockquote>
+</li>
+<li>version1 - version2 ：相当于 &gt;=version1 &lt;=version2.</li>
+<li>range1 || range2 ：版本满足range1 或 range2 两个限定条件中任意一个即可。</li>
+<li>tag ：一个指定 tag 对应的版本。</li>
+<li><ul>
+<li>或 “” (空字符串)：任意版本。</li>
+</ul>
+</li>
+<li>latest ：最新版本。</li>
+<li>http://… 或 file://… ：你可以指定http或本地文件路径下的包作为版本。</li>
+<li>git… ：参考下面的“直接将 Git Url 作为依赖包版本”</li>
+<li>user/repo ：参考下面的“直接将 Git Url 作为依赖包版本”<br>git Url形式的例子：<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">git://github.com/user/project.git#commit-ish</span><br><span class="line">git+ssh://user@hostname:project.git#commit-ish</span><br><span class="line">git+ssh://user@hostname/project.git#commit-ish</span><br><span class="line">git+http://user@hostname/project/blah.git#commit-ish</span><br><span class="line">git+https://user@hostname/project/blah.git#commit-ish</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>举例<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">&#123; <span class="string">"dependencies"</span> :</span><br><span class="line">  &#123; <span class="string">"foo"</span> : <span class="string">"1.0.0 - 2.9999.9999"</span></span><br><span class="line">  , <span class="string">"bar"</span> : <span class="string">"&gt;=1.0.2 &lt;2.1.2"</span></span><br><span class="line">  , <span class="string">"baz"</span> : <span class="string">"&gt;1.0.2 &lt;=2.3.4"</span></span><br><span class="line">  , <span class="string">"boo"</span> : <span class="string">"2.0.1"</span></span><br><span class="line">  , <span class="string">"qux"</span> : <span class="string">"&lt;1.0.0 || &gt;=2.3.1 &lt;2.4.5 || &gt;=2.5.2 &lt;3.0.0"</span></span><br><span class="line">  , <span class="string">"asd"</span> : <span class="string">"http://asdf.com/asdf.tar.gz"</span></span><br><span class="line">  , <span class="string">"til"</span> : <span class="string">"~1.2"</span></span><br><span class="line">  , <span class="string">"elf"</span> : <span class="string">"~1.2.3"</span></span><br><span class="line">  , <span class="string">"two"</span> : <span class="string">"2.x"</span></span><br><span class="line">  , <span class="string">"thr"</span> : <span class="string">"3.3.x"</span></span><br><span class="line">  , <span class="string">"lat"</span> : <span class="string">"latest"</span></span><br><span class="line">  , <span class="string">"dyl"</span> : <span class="string">"file:../dyl"</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h3 id="生成pakage-json"><a href="#生成pakage-json" class="headerlink" title="生成pakage.json"></a>生成pakage.json</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm init</span><br></pre></td></tr></table></figure>
+<p>就会生成一个package.json的文件。<br>如果想生成默认package.json，可以执行npm init -y，连交互式界面都不会出现。<br>另外需要注意，npm init的时候需要输入用户字段，如果还没有设置npm用户，需要通过npm addUser设置。</p>
+<h2 id="模块的常用命令"><a href="#模块的常用命令" class="headerlink" title="模块的常用命令"></a>模块的常用命令</h2><h3 id="安装和删除一个模块"><a href="#安装和删除一个模块" class="headerlink" title="安装和删除一个模块"></a>安装和删除一个模块</h3><p>运行以下命令：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install &lt;modulename&gt;</span><br></pre></td></tr></table></figure></p>
+<p>npm install作为npm最重要的功能和最常用的功能，这里只介绍三个非常有用的选项–global，–save，–save-dev。<br>–global可以简写成-g，–save可以简写成-S，–save-dev可以简写成-D，注意大写。<br>npm uninstall和npm install接受同样的选项和参数。</p>
+<p>-g是安装在全局，然后可以使用命令。<br>–save的作用是在package.json的dependencies字段增加或者修改一个安装包和版本号名值对。<br>–save-dev则是修改devDependencies，这样就不用安装了某个包之后手动修改package.json，npm已经帮我们把包依赖和版本管理做好了。<br>全局安装的包默认都存在C:\Users\Administrator\AppData\Roaming\npm下，这是windows版的，其他版本不懂。<br>其他在项目根目录下的node_modules文件夹里<br>案例是<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install @linclark/pkg --save</span><br></pre></td></tr></table></figure></p>
+<h3 id="显示安装的所有模块"><a href="#显示安装的所有模块" class="headerlink" title="显示安装的所有模块"></a>显示安装的所有模块</h3><p>运行命令：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm ls</span><br></pre></td></tr></table></figure></p>
+<h3 id="查看某模块的具体信息"><a href="#查看某模块的具体信息" class="headerlink" title="查看某模块的具体信息"></a>查看某模块的具体信息</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm info [module]</span><br></pre></td></tr></table></figure>
+<p>但是这信息太多，一般直接查找有tag的版本<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm dist-tags ls [module]</span><br></pre></td></tr></table></figure></p>
+<h3 id="检测当前安装的所有npm包是否有更新"><a href="#检测当前安装的所有npm包是否有更新" class="headerlink" title="检测当前安装的所有npm包是否有更新"></a>检测当前安装的所有npm包是否有更新</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm outdated</span><br></pre></td></tr></table></figure>
+<p>列出可以更新的包，如果没有任何输出，那么恭喜你，所有的包都是不需要更新的。</p>
+<h3 id="升级某模块"><a href="#升级某模块" class="headerlink" title="升级某模块"></a>升级某模块</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm update [module]</span><br></pre></td></tr></table></figure>
+<h2 id="运行脚本命令"><a href="#运行脚本命令" class="headerlink" title="运行脚本命令"></a>运行脚本命令</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm run &lt;script&gt;</span><br></pre></td></tr></table></figure>
+<p>如果在 package.json 文件中的 scripts 字段定义了命令，就可以使用 npm run 来执行脚本命令。<br>假设 package.json 文件中的 scripts 字段如下定义：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&quot;scripts&quot;: &#123;</span><br><span class="line">    &quot;test&quot;: &quot;mocha&quot;,</span><br><span class="line">    &quot;lint&quot;: &quot;eslint lib bin hot scripts&quot;,</span><br><span class="line">    &quot;prepublish&quot;: &quot;npm run test &amp;&amp; npm run lint&quot;,</span><br><span class="line">    &quot;start&quot;: &quot;node index.js&quot;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<ul>
+<li>npm run test ：相当于执行 mocha 命令。它会开始执行测试框架 Mocha 。</li>
+<li>npm run lint ：相当于执行 eslint lib bin hot scripts 命令。它会开始执行 eslint 检查。</li>
+<li>npm run prepublish ：相当于执行 npm run test 和 npm run lint 两条命令。现在你了解如何复合命令了吧。</li>
+<li>npm start ：只有start不用run，相当于执行 node index.js 。Node.js 启动一个服务的入口脚本。</li>
+</ul>
+<h2 id="项目的版本"><a href="#项目的版本" class="headerlink" title="项目的版本"></a>项目的版本</h2><p>npm包的版本号一般都是x.y.z的形式。<br>其中x表示主版本号，通常有重大改变或者达到里程碑才改变；<br>y表示次要版本号，或二级版本号，在保证主体功能基本不变的情况下，如果适当增加了新功能可以更新此版本号；<br>z表示尾版本号或者补丁号，一些小范围的修修补补就可以更新补丁号。<br>查看当前所有模块的版本：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm version</span><br></pre></td></tr></table></figure></p>
+<p>第一版本通常是0.0.1或者1.0.0，当修改了代码，需要更新版本号重新发布到npm，直接使用npm version &lt;update_type&gt;命令自动搞定。<br>x.y.z  =&gt;  major.minor.version<br>三个选项分别对应三部分的版本号，每次运行命令会导致相应的版本号递增一，同时子版本号清零。</p>
+<ul>
+<li>npm version patch 则 z+1</li>
+<li>npm version minor 则 y+1 &amp;&amp; z=0</li>
+<li>npm version major 则 x+1 &amp;&amp; y=0 &amp;&amp; z=0<br>当然也可以粗暴的这样<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm version 1.12.9</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>每次发布项目的时候，记得更新版本号。</p>
+<p>如果npm包同时又是一个git仓库，在运行了npm version &lt;update_type&gt;和npm publish之后，npm会自动给git仓库打上一个跟当前版本号一样的tag，对于挂在github上的npm包很有用。</p>
+<h2 id="给项目增加备注"><a href="#给项目增加备注" class="headerlink" title="给项目增加备注"></a>给项目增加备注</h2><p>有时候安装模块的时候会有以下警告<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">npm WARN package.json %ID% No description  </span><br><span class="line">npm WARN package.json %ID% No repository field.  </span><br><span class="line">npm WARN package.json %ID% No README data</span><br></pre></td></tr></table></figure></p>
+<p>这样项目怎么使用，用户可能比较困惑。<br>所以尽量完善这些备注。<br>前两者，在<code>npm init</code>的时候填写description和reponsitory即可。<br>最后一个在根目录下添加README.md即可。</p>
+<h2 id="新建npm账户"><a href="#新建npm账户" class="headerlink" title="新建npm账户"></a>新建npm账户</h2><p>新建npm的用户，运行<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm adduser</span><br></pre></td></tr></table></figure></p>
+<p>设置账号密码之类<br>在运行下面命令，就知道自己的信息<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm whoami</span><br></pre></td></tr></table></figure></p>
+<p>上面已经登录账户<br>因此可以更新init，将username换成刚设置的<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm init --scope=&lt;username&gt;</span><br></pre></td></tr></table></figure></p>
+<p>更新package.json.</p>
+<h2 id="发布npm"><a href="#发布npm" class="headerlink" title="发布npm"></a>发布npm</h2><p>首先去npm注册账号，然后<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm login</span><br></pre></td></tr></table></figure></p>
+<p>就可以发布自己的包了<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm publish</span><br></pre></td></tr></table></figure></p>
+<p>删除包,有发布就有删除，删除好像有个限制，如果大于24小时，需要联系npm管理员删除。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm unpublish &lt;module&gt;</span><br></pre></td></tr></table></figure></p>
+<h2 id="npm包之间的深度依赖关系"><a href="#npm包之间的深度依赖关系" class="headerlink" title="npm包之间的深度依赖关系"></a>npm包之间的深度依赖关系</h2><p>基本从npm3开始已经变成扁平化结构，具体参照<a href="http://www.alloyteam.com/2016/03/master-npm/" target="_blank" rel="noopener">玩转npm</a>。<br>但每次安装/卸载了包之后最好重新执行npm dedupe，因为这样会重新计算包的依赖关系，以保证包结构是最优的。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm dedupe</span><br></pre></td></tr></table></figure></p>
+<h2 id="设置发布的标签"><a href="#设置发布的标签" class="headerlink" title="设置发布的标签"></a>设置发布的标签</h2><p>目前知道的标签有beta和latest，next</p>
+<p>怎么设置呢</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm dist-tag add [module]@version  beta</span><br></pre></td></tr></table></figure>
+<p>这样这个版本就设置为beta版</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm info</span><br></pre></td></tr></table></figure>
+<p>就可以看到有dist-tag这项</p>
+<h2 id="删除发布的标签"><a href="#删除发布的标签" class="headerlink" title="删除发布的标签"></a>删除发布的标签</h2><p>有时候需要删除beta<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm dist-tag rm [module] beta</span><br></pre></td></tr></table></figure></p>
+<blockquote>
+<p><a href="http://www.alloyteam.com/2016/03/master-npm/" target="_blank" rel="noopener">玩转npm</a><br><a href="https://github.com/jiayisheji/blog/issues/5" target="_blank" rel="noopener">npm常用你应该懂的使用技巧</a><br><a href="http://www.cnblogs.com/jingmoxukong/p/6228358.html" target="_blank" rel="noopener">npm 使用小结</a></p>
+</blockquote>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/node/" rel="tag"># node</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/08/22/html2canvas/" rel="next" title="js实现网页截图-html2canvas">
+                <i class="fa fa-chevron-left"></i> js实现网页截图-html2canvas
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/09/14/wechatAPI/" rel="prev" title="微信的一些相关功能实现">
+                微信的一些相关功能实现 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+          
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2017/08/25/how-to-npm/" data-title="npm的简单玩法" data-url="http://yoursite.com/2017/08/25/how-to-npm/">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image" src="http://omizt4opc.bkt.clouddn.com/avatar.jpg" alt="John Doe">
+          <p class="site-author-name" itemprop="name">John Doe</p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+           
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">75</span>
+                <span class="site-state-item-name">posts</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              
+                <span class="site-state-item-count">21</span>
+                <span class="site-state-item-name">categories</span>
+              
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              
+                <span class="site-state-item-count">35</span>
+                <span class="site-state-item-name">tags</span>
+              
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#TL-DR"><span class="nav-number">1.</span> <span class="nav-text">TL;DR</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#介绍npm"><span class="nav-number">2.</span> <span class="nav-text">介绍npm</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#新手可以借助how-to-npm"><span class="nav-number">3.</span> <span class="nav-text">新手可以借助how-to-npm</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#npm本身的一些命令"><span class="nav-number">4.</span> <span class="nav-text">npm本身的一些命令</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#检测npm的版本（通常也会用这个来测试是否安装成功）"><span class="nav-number">4.1.</span> <span class="nav-text">检测npm的版本（通常也会用这个来测试是否安装成功）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#查看所有命令的用法-统揽使用命令）"><span class="nav-number">4.2.</span> <span class="nav-text">!!!查看所有命令的用法(统揽使用命令）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#查看某命令的快捷使用方法"><span class="nav-number">4.3.</span> <span class="nav-text">!!!查看某命令的快捷使用方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#查看npm所有命令"><span class="nav-number">4.4.</span> <span class="nav-text">查看npm所有命令</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#查看某命令的具体用法"><span class="nav-number">4.5.</span> <span class="nav-text">查看某命令的具体用法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#管理配置文件"><span class="nav-number">4.6.</span> <span class="nav-text">管理配置文件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#升级npm"><span class="nav-number">4.7.</span> <span class="nav-text">升级npm</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#查看npm的介绍"><span class="nav-number">4.8.</span> <span class="nav-text">查看npm的介绍</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#package-json"><span class="nav-number">5.</span> <span class="nav-text">package.json</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#重要字段"><span class="nav-number">5.1.</span> <span class="nav-text">重要字段</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#一个完整的package-json"><span class="nav-number">5.2.</span> <span class="nav-text">一个完整的package.json</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#package-json里面的版本声明"><span class="nav-number">5.3.</span> <span class="nav-text">package.json里面的版本声明</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#生成pakage-json"><span class="nav-number">5.4.</span> <span class="nav-text">生成pakage.json</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#模块的常用命令"><span class="nav-number">6.</span> <span class="nav-text">模块的常用命令</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#安装和删除一个模块"><span class="nav-number">6.1.</span> <span class="nav-text">安装和删除一个模块</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#显示安装的所有模块"><span class="nav-number">6.2.</span> <span class="nav-text">显示安装的所有模块</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#查看某模块的具体信息"><span class="nav-number">6.3.</span> <span class="nav-text">查看某模块的具体信息</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#检测当前安装的所有npm包是否有更新"><span class="nav-number">6.4.</span> <span class="nav-text">检测当前安装的所有npm包是否有更新</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#升级某模块"><span class="nav-number">6.5.</span> <span class="nav-text">升级某模块</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#运行脚本命令"><span class="nav-number">7.</span> <span class="nav-text">运行脚本命令</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#项目的版本"><span class="nav-number">8.</span> <span class="nav-text">项目的版本</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#给项目增加备注"><span class="nav-number">9.</span> <span class="nav-text">给项目增加备注</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#新建npm账户"><span class="nav-number">10.</span> <span class="nav-text">新建npm账户</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#发布npm"><span class="nav-number">11.</span> <span class="nav-text">发布npm</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#npm包之间的深度依赖关系"><span class="nav-number">12.</span> <span class="nav-text">npm包之间的深度依赖关系</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#设置发布的标签"><span class="nav-number">13.</span> <span class="nav-text">设置发布的标签</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#删除发布的标签"><span class="nav-number">14.</span> <span class="nav-text">删除发布的标签</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">John Doe</span>
+</div>
+
+
+<div class="powered-by">
+  Powered by <a class="theme-link" href="https://hexo.io">Hexo</a>
+</div>
+
+<div class="theme-info">
+  Theme -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+    
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"frontzhm"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+    
+    <script src="/lib/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+    <script src="/js/src/hook-duoshuo.js"></script>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+</body>
+</html>

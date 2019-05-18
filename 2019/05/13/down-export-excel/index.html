@@ -1,0 +1,808 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang>
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css">
+
+
+  <meta name="keywords" content="js,">
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0">
+
+
+
+
+
+
+<meta name="description" content="TL;DR 前端下载的关键靠&amp;lt;a href=&amp;quot;demo.jpg&amp;quot; download&amp;gt;下载图片&amp;lt;/a&amp;gt; 后端传blob，前端处理blob，然后下载文件 二进制数组arrayBuffer、typedArray、dataView相关内容 blob、file相关内容 上传图片预览的两种方式：blobURL和dataURL">
+<meta name="keywords" content="js">
+<meta property="og:type" content="article">
+<meta property="og:title" content="前端下载文件以及上传图片预览，顺便了解arrayBuffer和blob">
+<meta property="og:url" content="http://yoursite.com/2019/05/13/down-export-excel/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="TL;DR 前端下载的关键靠&amp;lt;a href=&amp;quot;demo.jpg&amp;quot; download&amp;gt;下载图片&amp;lt;/a&amp;gt; 后端传blob，前端处理blob，然后下载文件 二进制数组arrayBuffer、typedArray、dataView相关内容 blob、file相关内容 上传图片预览的两种方式：blobURL和dataURL">
+<meta property="og:locale" content="default">
+<meta property="og:updated_time" content="2019-05-17T09:06:54.830Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="前端下载文件以及上传图片预览，顺便了解arrayBuffer和blob">
+<meta name="twitter:description" content="TL;DR 前端下载的关键靠&amp;lt;a href=&amp;quot;demo.jpg&amp;quot; download&amp;gt;下载图片&amp;lt;/a&amp;gt; 后端传blob，前端处理blob，然后下载文件 二进制数组arrayBuffer、typedArray、dataView相关内容 blob、file相关内容 上传图片预览的两种方式：blobURL和dataURL">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    sidebar: {"position":"right","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2019/05/13/down-export-excel/">
+
+
+
+
+
+  <title> 前端下载文件以及上传图片预览，顺便了解arrayBuffer和blob | Hexo </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="default">
+
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?60f2cb5747a596a24f2a053f1650c30b";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-right page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Hexo</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <h1 class="site-subtitle" itemprop="description"></h1>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            Tags
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/05/13/down-export-excel/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="John Doe">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="http://omizt4opc.bkt.clouddn.com/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hexo">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+            
+            
+              
+                前端下载文件以及上传图片预览，顺便了解arrayBuffer和blob
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-05-13T13:31:24+08:00">
+                2019-05-13
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/js/" itemprop="url" rel="index">
+                    <span itemprop="name">js</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2019/05/13/down-export-excel/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2019/05/13/down-export-excel/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="TL-DR"><a href="#TL-DR" class="headerlink" title="TL;DR"></a>TL;DR</h2><ul>
+<li>前端下载的关键靠<code>&lt;a href=&quot;demo.jpg&quot; download&gt;下载图片&lt;/a&gt;</code></li>
+<li>后端传blob，前端处理blob，然后下载文件</li>
+<li>二进制数组arrayBuffer、typedArray、dataView相关内容</li>
+<li>blob、file相关内容</li>
+<li>上传图片预览的两种方式：blobURL和dataURL</li>
+</ul>
+<a id="more"></a>
+<h2 id="下载的关键—-a的download属性"><a href="#下载的关键—-a的download属性" class="headerlink" title="下载的关键—-a的download属性"></a>下载的关键—-a的download属性</h2><p>想要实现点击加载，就能下载文件的功能。<br>会常常用到a标签的down属性。</p>
+<p>比如查看某图片<code>&lt;a href=&quot;demo.jpg&quot;&gt;查看图片&lt;/a&gt;</code>，这个代码常见，但是点击会打开一个新页面，所以关键点就是<code>&lt;a href=&quot;demo.jpg&quot; download&gt;下载图片&lt;/a&gt;</code>，这里点击后就会弹出对话框保存在哪，以及编辑默认文件名。如果需要另外指定文件名的话，可以用<code>download=&quot;demo_1.jpg&quot;</code>。</p>
+<p>需要注意，下载文件的网页打开需要http开头不能file开头，也就是本地测试的时候，需要启动本地服务。</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">header(<span class="string">'Content-type: image/jpeg'</span>);</span><br><span class="line">header(<span class="string">"Content-Disposition: attachment; filename='download.jpg'"</span>);</span><br></pre></td></tr></table></figure>
+<h2 id="前端实现下载任意服务器的任意的文件"><a href="#前端实现下载任意服务器的任意的文件" class="headerlink" title="前端实现下载任意服务器的任意的文件"></a>前端实现下载任意服务器的任意的文件</h2><p>经常可能需要下载<code>pdf excel jpg</code>之类的。其实可以同种操作。<br>如果不了解二进制数组和blob，需要看后面。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 前端，建个index.html文件放进这些，启动本地服务（node server.js）</span></span><br><span class="line"><span class="comment">// fetch的方式</span></span><br><span class="line">      fetch(<span class="string">"/down"</span>)</span><br><span class="line">        .then(<span class="function"><span class="params">res</span> =&gt;</span> res.blob())</span><br><span class="line">        .then(<span class="function"><span class="params">blob</span> =&gt;</span> &#123;</span><br><span class="line">          down(blob, <span class="string">"demo.pdf"</span>);</span><br><span class="line">        &#125;);</span><br><span class="line">      <span class="comment">// 普通的方式</span></span><br><span class="line">      request(<span class="string">"/down"</span>).then(<span class="function"><span class="params">blob</span> =&gt;</span> &#123;</span><br><span class="line">        <span class="keyword">var</span> blob = <span class="keyword">new</span> Blob([blob]);</span><br><span class="line">        down(blob, <span class="string">"demo1.pdf"</span>);</span><br><span class="line">      &#125;);</span><br><span class="line">      <span class="function"><span class="keyword">function</span> <span class="title">down</span>(<span class="params">blob, filename</span>) </span>&#123;</span><br><span class="line">        <span class="keyword">var</span> blobURL = <span class="built_in">window</span>.URL.createObjectURL(blob);</span><br><span class="line">        <span class="keyword">var</span> a = <span class="built_in">document</span>.createElement(<span class="string">"a"</span>);</span><br><span class="line">        a.href = blobURL;</span><br><span class="line">        <span class="comment">// 表示下载的</span></span><br><span class="line">        a.download = filename;</span><br><span class="line">        <span class="built_in">document</span>.body.appendChild(a);</span><br><span class="line">        a.click();</span><br><span class="line">        a.remove();</span><br><span class="line">        <span class="built_in">window</span>.URL.revokeObjectURL(blobURL);</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="function"><span class="keyword">function</span> <span class="title">request</span>(<span class="params">url, method = <span class="string">"GET"</span></span>) </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> <span class="built_in">Promise</span>(<span class="function">(<span class="params">resolve, reject</span>) =&gt;</span> &#123;</span><br><span class="line">          <span class="keyword">var</span> xhr = <span class="keyword">new</span> XMLHttpRequest();</span><br><span class="line">          xhr.open(method, url);</span><br><span class="line">          <span class="comment">// ！！！ 敲黑板  如果后端传过来的时候blob或者buffer之类的 这句必须加</span></span><br><span class="line">          xhr.responseType = <span class="string">"arraybuffer"</span>;</span><br><span class="line">          xhr.onreadystatechange = <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">            <span class="keyword">if</span> (xhr.readyState === XMLHttpRequest.DONE &amp;&amp; xhr.status === <span class="number">200</span>) &#123;</span><br><span class="line">              resolve(xhr.response);</span><br><span class="line">            &#125;</span><br><span class="line">          &#125;;</span><br><span class="line">          xhr.send();</span><br><span class="line">        &#125;);</span><br><span class="line">      &#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// -------- 后端 -------</span></span><br><span class="line"><span class="comment">// 引入自己的express路径 不用express当然也行 这就是server.js</span></span><br><span class="line"><span class="keyword">const</span> express = <span class="built_in">require</span>(<span class="string">'/usr/local/lib/node_modules/express'</span>)</span><br><span class="line"><span class="keyword">let</span> app = express()</span><br><span class="line">app.listen(<span class="number">7777</span>)</span><br><span class="line">app.get(<span class="string">'/'</span>,(req,res)=&gt;&#123;</span><br><span class="line">    res.sendFile(path.join(__dirname,<span class="string">'index.html'</span>))</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line">app.get(<span class="string">'/down'</span>,(req,res)=&gt;&#123;</span><br><span class="line">    <span class="comment">// 注意必须有一个demo.pdf的文件</span></span><br><span class="line">    res.download(<span class="string">'demo.pdf'</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">// 浏览器打开 localhost:7777  没出错的话就能下载文件了</span></span><br></pre></td></tr></table></figure>
+<p>其实说到这里，再来一个小玩法，比如后端传过来一串buffer怎么玩。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment">// 比如后端加一个这个</span></span><br><span class="line">app.get(<span class="string">'/buffer'</span>,(req,res)=&gt;&#123;</span><br><span class="line">    res.send(Buffer.from(<span class="string">'花花天下第一美'</span>))</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line"><span class="comment">// 猜前端怎么玩</span></span><br><span class="line">request(<span class="string">"/buffer"</span>).then(<span class="function"><span class="params">response</span> =&gt;</span> &#123;</span><br><span class="line">    <span class="comment">// 提取uint8Array</span></span><br><span class="line">    <span class="keyword">let</span> uint8 = <span class="keyword">new</span> <span class="built_in">Uint8Array</span>(response);</span><br><span class="line">    <span class="comment">// 解决乱码</span></span><br><span class="line">    <span class="keyword">let</span> resToString = <span class="built_in">decodeURIComponent</span>(</span><br><span class="line">        <span class="built_in">escape</span>(<span class="built_in">String</span>.fromCharCode(...uint8))</span><br><span class="line">    );</span><br><span class="line">    <span class="comment">// 花花天下第一美</span></span><br><span class="line">    <span class="built_in">console</span>.log(resToString)</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<h2 id="ArrayBuffer"><a href="#ArrayBuffer" class="headerlink" title="ArrayBuffer"></a>ArrayBuffer</h2><p>最早出现ArrayBuffer的原因是，js要和显卡进行数据传输（webGL），需要二进制数据类型。由此诞生二进制数组。</p>
+<p>二进制数组由三类对象组成。</p>
+<ul>
+<li><p><code>ArrayBuffer</code>对象：代表原始的二进制数据。是内存之中的一段二进制数据，可以通过“视图”进行操作。“视图”部署了数组接口，这意味着，可以用数组的方法操作内存。常用的属性<code>byteLength</code>,如果分配的内存区域大，需要用这个属性检测有没有这样的空间。常用的方法<code>slice</code>，拷贝生成一个新的ArrayBuffer对象。还有<code>isView()</code>判断是不是下面两种实例。</p>
+</li>
+<li><p><code>TypedArray</code>视图：用来读写简单类型的二进制数据。共包括9种类型的视图，比如Uint8Array（无符号8位整数）数组视图, Int16Array（16位整数）数组视图, Float32Array（32位浮点数）数组视图等等。</p>
+</li>
+<li><p><code>DataView</code>视图：用来读写复杂类型的二进制数据。可以自定义复合格式的视图，比如第一个字节是 Uint8（无符号8位整数）、第二、三个字节是 Int16（16位整数）、第四个字节开始是 Float32（32位浮点数）等等，此外还可以自定义字节序。</p>
+</li>
+</ul>
+<p>特点：二进制数组并不是真正的数组，而是类似数组的对象。注意的是，两个视图对应的是同一段内存，一个视图修改底层内存，会影响到另一个视图。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 创建一个8字节的ArrayBuffer,4个格子,每个格子是一个1个字节就是8位，就是8个由0或者1组成的数，也就是最大的存储是255，</span></span><br><span class="line"><span class="keyword">var</span> buffer = <span class="keyword">new</span> <span class="built_in">ArrayBuffer</span>(<span class="number">4</span>)</span><br><span class="line"><span class="comment">// [0,0,0,0]</span></span><br><span class="line"><span class="built_in">console</span>.log(buffer)</span><br><span class="line"><span class="comment">// 1个格子就是8位，最大值依然255</span></span><br><span class="line"><span class="keyword">var</span> x1 = <span class="keyword">new</span> <span class="built_in">Uint8Array</span>(buffer)</span><br><span class="line"><span class="comment">// [0,0,0,0]</span></span><br><span class="line"><span class="built_in">console</span>.log(x1)</span><br><span class="line"><span class="comment">// 00000000 00000000 00000000 000000001 注意顺序从右往左 但是数组显示是从右往左，自己脑子绕过来[1,0,0,0]</span></span><br><span class="line">x1[<span class="number">0</span>] = <span class="number">1</span></span><br><span class="line"><span class="comment">// 00000000 00000000 00000001 000000001   [1,1,0,0]</span></span><br><span class="line">x1[<span class="number">1</span>] = <span class="number">1</span></span><br><span class="line"><span class="comment">// [1,1,0,0]</span></span><br><span class="line"><span class="built_in">console</span>.log(x1)</span><br><span class="line"><span class="comment">// 1个格子16位，就是占据2份8位的格子，每一项要*256</span></span><br><span class="line"><span class="keyword">var</span> x2 = <span class="keyword">new</span> <span class="built_in">Uint16Array</span>(buffer)</span><br><span class="line"><span class="comment">// 0000000000000000 00000001000000001 [257,0]  这样后面的就能表示更多的2次方，最大能256*256-1=65535</span></span><br><span class="line"><span class="built_in">console</span>.log(x2)</span><br><span class="line"><span class="comment">// 0000000000000000 00000000000000110</span></span><br><span class="line">x2[<span class="number">1</span>] = <span class="number">6</span></span><br><span class="line"><span class="built_in">console</span>.log(x2)</span><br><span class="line"><span class="comment">// 000000000000000000000000000000110 更厉害了，不赘述</span></span><br><span class="line"><span class="keyword">var</span> x3 = <span class="keyword">new</span> <span class="built_in">Uint32Array</span>(buffer)</span><br><span class="line"><span class="comment">// 111111111111111111111111111111111 [4294967295]</span></span><br><span class="line">x3[<span class="number">0</span>] = <span class="number">4294967295</span></span><br><span class="line"><span class="built_in">console</span>.log(x3)</span><br><span class="line"><span class="comment">// 11111111 1111111 111111 1111111  [255,255,255,255]</span></span><br><span class="line"><span class="built_in">console</span>.log(x1)</span><br><span class="line"></span><br><span class="line"><span class="comment">// 看看dataView new DataView(buffer [, byteOffset [, byteLength]])  第几个buffer开始，长度</span></span><br><span class="line"><span class="comment">// view相当于 截取某段内存空间 然后以各种形式展示数据</span></span><br><span class="line"><span class="comment">// 00000000【3】 00000000【2】 00000000【1】 00000000【0】</span></span><br><span class="line"><span class="keyword">var</span> buffer = <span class="keyword">new</span> <span class="built_in">ArrayBuffer</span>(<span class="number">4</span>)</span><br><span class="line"><span class="comment">// 同上</span></span><br><span class="line"><span class="keyword">var</span> view1 = <span class="keyword">new</span> <span class="built_in">DataView</span>(buffer)</span><br><span class="line"><span class="comment">// 上面的左边第一个 00000000 【3】 00000000【2】从索引2开始取2个个，也就是索引2和索引3</span></span><br><span class="line"><span class="keyword">var</span> view2 = <span class="keyword">new</span> <span class="built_in">DataView</span>(buffer,<span class="number">2</span>,<span class="number">2</span>)</span><br><span class="line"><span class="comment">// 相当于 In8Array[2] = 42 00000010【3】 00000001【2】 00000000【1】 00000000【0】</span></span><br><span class="line">view1.setInt8(<span class="number">2</span>,<span class="number">1</span>)</span><br><span class="line">view1.setInt8(<span class="number">3</span>,<span class="number">2</span>)</span><br><span class="line"><span class="comment">// 相当于 In8Array[0]  00000010【3】 00000001【2】   也就是1</span></span><br><span class="line"><span class="built_in">console</span>.log(view2.getInt8(<span class="number">0</span>))</span><br></pre></td></tr></table></figure>
+<p>ArrayBuffer的来源：</p>
+<ul>
+<li>new ArrayBuffer(8)</li>
+<li>从本地文件读取，利用<code>FileReader.readAsArrayBuffer()</code>，开始读取指定的 Blob(也就是file)中的内容, 一旦完成, result 属性中保存的将是被读取文件的 ArrayBuffer 数据对象</li>
+<li>从base64 字符串获取</li>
+<li>通过ajax请求获取  设置responseType 为  ArrayBuffer 类型</li>
+</ul>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 举个ArrayBuffer的实例吧，发送使用XMLhttpRequest发送ArrayBuffer数据：</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">sendArrayBuffer</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">var</span> xhr = <span class="keyword">new</span> XMLHttpRequest();</span><br><span class="line">  xhr.open(<span class="string">'POST'</span>, <span class="string">'/server'</span>, <span class="literal">true</span>);</span><br><span class="line">  xhr.onload = <span class="function"><span class="keyword">function</span>(<span class="params">e</span>) </span>&#123; ... &#125;;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">var</span> uInt8Array = <span class="keyword">new</span> <span class="built_in">Uint8Array</span>([<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>]);</span><br><span class="line">  <span class="comment">// 使用了类型化数组，发送的是类型化数组(uInt8Array)的buffer属性，也就是ArrayBuffer对象。</span></span><br><span class="line">  xhr.send(uInt8Array.buffer);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="blob"><a href="#blob" class="headerlink" title="blob"></a>blob</h2><ul>
+<li>一个 Blob 对象表示一个不可变的，原始数据的类似文件对象。是存放二进制数据的容器。但是是类似文件对象的二进制数据。二进制数组不一定是一个文件对象。</li>
+<li>blob实例有两个属性，size和type，size以字节为单位，type如<code>image/jpeg</code></li>
+<li>File 对象是特殊类型的 Blob</li>
+</ul>
+<p>blob的来源：</p>
+<ul>
+<li>通过<code>new Blob(dataArr:Array&lt;any&gt;, options:{type:string})</code>创建的对象就是Blob对象。dataArray可以是<code>二进制数组，blob，字符串，type</code>是数组内容的MIME类型，还有slice方法</li>
+<li>XMLHttpRequest里,如果指定responseType为blob,那么得到的返回值也是一个blob对象</li>
+<li>canvas对象上的toBlob方法</li>
+</ul>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> s = <span class="string">'&lt;div&gt;1&lt;/div&gt;'</span></span><br><span class="line"><span class="keyword">var</span> blob = <span class="keyword">new</span> Blob([s],&#123;<span class="attr">type</span>:<span class="string">'text/html'</span>&#125;)</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> abf = <span class="keyword">new</span> <span class="built_in">ArrayBuffer</span>(<span class="number">8</span>)</span><br><span class="line"><span class="keyword">var</span> blob = <span class="keyword">new</span> Blob([abf])</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> abv = <span class="keyword">new</span> Unit8Array(abf)</span><br><span class="line"><span class="keyword">var</span> blob = <span class="keyword">new</span> Blob([abv])</span><br><span class="line"></span><br><span class="line"><span class="comment">// slice</span></span><br><span class="line"><span class="keyword">var</span> blob2 = blob.slice(<span class="number">0</span>,<span class="number">3</span>,&#123;<span class="attr">type</span>:<span class="string">'text/plain'</span>&#125;)</span><br><span class="line"></span><br><span class="line"><span class="comment">// canvas</span></span><br><span class="line"><span class="keyword">var</span> canvas = <span class="built_in">document</span>.querySelector(<span class="string">'canvas'</span>)</span><br><span class="line">canvas.toBlob(<span class="function"><span class="keyword">function</span>(<span class="params">blob</span>)</span>&#123;</span><br><span class="line">    <span class="keyword">var</span> blob3 = blob</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<h2 id="file"><a href="#file" class="headerlink" title="file"></a>file</h2><p>继承blob。<br>file的来源：</p>
+<ul>
+<li>可以是来自用户在一个input元素上选择文件后返回的FileList对象</li>
+<li>可以是来自拖放操作生成的 DataTransfer对象</li>
+<li>可以是来自在一个HTMLCanvasElement上执行mozGetAsFile()方法后返回结果</li>
+</ul>
+<h2 id="实践：上传图片预览的功能"><a href="#实践：上传图片预览的功能" class="headerlink" title="实践：上传图片预览的功能"></a>实践：上传图片预览的功能</h2><figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">"containner"</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"file"</span> <span class="attr">id</span>=<span class="string">"imgFile"</span> /&gt;</span><span class="tag">&lt;<span class="name">br</span> /&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">img</span> <span class="attr">id</span>=<span class="string">"previewFile"</span> <span class="attr">src</span>=<span class="string">""</span> <span class="attr">height</span>=<span class="string">"200"</span> <span class="attr">alt</span>=<span class="string">"Image preview..."</span> /&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="name">script</span>&gt;</span><span class="undefined"></span></span><br><span class="line"><span class="javascript">      <span class="keyword">const</span> imgFile = <span class="built_in">document</span>.querySelector(<span class="string">"#imgFile"</span>);</span></span><br><span class="line"><span class="javascript">      <span class="keyword">const</span> previewFile = <span class="built_in">document</span>.querySelector(<span class="string">"#previewFile"</span>);</span></span><br><span class="line"><span class="undefined"></span></span><br><span class="line"><span class="javascript">      imgFile.onchange = <span class="function"><span class="keyword">function</span>(<span class="params">e</span>) </span>&#123;</span></span><br><span class="line"><span class="javascript">        <span class="comment">// 类数组 file继承blob，每个file有很多属性 有继承blob的type和size，还有name,lastModified(13为时间戳)</span></span></span><br><span class="line"><span class="javascript">        <span class="keyword">let</span> files = e.target.files;</span></span><br><span class="line"><span class="javascript">        <span class="built_in">console</span>.log(files);</span></span><br><span class="line"><span class="javascript">        <span class="comment">// previewImageByBlob(files[0],previewFile)</span></span></span><br><span class="line"><span class="undefined">        previewImageByBase64(files[0], previewFile);</span></span><br><span class="line"><span class="undefined">      &#125;;</span></span><br><span class="line"><span class="javascript">      <span class="function"><span class="keyword">function</span> <span class="title">previewImageByBlob</span>(<span class="params">blob, imgSelector</span>) </span>&#123;</span></span><br><span class="line"><span class="javascript">        <span class="comment">// create必须后面是blob对象</span></span></span><br><span class="line"><span class="javascript">        <span class="keyword">const</span> imgUrl = <span class="built_in">window</span>.URL.createObjectURL(blob);</span></span><br><span class="line"><span class="javascript">        <span class="comment">// src可以是根据blob创建的url 长得像这样blob:域名/e61c67e3-df3a-453a-8f41-df740c1f5faf</span></span></span><br><span class="line"><span class="undefined">        imgSelector.src = imgUrl;</span></span><br><span class="line"><span class="javascript">        <span class="built_in">console</span>.log(imgUrl);</span></span><br><span class="line"><span class="javascript">        <span class="comment">// 浏览器会在文档退出的时候自动释放它们，但是为了获得最佳性能和内存使用状况，你应该在安全的时机主动释放掉它们。</span></span></span><br><span class="line"><span class="javascript">        imgSelector.onload = <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span></span><br><span class="line"><span class="javascript">          <span class="built_in">window</span>.URL.revokeObjectURL(imgUrl);</span></span><br><span class="line"><span class="undefined">        &#125;;</span></span><br><span class="line"><span class="undefined">      &#125;</span></span><br><span class="line"><span class="undefined"></span></span><br><span class="line"><span class="javascript">      <span class="function"><span class="keyword">function</span> <span class="title">previewImageByBase64</span>(<span class="params">blob, imgSelector</span>) </span>&#123;</span></span><br><span class="line"><span class="javascript">        <span class="keyword">var</span> reader = <span class="keyword">new</span> FileReader();</span></span><br><span class="line"><span class="javascript">        <span class="comment">// readAsArrayBuffer readAsBinaryString readAsText 好几种类型</span></span></span><br><span class="line"><span class="javascript">        <span class="comment">// 读取操作完成的时候，readyState 会变成已完成（DONE），并触发 loadend 事件，同时 result 属性将包含一个data:URL格式的字符串（base64编码）以表示所读取文件的内容，data:image/jpeg;base64,/9j/4AAQ...</span></span></span><br><span class="line"><span class="javascript">        <span class="comment">// 如果是服务器过来的blob，需要new Blob(blob)这样继续下面的操作</span></span></span><br><span class="line"><span class="javascript">        <span class="keyword">var</span> x = reader.readAsDataURL(blob);</span></span><br><span class="line"><span class="javascript">        <span class="built_in">console</span>.log(x);</span></span><br><span class="line"><span class="javascript">        <span class="comment">// 必须监听load事件，完事了才能有完整的base64</span></span></span><br><span class="line"><span class="javascript">        reader.onloaded = <span class="function"><span class="params">()</span> =&gt;</span> &#123;</span></span><br><span class="line"><span class="javascript">          <span class="built_in">console</span>.log(<span class="string">"result"</span>, reader.result);</span></span><br><span class="line"><span class="undefined">          imgSelector.src = reader.result;</span></span><br><span class="line"><span class="undefined">        &#125;;</span></span><br><span class="line"><span class="javascript">        reader.onerror = <span class="function"><span class="params">()</span> =&gt;</span> &#123;</span></span><br><span class="line"><span class="javascript">          <span class="built_in">console</span>.log(<span class="string">"出错了"</span>);</span></span><br><span class="line"><span class="undefined">        &#125;;</span></span><br><span class="line"><span class="undefined">      &#125;</span></span><br><span class="line"><span class="undefined">    </span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>Blob URL和Data URL有什么区别呢？</p>
+<ul>
+<li>blob显示的形式<code>blob:域名/e61c67e3-df3a-453a-8f41-df740c1f5faf</code> ，dataURL的显示形式<code>data:image/jpeg;base64,/9j/4AAQ...</code></li>
+<li>Blob URL的长度一般比较短，但Data URL因为直接存储图片base64编码后的数据，往往很长，如上图所示，浏览器在显示Data URL时使用了省略号（…）。当显式大图片时，使用Blob URL能获取更好的可能性。</li>
+<li>Blob URL可以方便的使用XMLHttpRequest获取源数据（xhr.responseType = ‘blob’）。对于Data URL，并不是所有浏览器都支持通过XMLHttpRequest获取源数据的</li>
+<li>Blob URL 只能在当前应用内部使用，把Blob URL复制到浏览器的地址栏中，是无法获取数据的。Data URL相比之下，就有很好的移植性，你可以在任意浏览器中使用。</li>
+<li>Blob URL除了可以用作图片资源的网络地址，Blob URL也可以用作其他资源的网络地址，例如html文件、json文件等，为了保证浏览器能正确的解析Blob URL返回的文件类型，需要在创建Blob对象时指定相应的type</li>
+</ul>
+<h2 id="区分escape、encodeURI和encodeURIComponent"><a href="#区分escape、encodeURI和encodeURIComponent" class="headerlink" title="区分escape、encodeURI和encodeURIComponent"></a>区分escape、encodeURI和encodeURIComponent</h2><ul>
+<li>编码之后的效果是<code>%XX</code>或者<code>%uXXXX</code>这种形式</li>
+<li><code>escape</code>处理字符串，<code>ASCII字母、数字、@*/+</code> 这几个字符不会被编码，其余的都会</li>
+<li><code>encodeURI</code>和<code>encodeURIComponent</code>处理编码URL，类似于<code>https://juejin.im/editor/drafts/5cde6dae6fb9a07eda02e5f1</code></li>
+<li><code>encodeURI</code>方法不会对下列字符编码 ，<code>ASCII字母、数字、~!@#$&amp;*()=:/,;?+&#39;</code>，重点是<code>/ ? # &amp;</code></li>
+<li><code>encodeURIComponent</code>方法不会对下列字符编码 <code>ASCII字母、数字、~!*()&#39;</code></li>
+<li>相应的解码<code>unsecape encodeURI encodeURIComponent</code></li>
+</ul>
+<h2 id="综合使用，分片上传"><a href="#综合使用，分片上传" class="headerlink" title="综合使用，分片上传"></a>综合使用，分片上传</h2><p>感觉不是一时半会的，待看。重点是<code>blob.slice</code><br>有空看<a href="https://ashshen.cc/2018/08/23/file-slice-upload-node/#%E5%88%86%E7%89%87%E4%B8%8A%E4%BC%A0%E5%8E%9F%E7%90%86" target="_blank" rel="noopener">这篇文章</a></p>
+<h2 id="formdata"><a href="#formdata" class="headerlink" title="formdata"></a>formdata</h2><p>FormData对象的作用就类似于serialize(<code>{a:1,b:2}=&gt;a=1&amp;b=2</code>)方法，不过FormData是浏览器原生的，且支持二进制文件，是个一眼就会让人喜欢的很赞的东西！</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 前端</span></span><br><span class="line"><span class="keyword">var</span> myFormData = <span class="keyword">new</span> FormData(form容器);</span><br><span class="line"><span class="comment">// 后端 可以使用multiparty来解析form-data的数据 不然原生 的那种会有很多别的文本，难以解析</span></span><br><span class="line">app.post(<span class="string">'/login'</span>,(req,res)=&gt;&#123;</span><br><span class="line">    <span class="keyword">var</span> form = <span class="keyword">new</span> multiparty.Form();</span><br><span class="line">    form.parse(req, (err, fields, files)=&gt;&#123;</span><br><span class="line">       res.send(fields.username[<span class="number">0</span>])</span><br><span class="line">    &#125;);</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<p>FormData对象还有一个方法，为<code>append()</code>方法，可以人为的给当前FormData对象添加一个键/值对。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">myFormData.append(DOMString 键, Blob 值, [可选] DOMString 文件名);</span><br><span class="line">myFormData.append(DOMString 键, DOMString 值);</span><br><span class="line"><span class="comment">// 示例 blob一般不写的话</span></span><br><span class="line">myFormData.append(<span class="string">'token'</span>,<span class="string">'2h22h2j'</span>)</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p><a href="https://www.zhangxinxu.com/wordpress/2016/04/know-about-html-download-attribute/" target="_blank" rel="noopener">down属性</a><br><a href="https://www.zhangxinxu.com/wordpress/2013/10/understand-domstring-document-formdata-blob-file-arraybuffer/" target="_blank" rel="noopener">formData、file,arrayBuffer数据类型</a><br><a href="https://blog.csdn.net/qiphon3650/article/details/78454273" target="_blank" rel="noopener">arrayBuffer</a><br><a href="https://blog.csdn.net/yudldl/article/details/83090021" target="_blank" rel="noopener">预览图片</a><br><a href="https://segmentfault.com/a/1190000011563430" target="_blank" rel="noopener">详细的blob</a><br><a href="https://juejin.im/post/599804e1f265da24934aeee7" target="_blank" rel="noopener">大文件上传</a><br><a href="https://blog.csdn.net/aydongzhiping/article/details/82462473" target="_blank" rel="noopener">二进制文件流实现前端下载</a><br><a href="https://www.cnblogs.com/season-huang/p/3439277.html" target="_blank" rel="noopener">简单明了区分escape、encodeURI和encodeURIComponent</a></p>
+</blockquote>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/js/" rel="tag"># js</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/05/10/echarts-apply/" rel="next" title="echarts的简单运用以及配置">
+                <i class="fa fa-chevron-left"></i> echarts的简单运用以及配置
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/05/16/seajs/" rel="prev" title="seajs的理解">
+                seajs的理解 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+          
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2019/05/13/down-export-excel/" data-title="前端下载文件以及上传图片预览，顺便了解arrayBuffer和blob" data-url="http://yoursite.com/2019/05/13/down-export-excel/">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image" src="http://omizt4opc.bkt.clouddn.com/avatar.jpg" alt="John Doe">
+          <p class="site-author-name" itemprop="name">John Doe</p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+           
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">75</span>
+                <span class="site-state-item-name">posts</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              
+                <span class="site-state-item-count">21</span>
+                <span class="site-state-item-name">categories</span>
+              
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              
+                <span class="site-state-item-count">35</span>
+                <span class="site-state-item-name">tags</span>
+              
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#TL-DR"><span class="nav-number">1.</span> <span class="nav-text">TL;DR</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#下载的关键—-a的download属性"><span class="nav-number">2.</span> <span class="nav-text">下载的关键—-a的download属性</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#前端实现下载任意服务器的任意的文件"><span class="nav-number">3.</span> <span class="nav-text">前端实现下载任意服务器的任意的文件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ArrayBuffer"><span class="nav-number">4.</span> <span class="nav-text">ArrayBuffer</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#blob"><span class="nav-number">5.</span> <span class="nav-text">blob</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#file"><span class="nav-number">6.</span> <span class="nav-text">file</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#实践：上传图片预览的功能"><span class="nav-number">7.</span> <span class="nav-text">实践：上传图片预览的功能</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#区分escape、encodeURI和encodeURIComponent"><span class="nav-number">8.</span> <span class="nav-text">区分escape、encodeURI和encodeURIComponent</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#综合使用，分片上传"><span class="nav-number">9.</span> <span class="nav-text">综合使用，分片上传</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#formdata"><span class="nav-number">10.</span> <span class="nav-text">formdata</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">John Doe</span>
+</div>
+
+
+<div class="powered-by">
+  Powered by <a class="theme-link" href="https://hexo.io">Hexo</a>
+</div>
+
+<div class="theme-info">
+  Theme -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+    
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"frontzhm"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+    
+    <script src="/lib/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+    <script src="/js/src/hook-duoshuo.js"></script>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+</body>
+</html>

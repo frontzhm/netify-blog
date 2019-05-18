@@ -1,0 +1,754 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang>
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css">
+
+
+  <meta name="keywords" content="vue,">
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0">
+
+
+
+
+
+
+<meta name="description" content="TL;DR 给data添加新属性的时候vm.$set(vm.info,&amp;#39;newKey&amp;#39;,&amp;#39;newValue&amp;#39;) data上面属性值是数组的时候，需要用数组的方法操作数组，而不能通过index或者length属性去操作数组，因为监听不到属性操作的动作。">
+<meta name="keywords" content="vue">
+<meta property="og:type" content="article">
+<meta property="og:title" content="vue的数据劫持以及操作数组的坑">
+<meta property="og:url" content="http://yoursite.com/2019/04/28/vue-data-arr/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="TL;DR 给data添加新属性的时候vm.$set(vm.info,&amp;#39;newKey&amp;#39;,&amp;#39;newValue&amp;#39;) data上面属性值是数组的时候，需要用数组的方法操作数组，而不能通过index或者length属性去操作数组，因为监听不到属性操作的动作。">
+<meta property="og:locale" content="default">
+<meta property="og:updated_time" content="2019-04-28T08:12:55.294Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="vue的数据劫持以及操作数组的坑">
+<meta name="twitter:description" content="TL;DR 给data添加新属性的时候vm.$set(vm.info,&amp;#39;newKey&amp;#39;,&amp;#39;newValue&amp;#39;) data上面属性值是数组的时候，需要用数组的方法操作数组，而不能通过index或者length属性去操作数组，因为监听不到属性操作的动作。">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    sidebar: {"position":"right","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2019/04/28/vue-data-arr/">
+
+
+
+
+
+  <title> vue的数据劫持以及操作数组的坑 | Hexo </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="default">
+
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?60f2cb5747a596a24f2a053f1650c30b";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-right page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Hexo</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <h1 class="site-subtitle" itemprop="description"></h1>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            Tags
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/04/28/vue-data-arr/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="John Doe">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="http://omizt4opc.bkt.clouddn.com/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hexo">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+            
+            
+              
+                vue的数据劫持以及操作数组的坑
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-04-28T16:02:12+08:00">
+                2019-04-28
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/vue/" itemprop="url" rel="index">
+                    <span itemprop="name">vue</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2019/04/28/vue-data-arr/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2019/04/28/vue-data-arr/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="TL-DR"><a href="#TL-DR" class="headerlink" title="TL;DR"></a>TL;DR</h2><ul>
+<li>给data添加新属性的时候<code>vm.$set(vm.info,&#39;newKey&#39;,&#39;newValue&#39;)</code></li>
+<li>data上面属性值是数组的时候，需要用数组的方法操作数组，而不能通过index或者length属性去操作数组，因为监听不到属性操作的动作。<a id="more"></a>
+</li>
+</ul>
+<h2 id="安装和初使用vue"><a href="#安装和初使用vue" class="headerlink" title="安装和初使用vue"></a>安装和初使用vue</h2><p>vue是构建用户界面的渐进式框架。所谓的渐进式：<code>vue + components + vue-router +
+vuex + vue-cli</code>可以根据需要选择相应的功能。</p>
+<p>来串命令<code>mkdir vue-apply;cd vue-apply;npm init -y;npm i vue</code>。</p>
+<p>来一个html文件如下，浏览器瞄下~，浏览器控制台<code>vm.msg=0</code>再看下</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">"app"</span>&gt;</span>&#123;&#123;msg&#125;&#125;<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">src</span>=<span class="string">"node_modules/vue/dist/vue.js"</span>&gt;</span><span class="undefined"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span>&gt;</span><span class="undefined"></span></span><br><span class="line"><span class="javascript"><span class="keyword">let</span> vm = <span class="keyword">new</span> Vue(&#123;</span></span><br><span class="line"><span class="javascript">    el:<span class="string">'#app'</span>,</span></span><br><span class="line"><span class="javascript">    <span class="comment">// template加上之后会替换掉#app这个标签</span></span></span><br><span class="line"><span class="xml">    // template:'<span class="tag">&lt;<span class="name">h1</span>&gt;</span>en<span class="tag">&lt;/<span class="name">h1</span>&gt;</span>',</span></span><br><span class="line"><span class="javascript">    data:&#123;<span class="attr">msg</span>:<span class="string">'msg'</span>&#125;</span></span><br><span class="line"><span class="undefined">&#125;)</span></span><br><span class="line"><span class="javascript">vm.msg = <span class="string">'msg'</span></span></span><br><span class="line"><span class="undefined"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<h2 id="说说mvvm-mvc"><a href="#说说mvvm-mvc" class="headerlink" title="说说mvvm mvc"></a>说说mvvm mvc</h2><p><code>mvc</code>其实是<code>model view Model</code>传统所有逻辑在controller,难以维护。用户输入 =&gt; 控制器 =&gt; 数据改变，如果数据变了需要获取dom，操作属性，再渲染到视图上。<br><code>mvvm</code>其实是<code>model view viewModel</code>数据变化驱动视图。数据变了，不需要你获取dom，然后改变dom的内容。这边数据变了，vm负责监听，视图那边自动发生变化。最明显的是不需要<code>document.querySelector</code>之类的了。</p>
+<h2 id="vm的实质"><a href="#vm的实质" class="headerlink" title="vm的实质"></a>vm的实质</h2><p>上面说了vm负责让数据变了，视图能自动发生变化。这么神奇魔术背后的原理是<a href="https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Object/defineProperty" target="_blank" rel="noopener"><code>Object.defineProperty</code></a>。其实就是属性的读取和设置操作都进行了监听，当有这样的操作的时候，进行某种动作。来一个demo玩下。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 对obj上面的属性进行读取和设置监听</span></span><br><span class="line"><span class="keyword">let</span> obj = &#123;</span><br><span class="line">        name:<span class="string">'huahua'</span>,</span><br><span class="line">        age:<span class="number">18</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">function</span> <span class="title">observer</span>(<span class="params">obj</span>)</span>&#123;</span><br><span class="line">        <span class="keyword">if</span>(<span class="keyword">typeof</span> obj === <span class="string">'object'</span>)&#123;</span><br><span class="line">            <span class="keyword">for</span> (<span class="keyword">const</span> key <span class="keyword">in</span> obj) &#123;</span><br><span class="line">                defineReactive(obj,key,obj[key])</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// get的return的值才是最终你读取到的值。所以设的值是为读取准备的。</span></span><br><span class="line">    <span class="comment">// set传的参数是设置的值，注意这里不要有obj.name = newVal 这样又触发set监听，会死循环的。</span></span><br><span class="line">    <span class="function"><span class="keyword">function</span> <span class="title">defineReactive</span>(<span class="params">obj,key,value</span>)</span>&#123;</span><br><span class="line">        <span class="built_in">Object</span>.defineProperty(obj,key,&#123;</span><br><span class="line">            <span class="keyword">get</span>:function()&#123;</span><br><span class="line">                <span class="built_in">console</span>.log(<span class="string">'你在读取'</span>)</span><br><span class="line">                <span class="comment">// happy的话这边可以value++，这样你发现读取的值始终比设置的大一个，因为return就是读取到的值</span></span><br><span class="line">                <span class="keyword">return</span> value</span><br><span class="line">            &#125;,</span><br><span class="line">            <span class="keyword">set</span>:function(newVal)&#123;</span><br><span class="line">                <span class="built_in">console</span>.log(<span class="string">'数据更新了'</span>)</span><br><span class="line">                value = newVal</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">        &#125;)</span><br><span class="line">    &#125;</span><br><span class="line">    observer(obj)</span><br><span class="line">    obj.age = <span class="number">2</span></span><br><span class="line">    <span class="built_in">console</span>.log(obj.age)</span><br></pre></td></tr></table></figure>
+<p>在浏览器执行的时候，控制台随手也可以<code>obj.name=&quot;hua1&quot;</code>类似的操作，发现都监听到了。但是如果更深一步，<code>obj.name={firstname:&#39;hua&#39;,lastname:&#39;piaoliang&#39;};obj.name.lastname=&#39;o&#39;</code>就不能监听到属性修改了。因为并没有将新的赋值对象监听其属性。所以函数需要改进。<br>需要在defineReactive的第一行加上<code>observer(value)</code>。设置值的时候如果是对象的话，也需要将这个对象数据劫持。同理，set那边也需要加这行。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">defineReactive</span>(<span class="params">obj,key,value</span>)</span>&#123;</span><br><span class="line">    <span class="comment">// 注意这里！！！！！！！</span></span><br><span class="line">    observer(value)</span><br><span class="line">     <span class="built_in">Object</span>.defineProperty(obj,key,&#123;</span><br><span class="line">         <span class="keyword">get</span>:function()&#123;</span><br><span class="line">             <span class="keyword">return</span> value</span><br><span class="line">         &#125;,</span><br><span class="line">         <span class="keyword">set</span>:function(newVal)&#123;</span><br><span class="line">             <span class="comment">// 注意这里！！！！！！！</span></span><br><span class="line">             observer(newVal)</span><br><span class="line">             <span class="built_in">console</span>.log(<span class="string">'数据更新了'</span>)</span><br><span class="line">             value = newVal</span><br><span class="line">         &#125;</span><br><span class="line"></span><br><span class="line">     &#125;)</span><br><span class="line"> &#125;</span><br></pre></td></tr></table></figure>
+<p>继续，如果<code>obj.name=[1,2,3];obj.name.push(4)</code>发现又没有通知了，这是因为Object.defineProperty不支持监听数组变化。所以需要重写数组上面的方法。话说，最近看了个文章，理论上也可以监听数组，但是性能消耗和收益不成正比，所以，vue就没去实现了。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 把数组上大部分方法重写了，这里不一一列举。但是如果你 [1,2].length--，这是捕捉不到的</span></span><br><span class="line"> <span class="keyword">let</span> arr = [<span class="string">'push'</span>,<span class="string">'slice'</span>,<span class="string">'split'</span>]</span><br><span class="line"> arr.forEach(<span class="function"><span class="params">method</span>=&gt;</span>&#123;</span><br><span class="line">     <span class="keyword">let</span> oldPush = <span class="built_in">Array</span>.property[method]</span><br><span class="line">     <span class="built_in">Array</span>.property[method] = <span class="function"><span class="keyword">function</span>(<span class="params">value</span>)</span>&#123;</span><br><span class="line">         <span class="built_in">console</span>.log(<span class="string">'数据更新'</span>)</span><br><span class="line">         oldPush.call(<span class="keyword">this</span>,value)</span><br><span class="line">     &#125;</span><br><span class="line"> &#125;)</span><br></pre></td></tr></table></figure>
+<h2 id="vue使用的时候注意的坑"><a href="#vue使用的时候注意的坑" class="headerlink" title="vue使用的时候注意的坑"></a>vue使用的时候注意的坑</h2><p>正如上面的解释，vue2.0的底层约莫是这个逻辑，所以使用需要注意的点：</p>
+<ul>
+<li>因为是一开始就数据劫持了。所以后来如果新绑定属性，是没有数据劫持的。如果需要调用 <code>vm.$set(vm.info,&#39;newKey&#39;,&#39;newValue&#39;)</code>，vm是vue的实例。</li>
+<li><p>当属性值是数组，数组变化的时候，跟踪不到变化。因为数组虽然是对象，但是Object.defineProperty不支持数组，所以vue改写了数组的所有方法，当调用数组方法的时候，就调动变动事件。但是不能通过属性或者索引控制数组，比如length，index。</p>
+</li>
+<li><p>总结：data上，绑定所有属性避免后期加新属性。如果是数组，只能通过数组方法修改数组。如下例子，控制台<code>vm.arr--</code>发现视图并不会变化，<code>vm.arr.push(4)</code>就能变化</p>
+</li>
+</ul>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">"app"</span>&gt;</span>&#123;&#123;msg&#125;&#125;&#123;&#123;arr&#125;&#125;<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">src</span>=<span class="string">"node_modules/vue/dist/vue.js"</span>&gt;</span><span class="undefined"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span>&gt;</span><span class="undefined"></span></span><br><span class="line"><span class="javascript"><span class="keyword">let</span> vm = <span class="keyword">new</span> Vue(&#123;</span></span><br><span class="line"><span class="javascript">    el:<span class="string">'#app'</span>,</span></span><br><span class="line"><span class="javascript">    <span class="comment">// template加上之后会替换掉#app这个标签</span></span></span><br><span class="line"><span class="xml">    // template:'<span class="tag">&lt;<span class="name">h1</span>&gt;</span>en<span class="tag">&lt;/<span class="name">h1</span>&gt;</span>',</span></span><br><span class="line"><span class="javascript">    data:&#123;<span class="attr">msg</span>:<span class="string">'msg'</span>,<span class="attr">arr</span>:[<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>]&#125;</span></span><br><span class="line"><span class="undefined">&#125;)</span></span><br><span class="line"><span class="javascript">vm.msg = <span class="string">'msg'</span></span></span><br><span class="line"><span class="undefined"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure>
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/vue/" rel="tag"># vue</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/04/28/vscode-hide-file/" rel="next" title="vscode隐藏文件（夹）">
+                <i class="fa fa-chevron-left"></i> vscode隐藏文件（夹）
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/04/28/vue-$-directives-checkbox-all/" rel="prev" title="简单总结vm的方法、指令以及复选框全选的实现">
+                简单总结vm的方法、指令以及复选框全选的实现 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+          
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2019/04/28/vue-data-arr/" data-title="vue的数据劫持以及操作数组的坑" data-url="http://yoursite.com/2019/04/28/vue-data-arr/">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image" src="http://omizt4opc.bkt.clouddn.com/avatar.jpg" alt="John Doe">
+          <p class="site-author-name" itemprop="name">John Doe</p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+           
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">75</span>
+                <span class="site-state-item-name">posts</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              
+                <span class="site-state-item-count">21</span>
+                <span class="site-state-item-name">categories</span>
+              
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              
+                <span class="site-state-item-count">35</span>
+                <span class="site-state-item-name">tags</span>
+              
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#TL-DR"><span class="nav-number">1.</span> <span class="nav-text">TL;DR</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#安装和初使用vue"><span class="nav-number">2.</span> <span class="nav-text">安装和初使用vue</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#说说mvvm-mvc"><span class="nav-number">3.</span> <span class="nav-text">说说mvvm mvc</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#vm的实质"><span class="nav-number">4.</span> <span class="nav-text">vm的实质</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#vue使用的时候注意的坑"><span class="nav-number">5.</span> <span class="nav-text">vue使用的时候注意的坑</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">John Doe</span>
+</div>
+
+
+<div class="powered-by">
+  Powered by <a class="theme-link" href="https://hexo.io">Hexo</a>
+</div>
+
+<div class="theme-info">
+  Theme -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+    
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"frontzhm"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+    
+    <script src="/lib/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+    <script src="/js/src/hook-duoshuo.js"></script>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+</body>
+</html>

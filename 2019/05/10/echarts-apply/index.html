@@ -1,0 +1,784 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang>
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css">
+
+
+  <meta name="keywords" content="js,">
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0">
+
+
+
+
+
+
+<meta name="description" content="TL;DR &amp;lt;script src=&amp;quot;https://cdn.bootcss.com/echarts/4.2.1/echarts.min.js&amp;quot;&amp;gt;&amp;lt;/script&amp;gt; var myEcharts = echarts.init(dom容器);var option = {};myChart.setOption(option) option起码的选项，{xAxi">
+<meta name="keywords" content="js">
+<meta property="og:type" content="article">
+<meta property="og:title" content="echarts的简单运用以及配置">
+<meta property="og:url" content="http://yoursite.com/2019/05/10/echarts-apply/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="TL;DR &amp;lt;script src=&amp;quot;https://cdn.bootcss.com/echarts/4.2.1/echarts.min.js&amp;quot;&amp;gt;&amp;lt;/script&amp;gt; var myEcharts = echarts.init(dom容器);var option = {};myChart.setOption(option) option起码的选项，{xAxi">
+<meta property="og:locale" content="default">
+<meta property="og:updated_time" content="2019-05-10T01:09:22.836Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="echarts的简单运用以及配置">
+<meta name="twitter:description" content="TL;DR &amp;lt;script src=&amp;quot;https://cdn.bootcss.com/echarts/4.2.1/echarts.min.js&amp;quot;&amp;gt;&amp;lt;/script&amp;gt; var myEcharts = echarts.init(dom容器);var option = {};myChart.setOption(option) option起码的选项，{xAxi">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    sidebar: {"position":"right","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2019/05/10/echarts-apply/">
+
+
+
+
+
+  <title> echarts的简单运用以及配置 | Hexo </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="default">
+
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?60f2cb5747a596a24f2a053f1650c30b";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-right page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Hexo</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <h1 class="site-subtitle" itemprop="description"></h1>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            Tags
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/05/10/echarts-apply/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="John Doe">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="http://omizt4opc.bkt.clouddn.com/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hexo">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+            
+            
+              
+                echarts的简单运用以及配置
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-05-10T09:08:38+08:00">
+                2019-05-10
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/js/" itemprop="url" rel="index">
+                    <span itemprop="name">js</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2019/05/10/echarts-apply/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2019/05/10/echarts-apply/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="TL-DR"><a href="#TL-DR" class="headerlink" title="TL;DR"></a>TL;DR</h2><ul>
+<li><code>&lt;script src=&quot;https://cdn.bootcss.com/echarts/4.2.1/echarts.min.js&quot;&gt;&lt;/script&gt;</code></li>
+<li><code>var myEcharts = echarts.init(dom容器);var option = {};myChart.setOption(option)</code></li>
+<li>option起码的选项，<code>{xAxis:{data:[]},yAxis:{},series:[{type:&#39;line&#39;,data:[]}]}</code></li>
+<li>遇见困难<a href="https://www.echartsjs.com/option.html#title" target="_blank" rel="noopener">看文档</a>，没事敲敲<a href="https://echarts.baidu.com/examples/" target="_blank" rel="noopener">实例</a>快速增加对属性的理解</li>
+<li><a href="https://github.com/frontzhm/echarts-apply" target="_blank" rel="noopener">自己的玩的代码</a></li>
+</ul>
+<a id="more"></a>
+<h2 id="下载"><a href="#下载" class="headerlink" title="下载"></a>下载</h2><ul>
+<li><a href="http://echarts.baidu.com/dist/echarts.min.js" target="_blank" rel="noopener">完整压缩版的地址</a></li>
+<li><a href="http://echarts.baidu.com/dist/echarts.js" target="_blank" rel="noopener">开发未压缩版的地址</a></li>
+<li><a href="http://www.bootcdn.cn/echarts/" target="_blank" rel="noopener">cdn的地址</a></li>
+<li>急用测试的直接源码<code>&lt;script src=&quot;https://cdn.bootcss.com/echarts/4.2.1/echarts.min.js&quot;&gt;&lt;/script&gt;</code></li>
+</ul>
+<h2 id="先简单demo"><a href="#先简单demo" class="headerlink" title="先简单demo"></a>先简单demo</h2><ul>
+<li>echarts的引入需要在head里</li>
+<li>为echarts准备一个具备大小（宽高）的Dom</li>
+<li>初始化echarts实例，<code>echarts.init(dom容器)</code></li>
+<li>实例设置配置项和数据，<code>myChart.setOption(option)</code></li>
+<li>重中之重的就是option了，<a href="https://codepen.io/frontzhm/pen/KLpjxd" target="_blank" rel="noopener">这里只是简单演示demo不做介绍</a></li>
+</ul>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;!DOCTYPE html&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">html</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">head</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">meta</span> <span class="attr">charset</span>=<span class="string">"utf-8"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">title</span>&gt;</span>ECharts<span class="tag">&lt;/<span class="name">title</span>&gt;</span></span><br><span class="line">    <span class="comment">&lt;!-- 引入 echarts.js --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">script</span> <span class="attr">src</span>=<span class="string">"https://cdn.bootcss.com/echarts/4.2.1/echarts.min.js"</span>&gt;</span><span class="undefined"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line">    <span class="comment">&lt;!-- 为ECharts准备一个具备大小（宽高）的Dom --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">"main"</span> <span class="attr">style</span>=<span class="string">"width: 600px;height:400px;"</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">script</span> <span class="attr">type</span>=<span class="string">"text/javascript"</span>&gt;</span><span class="undefined"></span></span><br><span class="line"><span class="javascript">        <span class="comment">// 基于准备好的dom，初始化echarts实例</span></span></span><br><span class="line"><span class="javascript">        <span class="keyword">var</span> myChart = echarts.init(<span class="built_in">document</span>.getElementById(<span class="string">'main'</span>));</span></span><br><span class="line"><span class="undefined"></span></span><br><span class="line"><span class="javascript">        <span class="comment">// 指定图表的配置项和数据</span></span></span><br><span class="line"><span class="javascript">        <span class="keyword">var</span> option = &#123;</span></span><br><span class="line"><span class="undefined">            title: &#123;</span></span><br><span class="line"><span class="javascript">                text: <span class="string">'ECharts 入门示例'</span></span></span><br><span class="line"><span class="undefined">            &#125;,</span></span><br><span class="line"><span class="undefined">            tooltip: &#123;&#125;,</span></span><br><span class="line"><span class="undefined">            legend: &#123;</span></span><br><span class="line"><span class="javascript">                data:[<span class="string">'销量'</span>]</span></span><br><span class="line"><span class="undefined">            &#125;,</span></span><br><span class="line"><span class="undefined">            xAxis: &#123;</span></span><br><span class="line"><span class="javascript">                data: [<span class="string">"衬衫"</span>,<span class="string">"羊毛衫"</span>,<span class="string">"雪纺衫"</span>,<span class="string">"裤子"</span>,<span class="string">"高跟鞋"</span>,<span class="string">"袜子"</span>]</span></span><br><span class="line"><span class="undefined">            &#125;,</span></span><br><span class="line"><span class="undefined">            yAxis: &#123;&#125;,</span></span><br><span class="line"><span class="undefined">            series: [&#123;</span></span><br><span class="line"><span class="javascript">                name: <span class="string">'销量'</span>,</span></span><br><span class="line"><span class="javascript">                type: <span class="string">'bar'</span>,</span></span><br><span class="line"><span class="undefined">                data: [5, 20, 36, 10, 10, 20]</span></span><br><span class="line"><span class="undefined">            &#125;]</span></span><br><span class="line"><span class="undefined">        &#125;;</span></span><br><span class="line"><span class="undefined"></span></span><br><span class="line"><span class="javascript">        <span class="comment">// 使用刚指定的配置项和数据显示图表。</span></span></span><br><span class="line"><span class="undefined">        myChart.setOption(option);</span></span><br><span class="line"><span class="undefined">    </span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<h2 id="option"><a href="#option" class="headerlink" title="option"></a>option</h2><p>想象小时候刚学条状图，一般会给班级的学生和成绩，然后在画出来。</p>
+<p>这样，一般的步骤就：</p>
+<ul>
+<li>先画个坐标系，横坐标纵坐标</li>
+<li>然后横坐标画刻度线，一个刻度一个学生的名字</li>
+<li>纵坐标也有刻度线，然后根据大家的成绩画出刻度线</li>
+<li>最后根据学生的成绩画柱子</li>
+</ul>
+<p>再看看echarts的option</p>
+<ul>
+<li>xAxis就是横坐标，里面的data就可以是学生名字，刻度默认会自动有</li>
+<li>yAxis就是纵坐标，注意里面的data，如果是数值，一般不用写，echarts已经计算好刻度了，超酷，如果不是可以再进行设置</li>
+<li>series可以画柱子，其是图的集合，里面可以画柱子图，折线图等等，这边设置<code>[{type:&#39;bar&#39;,data:[各学生的分数]]}]</code></li>
+</ul>
+<h3 id="延伸option"><a href="#延伸option" class="headerlink" title="延伸option"></a>延伸option</h3><ul>
+<li>图例就是左上角那个是legend，配合series里面的name使用</li>
+<li>鼠标hover每个柱子的提示框是tooltip</li>
+<li>series的<code>stack:&#39;总量&#39;</code>的时候，数据堆叠，同个类目轴上系列配置相同的stack值后，后一个系列的值会在前一个系列的值上相加。</li>
+<li>xAxis的<code>boundaryGap: false</code>坐标轴两边留白策略，类目轴和非类目轴的设置和表现不一样。刻度只是作为分隔线，标签和数据点都会在两个刻度之间的带(band)中间。</li>
+<li>鼠标放在柱子上或者点上会显示提示框，里面有数据，<code>tooltip:{trigger:&#39;axis&#39;}</code></li>
+<li>x轴上面的各个字段的控制是<code>label</code></li>
+<li>想要整体表格离容器有一定的边距，设置<code>grid</code>，这个控制就是表格占据的空间</li>
+<li>想要右上角出现工具栏，像导出图片，编辑数据，<code>toolbox</code></li>
+<li>折线图占据的空间样式，比如背景色，就是<code>areaStyle</code></li>
+<li>右边也是y周的时候，<code>yAxis</code>是数组且标记右边的位置，对应的series如果以右边的话，<code>yAxisIndex:1</code></li>
+<li>x轴太多数据，需要压缩图，就需要<code>dataZoom</code>，开始的视图显示<code>start end</code>，y视图自动变化<code>filterMode:filter</code>，一种滑块型，一种内置型</li>
+<li>series里面的data每一项可以是对象形式<code>{value:原本的值}</code>，这样可以有更多用处，比如和label的formatter配合使用</li>
+</ul>
+<h2 id="样式定义"><a href="#样式定义" class="headerlink" title="样式定义"></a>样式定义</h2><ul>
+<li>x轴的相关配置找<a href="https://www.echartsjs.com/option.html#xAxis" target="_blank" rel="noopener">官网的文档</a>，一般可能需要的刻度显示不一样啦，或者间距啦，一般默认x轴的都是名称之类的</li>
+<li>y轴的相关配置找<a href="https://www.echartsjs.com/option.html#yAxis" target="_blank" rel="noopener">官网的文档</a>，一般可能需要的刻度显示不一样啦，或者间距啦，一般简单的可以不写这个，因为y轴都是连续数据</li>
+<li>series的配置<a href="https://www.echartsjs.com/option.html#series" target="_blank" rel="noopener">官网的文档</a>，这里不同的图的配置去对应找不同的类型即可</li>
+</ul>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/js/" rel="tag"># js</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/05/05/vue-collapse/" rel="next" title="vue手风琴的练习">
+                <i class="fa fa-chevron-left"></i> vue手风琴的练习
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/05/13/down-export-excel/" rel="prev" title="前端下载文件以及上传图片预览，顺便了解arrayBuffer和blob">
+                前端下载文件以及上传图片预览，顺便了解arrayBuffer和blob <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+          
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2019/05/10/echarts-apply/" data-title="echarts的简单运用以及配置" data-url="http://yoursite.com/2019/05/10/echarts-apply/">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image" src="http://omizt4opc.bkt.clouddn.com/avatar.jpg" alt="John Doe">
+          <p class="site-author-name" itemprop="name">John Doe</p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+           
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">75</span>
+                <span class="site-state-item-name">posts</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              
+                <span class="site-state-item-count">21</span>
+                <span class="site-state-item-name">categories</span>
+              
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              
+                <span class="site-state-item-count">35</span>
+                <span class="site-state-item-name">tags</span>
+              
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#TL-DR"><span class="nav-number">1.</span> <span class="nav-text">TL;DR</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#下载"><span class="nav-number">2.</span> <span class="nav-text">下载</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#先简单demo"><span class="nav-number">3.</span> <span class="nav-text">先简单demo</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#option"><span class="nav-number">4.</span> <span class="nav-text">option</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#延伸option"><span class="nav-number">4.1.</span> <span class="nav-text">延伸option</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#样式定义"><span class="nav-number">5.</span> <span class="nav-text">样式定义</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">John Doe</span>
+</div>
+
+
+<div class="powered-by">
+  Powered by <a class="theme-link" href="https://hexo.io">Hexo</a>
+</div>
+
+<div class="theme-info">
+  Theme -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+    
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"frontzhm"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+    
+    <script src="/lib/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+    <script src="/js/src/hook-duoshuo.js"></script>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+</body>
+</html>

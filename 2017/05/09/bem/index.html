@@ -1,0 +1,778 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang>
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css">
+
+
+  <meta name="keywords" content="bem,">
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0">
+
+
+
+
+
+
+<meta name="description" content="TL;DR bem表示block、element、modifier。 块是独立的，可以随意挪动和嵌套。每个块有自己的html、css、js以及图片和文档">
+<meta name="keywords" content="bem">
+<meta property="og:type" content="article">
+<meta property="og:title" content="使用BEM">
+<meta property="og:url" content="http://yoursite.com/2017/05/09/bem/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="TL;DR bem表示block、element、modifier。 块是独立的，可以随意挪动和嵌套。每个块有自己的html、css、js以及图片和文档">
+<meta property="og:locale" content="default">
+<meta property="og:updated_time" content="2017-05-09T05:55:25.553Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="使用BEM">
+<meta name="twitter:description" content="TL;DR bem表示block、element、modifier。 块是独立的，可以随意挪动和嵌套。每个块有自己的html、css、js以及图片和文档">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    sidebar: {"position":"right","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2017/05/09/bem/">
+
+
+
+
+
+  <title> 使用BEM | Hexo </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="default">
+
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?60f2cb5747a596a24f2a053f1650c30b";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-right page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Hexo</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <h1 class="site-subtitle" itemprop="description"></h1>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            Tags
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/05/09/bem/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="John Doe">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="http://omizt4opc.bkt.clouddn.com/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hexo">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+            
+            
+              
+                使用BEM
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-05-09T13:55:25+08:00">
+                2017-05-09
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/css/" itemprop="url" rel="index">
+                    <span itemprop="name">css</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2017/05/09/bem/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2017/05/09/bem/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="TL-DR"><a href="#TL-DR" class="headerlink" title="TL;DR"></a>TL;DR</h2><ol>
+<li>bem表示block、element、modifier。</li>
+<li>块是独立的，可以随意挪动和嵌套。每个块有自己的html、css、js以及图片和文档<a id="more"></a></li>
+<li>元素是block的组成部分，不能脱离block的上下文。</li>
+<li>修饰符作为一个块或元素的一种属性，代表这个块或元素在外观或行为上的改变。</li>
+<li>用BEM树描述页面。</li>
+<li>常用的bem命名<code>.blockName__elementName-modifierName {  }</code></li>
+<li>用sass写bem命名<code>.blockName {&amp;__elementName{&amp;-modifierName{...}} }</code></li>
+<li>原子类可以和块配合使用，但不轻易用在元素上</li>
+<li>状态一般可以用通用类名如is-active，<code>.blockName.is-active{display:block}</code></li>
+</ol>
+<h2 id="BEM是什么"><a href="#BEM是什么" class="headerlink" title="BEM是什么"></a>BEM是什么</h2><p>BEM代表块（Block），元素（Element），修饰符（Modifier）。BEM和OOP是相似的。其是一种用代码和一系列模式来描述现实情况的方法，它只考虑程序实体而无所谓用什么语言<br>我们使用BEM的原则创建了一个前端开发技巧和工具的集合，这样我们就能快速构建一个网站，并且保证他们长久的可维护性。<br>一个块是一个独立的实体，就像应用的一块“积木”。任意放在任何的位置，也能嵌套在其他块里。<br>一个元素是他们应该属于块的一部分，具有某种功能。元素是依赖上下文的：它们只有处于块的上下文中时才有意义。</p>
+<h2 id="描述页面和模板的意义"><a href="#描述页面和模板的意义" class="headerlink" title="描述页面和模板的意义"></a>描述页面和模板的意义</h2><p>块和元素构成页面的内容。它们不仅仅是被呈现在一个页面上，它们的排列顺序也同样重要.<br>块（元素）彼此之间可能遵循着某种顺序。</p>
+<p>每个块和元素都应该有一个可以识别的关键字，也就是名字</p>
+<p>一个项目中块名是唯一的。块范围内的一种元素的名字也是唯一的。但可以多次出现。</p>
+<p>关键字应该按一定的顺序摆放，任何支持嵌套的数据格式（XML,JSON）都可以(b是block，e是element)：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">b:page</span><br><span class="line">	b:head</span><br><span class="line">		b:menu</span><br><span class="line">		e:column</span><br><span class="line">			b:logo</span><br><span class="line">		e:column</span><br><span class="line">			b:search</span><br><span class="line">				e:input</span><br><span class="line">				e:button search</span><br><span class="line">		e.column</span><br><span class="line">			b:auth</span><br></pre></td></tr></table></figure></p>
+<p>上面懒得用标签嵌套。类似jade。<br>这种结构叫BEM树（和DOM树相似）。</p>
+<p>通过把模板转换（使用XSL或是JavaScript）应用到BEM树上生成最终的浏览器标签。</p>
+<p>如果开发人员需要把一个块移动到页面的其他地方，他只需要改变一下BEM树就好了。模板会生成最终的视图。</p>
+<p>你可以使用任何格式来描述BEM树，也可以使用任何模板引擎。</p>
+<p>我们把JSON作为页面的描述格式。然后通过一个基于JS的模板引擎BEMHTML来把它转换为HTML。</p>
+<h2 id="为独立的css类命名"><a href="#为独立的css类命名" class="headerlink" title="为独立的css类命名"></a>为独立的css类命名</h2><p>块必须在css里名字也是唯一的。<br>块在css的类名字就是自己的关键字。<br>元素在css里面的类名是 块名+符号+元素名</p>
+<p>eg:<br>    blockName-elementName<br>    block-name-element-name</p>
+<h2 id="独立块模板"><a href="#独立块模板" class="headerlink" title="独立块模板"></a>独立块模板</h2><p>对于模板引擎来说，块的独立性意味着，块名对应唯一的html<br>当模板引擎在某个模板中遇到一个块的时候可以准确地把这个块转换成HTML。因此每个块都应该有自己的模板。</p>
+<h2 id="块修饰符"><a href="#块修饰符" class="headerlink" title="块修饰符"></a>块修饰符</h2><p>经常需要创建一个和已存在的块非常相似的块，只是外观或行为有些改变。这样引入修饰符（modifier）的概念。<br>修饰符作为一个块或元素的一种属性，代表这个块或元素在外观或行为上的改变。<br>一个修饰符有一个名字和一个值。多个修饰符可以同时使用。</p>
+<h2 id="从输入数据的角度看修饰符"><a href="#从输入数据的角度看修饰符" class="headerlink" title="从输入数据的角度看修饰符"></a>从输入数据的角度看修饰符</h2><p>在BEM树里，修饰符是用来描述一个块或者是一个元素实体的属性的。<br>eg:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">b:menu(m:size=&apos;big&apos; m:type=&apos;buttons&apos;)</span><br></pre></td></tr></table></figure></p>
+<h2 id="从html和css角度看修饰符"><a href="#从html和css角度看修饰符" class="headerlink" title="从html和css角度看修饰符"></a>从html和css角度看修饰符</h2><p>对于一个块或者是一个元素来说修饰符是一个附加的CSS类。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&lt;ul class=&quot;menu menu_size_big menu_type_buttons&quot;&gt; … &lt;/ul&gt;</span><br><span class="line"></span><br><span class="line">.menu_size_big &#123; // CSS code to specify height &#125; .menu_type_buttons .menu__item &#123; // CSS code to change item&apos;s look &#125;</span><br></pre></td></tr></table></figure></p>
+<p>我们用一个下划线来分隔块名（或元素名）和修饰符名，再用另一个下划线来分隔修饰符名和它对应的值。</p>
+<h2 id="元素修饰符"><a href="#元素修饰符" class="headerlink" title="元素修饰符"></a>元素修饰符</h2><p>类似块修饰符。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">b:menu</span><br><span class="line">	e:item Index</span><br><span class="line">	e:item(m:state=&apos;current&apos;) Product</span><br><span class="line">	e:item Contact</span><br></pre></td></tr></table></figure></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">.menu__item_state_current &#123; font-weight: bold; &#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&lt;ul class=&quot;menu&quot;&gt; </span><br><span class="line">	&lt;li class=&quot;menu__item&quot;&gt;Index&lt;/li&gt; </span><br><span class="line">	&lt;li class=&quot;menu__item menu__item_state_current&quot;&gt;Products&lt;/li&gt; </span><br><span class="line">	&lt;li class=&quot;menu__item&quot;&gt;Contact&lt;/li&gt; </span><br><span class="line">&lt;/ul&gt;</span><br></pre></td></tr></table></figure>
+<h2 id="主题抽象"><a href="#主题抽象" class="headerlink" title="主题抽象"></a>主题抽象</h2><p>保持命名一致。<br>从CSS角度开看：• 块和元素的CSS可以写成一种伪代码，然后根据命名约定编译成CSS。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">.menu &#123; </span><br><span class="line">	__layout &#123; display: inline; &#125; </span><br><span class="line">	__layout-item &#123; display: inline-block; … &#125; </span><br><span class="line">	__item &#123; </span><br><span class="line">		_state_current &#123; font-weight: bold; &#125; </span><br><span class="line">	&#125; </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>相应JavaScript：可以使用专门的辅助库来替代使用类名直接选择DOM元素:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$(&apos;menu__item&apos;).click( … ); $(&apos;menu__item&apos;).addClass(&apos;menu__item_state_current&apos;); $(&apos;menu&apos;).toggle(&apos;menu_size_big&apos;).toggle(&apos;menu_size_small&apos;);</span><br></pre></td></tr></table></figure></p>
+<p>块和元素的CSS类命名约定可能在一段时间内发生改变。如果命名约定改变了，只需要修改那些要访问块和元素，以及可能处理它们的修饰符的方法（function）。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">block(&apos;menu&apos;).elem(&apos;item&apos;).click( … ); block(&apos;menu&apos;).elem(&apos;item&apos;).setMod(&apos;state&apos;, &apos;current&apos;); block(&apos;menu&apos;).toggleMod(&apos;size&apos;, &apos;big&apos;, &apos;small&apos;);</span><br></pre></td></tr></table></figure>
+<h2 id="BEM的命名"><a href="#BEM的命名" class="headerlink" title="BEM的命名"></a>BEM的命名</h2><p>一个块有其html css js甚至图片和文档。<br>BEM的命名规矩大概就是分清b/e/m,我们只需保留BEM的思想，其命名规范可以任意变通。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">.block-name__element-name--modifier-name&#123;/*...*/&#125;</span><br><span class="line">.blockName-elementName--modifierName &#123; /* ... */ &#125;</span><br><span class="line">.blockName__elementName-modifierName &#123; /* ... */ &#125;</span><br></pre></td></tr></table></figure></p>
+<p>对于命名过长的问题，服务器端有gzip且编辑器一般会提示。</p>
+<h3 id="控制状态"><a href="#控制状态" class="headerlink" title="控制状态"></a>控制状态</h3><p>我们应该统一js控制状态的类名格式，比如is-active、js-active等等，这些类名只用作标识，不予许有默认的公共样式：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">.block__element &#123;</span><br><span class="line">    display: none;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">.block__element.is-active &#123;</span><br><span class="line">    display: block;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h2 id="原子类和BEM"><a href="#原子类和BEM" class="headerlink" title="原子类和BEM"></a>原子类和BEM</h2><p>在组件开发中其实不推荐使用原子类。<br>原子类更适合应用在实际页面中，这是因为页面变动大而且不可复用。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&lt;div class=&quot;header clearfix&quot;&gt;</span><br><span class="line">    &lt;div class=&quot;logo pull-left&quot;&gt;&lt;!-- ... --&gt;&lt;/div&gt;</span><br><span class="line">    &lt;div class=&quot;user-panel pull-left&quot;&gt;&lt;!-- ... --&gt;&lt;/div&gt;</span><br><span class="line">&lt;/div&gt;</span><br></pre></td></tr></table></figure>
+<p>header可以封装成一个模块，但它复用程度不高，不能算是组件，所以即使使用原子类也没有关系。在项目中，使用原子类之前应该考虑一下，这个场景是否变动大而且不可复用，如果是的话，我们可以放心的使用原子类。</p>
+<p>组件应该是“自洽的”，其本身就应该构成了一个“生态圈”，也就是说，他几乎不需要外部供给，自给自足就能够运转下去。</p>
+<h2 id="实际页面也可以使用BEM命名"><a href="#实际页面也可以使用BEM命名" class="headerlink" title="实际页面也可以使用BEM命名"></a>实际页面也可以使用BEM命名</h2><p>一般来说，实际页面中只是对组件进行调用，对组件的位置进行调整，但不会对组件内部细节进行修改。但实际情况下，同一个组件在不同页面不同模样的情况也是有的，所以会出现在实际页面中对组件样式进行微调的代码：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">/* 联系页面对分页按钮进行微调 */</span><br><span class="line">.page-contact .page-btn &#123;&#125;</span><br></pre></td></tr></table></figure></p>
+<p>但更推荐的做法是给分页组件添加一个修饰器，将上面的样式放到修饰器名下，再根据实际情况运用到页面中。</p>
+<h2 id="在sass中写bem用-amp"><a href="#在sass中写bem用-amp" class="headerlink" title="在sass中写bem用&amp;"></a>在sass中写bem用&amp;</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">.blockName&#123;</span><br><span class="line">	&amp;-elementName&#123;</span><br><span class="line">		color:#000;</span><br><span class="line">		&amp;--stateName&#123;</span><br><span class="line">			color:#fff;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>编译之后<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">.blockName-elementName &#123;</span><br><span class="line">  color: #000;</span><br><span class="line">&#125;</span><br><span class="line">.blockName-elementName--stateName &#123;</span><br><span class="line">  color: #fff;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<blockquote>
+<p><a href="http://www.w3cplus.com/css/bem-definitions.html" target="_blank" rel="noopener">http://www.w3cplus.com/css/bem-definitions.html</a><br><a href="http://blog.lxjwlt.com/front-end/2015/10/08/why-bem.html" target="_blank" rel="noopener">http://blog.lxjwlt.com/front-end/2015/10/08/why-bem.html</a><br><a href="http://www.w3cplus.com/preprocessor/getting-sass-y-with-bem.html" target="_blank" rel="noopener">http://www.w3cplus.com/preprocessor/getting-sass-y-with-bem.html</a><br><a href="https://github.com/chris-pearce/css-guidelines#state-hooks" target="_blank" rel="noopener">https://github.com/chris-pearce/css-guidelines#state-hooks</a></p>
+</blockquote>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/bem/" rel="tag"># bem</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/05/09/js_basic_exam1/" rel="next" title="es基础知识">
+                <i class="fa fa-chevron-left"></i> es基础知识
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/05/12/noUseIf/" rel="prev" title="重构条件语句(不用else和switch)">
+                重构条件语句(不用else和switch) <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+          
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2017/05/09/bem/" data-title="使用BEM" data-url="http://yoursite.com/2017/05/09/bem/">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image" src="http://omizt4opc.bkt.clouddn.com/avatar.jpg" alt="John Doe">
+          <p class="site-author-name" itemprop="name">John Doe</p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+           
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">75</span>
+                <span class="site-state-item-name">posts</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              
+                <span class="site-state-item-count">21</span>
+                <span class="site-state-item-name">categories</span>
+              
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              
+                <span class="site-state-item-count">35</span>
+                <span class="site-state-item-name">tags</span>
+              
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#TL-DR"><span class="nav-number">1.</span> <span class="nav-text">TL;DR</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#BEM是什么"><span class="nav-number">2.</span> <span class="nav-text">BEM是什么</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#描述页面和模板的意义"><span class="nav-number">3.</span> <span class="nav-text">描述页面和模板的意义</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#为独立的css类命名"><span class="nav-number">4.</span> <span class="nav-text">为独立的css类命名</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#独立块模板"><span class="nav-number">5.</span> <span class="nav-text">独立块模板</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#块修饰符"><span class="nav-number">6.</span> <span class="nav-text">块修饰符</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#从输入数据的角度看修饰符"><span class="nav-number">7.</span> <span class="nav-text">从输入数据的角度看修饰符</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#从html和css角度看修饰符"><span class="nav-number">8.</span> <span class="nav-text">从html和css角度看修饰符</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#元素修饰符"><span class="nav-number">9.</span> <span class="nav-text">元素修饰符</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#主题抽象"><span class="nav-number">10.</span> <span class="nav-text">主题抽象</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#BEM的命名"><span class="nav-number">11.</span> <span class="nav-text">BEM的命名</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#控制状态"><span class="nav-number">11.1.</span> <span class="nav-text">控制状态</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#原子类和BEM"><span class="nav-number">12.</span> <span class="nav-text">原子类和BEM</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#实际页面也可以使用BEM命名"><span class="nav-number">13.</span> <span class="nav-text">实际页面也可以使用BEM命名</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#在sass中写bem用-amp"><span class="nav-number">14.</span> <span class="nav-text">在sass中写bem用&amp;</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">John Doe</span>
+</div>
+
+
+<div class="powered-by">
+  Powered by <a class="theme-link" href="https://hexo.io">Hexo</a>
+</div>
+
+<div class="theme-info">
+  Theme -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+    
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"frontzhm"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+    
+    <script src="/lib/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+    <script src="/js/src/hook-duoshuo.js"></script>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+</body>
+</html>

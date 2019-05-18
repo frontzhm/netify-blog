@@ -1,0 +1,794 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang>
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css">
+
+
+  <meta name="keywords" content="vue,">
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0">
+
+
+
+
+
+
+<meta name="description" content="TL;DR vm的实例方法el,options,nextTick,watch,mount vue的指令，once,html,if,for,model,bind,on，留意for的key和model的语法糖 model与select,radio,checkbox，select的首项可以用disabled，默认选中都是value值，复选框单个布尔，多个数组 复选框全选的功能，事件监听的正常版和comp">
+<meta name="keywords" content="vue">
+<meta property="og:type" content="article">
+<meta property="og:title" content="简单总结vm的方法、指令以及复选框全选的实现">
+<meta property="og:url" content="http://yoursite.com/2019/04/28/vue-$-directives-checkbox-all/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="TL;DR vm的实例方法el,options,nextTick,watch,mount vue的指令，once,html,if,for,model,bind,on，留意for的key和model的语法糖 model与select,radio,checkbox，select的首项可以用disabled，默认选中都是value值，复选框单个布尔，多个数组 复选框全选的功能，事件监听的正常版和comp">
+<meta property="og:locale" content="default">
+<meta property="og:updated_time" content="2019-04-28T08:22:19.376Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="简单总结vm的方法、指令以及复选框全选的实现">
+<meta name="twitter:description" content="TL;DR vm的实例方法el,options,nextTick,watch,mount vue的指令，once,html,if,for,model,bind,on，留意for的key和model的语法糖 model与select,radio,checkbox，select的首项可以用disabled，默认选中都是value值，复选框单个布尔，多个数组 复选框全选的功能，事件监听的正常版和comp">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    sidebar: {"position":"right","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2019/04/28/vue-$-directives-checkbox-all/">
+
+
+
+
+
+  <title> 简单总结vm的方法、指令以及复选框全选的实现 | Hexo </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="default">
+
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?60f2cb5747a596a24f2a053f1650c30b";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-right page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Hexo</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <h1 class="site-subtitle" itemprop="description"></h1>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            Tags
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/04/28/vue-$-directives-checkbox-all/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="John Doe">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="http://omizt4opc.bkt.clouddn.com/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hexo">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+            
+            
+              
+                简单总结vm的方法、指令以及复选框全选的实现
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-04-28T16:05:53+08:00">
+                2019-04-28
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/vue/" itemprop="url" rel="index">
+                    <span itemprop="name">vue</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2019/04/28/vue-$-directives-checkbox-all/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2019/04/28/vue-$-directives-checkbox-all/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="TL-DR"><a href="#TL-DR" class="headerlink" title="TL;DR"></a>TL;DR</h2><ul>
+<li>vm的实例方法<code>el,options,nextTick,watch,mount</code></li>
+<li>vue的指令，<code>once,html,if,for,model,bind,on</code>，留意for的key和model的语法糖</li>
+<li>model与<code>select,radio,checkbox</code>，select的首项可以用disabled，默认选中都是value值，复选框单个布尔，多个数组</li>
+<li>复选框全选的功能，事件监听的正常版和computed的优雅升级版</li>
+<li><p>没什么特别干货的，半小手册，自己查阅</p>
+<a id="more"></a>
+<h2 id="vm实例上的方法"><a href="#vm实例上的方法" class="headerlink" title="vm实例上的方法"></a>vm实例上的方法</h2></li>
+<li><p>vm.$el -&gt; 挂载的元素（改变data的某属性之后，并不会显示正常的innerHTML，数据变化后更新视图操作是异步执行的，所以这里的innerHTML并没有实时更新。因为不停的修改属性值耗费性能，vue把数据更新写到虚拟dom上的操作延迟执行，做个队列，这样只看最后一次的值。）</p>
+</li>
+<li>vm.$options -&gt; 当前vue实例传的参数</li>
+<li>vm.$nextTick -&gt; 下一个队列里。当改变data的属性值之后，想要在虚拟dom上获得新的属性值，就是通过这个。</li>
+<li>vm.$watch -&gt; 视图更新的时候触发这个方法，所以如果连续改属性，只会触发一次。</li>
+<li>vm.$mount(‘#app’)等同于<code>{el:&#39;#app&#39;}</code>单元测试的时候，这样比较方便。</li>
+</ul>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">"app"</span>&gt;</span>&#123;&#123;msg&#125;&#125;&#123;&#123;arr&#125;&#125;<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"><span class="comment">&lt;!-- mkdir vue-demo;npm init -y;npm i vue;touch demo.html --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">src</span>=<span class="string">"node_modules/vue/dist/vue.js"</span>&gt;</span><span class="undefined"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span>&gt;</span><span class="undefined"></span></span><br><span class="line"><span class="javascript"><span class="keyword">let</span> vm = <span class="keyword">new</span> Vue(&#123;</span></span><br><span class="line"><span class="javascript">    el:<span class="string">'#app'</span>,</span></span><br><span class="line"><span class="javascript">    data:&#123;<span class="attr">msg</span>:<span class="string">'msg'</span>&#125;</span></span><br><span class="line"><span class="undefined">&#125;)</span></span><br><span class="line"><span class="javascript">vm.msg = <span class="string">'msg'</span></span></span><br><span class="line"><span class="undefined"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 明显输出就会慢于下面的那句 初始的</span></span><br><span class="line">vm.$nextTick(<span class="function"><span class="params">()</span>=&gt;</span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">'nextTick'</span>,vm.$el.innerHTML)</span><br><span class="line">&#125;)</span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">'初始的'</span>,vm.$el.innerHTML)</span><br><span class="line"><span class="comment">// 视图更新的时候触发这个方法，所以如果连续改属性，只会触发一次。</span></span><br><span class="line">vm.$watch(<span class="string">'msg'</span>,<span class="function"><span class="keyword">function</span>(<span class="params">newValue,oldValue</span>)</span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">'watch'</span>)</span><br><span class="line">    <span class="built_in">console</span>.log(newValue,oldValue)</span><br><span class="line">&#125;)</span><br><span class="line"><span class="comment">// 控制台输入下面这句</span></span><br><span class="line"><span class="comment">// vm.msg = '新的msg';vm.msg = '更新的msg';console.log('控制台',vm.$el.innerHTML)</span></span><br></pre></td></tr></table></figure>
+<h2 id="mutache"><a href="#mutache" class="headerlink" title="mutache"></a>mutache</h2><!-- 不能双大括号里面为空 -->
+<p>取值表达式<code></code>：里面可以直接进行 <code>取值，运算，三元</code></p>
+<ul>
+<li><code></code>等同<code></code></li>
+<li>如果输出一个对象的话 <code>[object Object]</code>，注意前后的空格</li>
+<li><code>msghi</code></li>
+</ul>
+<h2 id="vue中的指令"><a href="#vue中的指令" class="headerlink" title="vue中的指令"></a>vue中的指令</h2><p>vue中指令是带有<code>v-</code>前缀的特殊特性，主要功能就是操作DOM。<br>常用的指令：</p>
+<ul>
+<li>v-once   当前数据只渲染一次。渲染静态数据很有用处。数据变了，视图不会更新。<code>&lt;div v-once&gt;&lt;/div&gt;</code>当<code>vm.msg</code> 变化的时候，这里的值是不变的。因为内部就进行缓存，以后使用的都是缓存里的结果</li>
+<li>v-html 插入html文本，<code>&lt;div v-html=&quot;msg&quot;&gt;&lt;/div&gt;</code>。内部使用的是innerHTML。有一定的安全隐患，XSS攻击。不能直接将用户输入的内容展现出来，内容<code>必须</code>是可信任的。比如在input框里双向绑定，输入<code>&lt;img src=&quot;&quot; onerror=&quot;alert(0)&quot;&gt;</code></li>
+<li>v-if/v-else 如果不成立，dom会消失，控制dom有没有</li>
+<li>v-show 控制的样式是none，这两可以和<code>template</code>适时合作</li>
+<li>v-for 控制循环，<code>数组、对象、数字</code>都行，重点的key，key尽量不用<code>index</code>，因为列表重新排序的话，index从上到下还是0，1，2，但是其他属性都会变化了，这样必须要重新渲染。如果是id的话，重新排序之后不一定是0，1，2了，这样排序的时候移动节点就可以了。这么理解吧，如果key是index的话，只是移动节点是不够的，因为移动节点之后，索引就跟着跑了，但是索引从上之下又必须是0，1，2，3，这样必须重新操作节点。</li>
+<li>v-model。v-model其实是<code>:value=&quot;msg&quot; v-on:input</code>的语法糖。说起来，顺便叨叨一句，方法不写在data里，因为this指向window，所以写在methods里。methods里用箭头函数要考虑this。常用的<code>select,radio,checkbox,textarea</code></li>
+<li>v-bind 属性绑定。还常用来控制样式，三种方式<code>:class=&quot;[&#39;a&#39;,&#39;b&#39;]&quot; :class=&quot;{b:true}&quot; :style=&quot;[{background:&#39;blue&#39;,color:&#39;red&#39;}]&quot;</code></li>
+<li>v-on 事件绑定，<code>@click=fn($event,other)</code></li>
+</ul>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!-- data那边加个&#123;flag:true,fruits:['apple','banana'] &#125;--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">v-once</span>&gt;</span>&#123;&#123;msg&#125;&#125;<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">v-if</span>=<span class="string">"flag"</span>&gt;</span> true <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">v-if</span>=<span class="string">"flag"</span>&gt;</span> true <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"><span class="comment">&lt;!-- 改进为 下面 但是 div就多一层 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">v-if</span>=<span class="string">"flag"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">div</span>&gt;</span> true <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">div</span>&gt;</span> true <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"><span class="comment">&lt;!--  改成template template不是标签 不会渲染 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">template</span> <span class="attr">v-if</span>=<span class="string">"flag"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">template</span>&gt;</span> true <span class="tag">&lt;/<span class="name">te</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">div</span>&gt;</span> true <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">template</span>&gt;</span></span><br><span class="line"><span class="comment">&lt;!-- v-else --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">v-else</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">span</span>&gt;</span>else<span class="tag">&lt;/<span class="name">span</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">v-for</span>=<span class="string">"fruit in fruits"</span>&gt;</span>&#123;&#123;fruit&#125;&#125;<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">v-for</span>=<span class="string">"(fruit,index) in fruits"</span> <span class="attr">:a</span>=<span class="string">"index"</span> <span class="attr">:key</span>=<span class="string">"index"</span>&gt;</span>&#123;&#123;fruit&#125;&#125;&#123;&#123;index&#125;&#125;<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"><span class="comment">&lt;!-- v-model --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"text"</span> <span class="attr">:value</span>=<span class="string">"msg"</span> <span class="attr">v-on:input</span>=<span class="string">"fn($event,1)"</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"text"</span> <span class="attr">v-model</span>=<span class="string">"msg"</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">&lt;!-- class="abc b" --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"abc"</span> <span class="attr">:class</span>=<span class="string">"&#123;b:true&#125;"</span> &gt;</span></span><br><span class="line">hh</span><br><span class="line"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"><span class="comment">&lt;!-- class="abc a b d"  在data那边增加c:'d'--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"abc"</span> <span class="attr">:class</span>=<span class="string">"['a','b',c]"</span> &gt;</span></span><br><span class="line">hh</span><br><span class="line"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"><span class="comment">&lt;!-- style多个的时候数组对象都行，数组的话经常和data里的配合使用，data里添加color:&#123;color:'red'&#125; --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">style</span>=<span class="string">"color:red;"</span> <span class="attr">:style</span>=<span class="string">"[&#123;background:'blue'&#125;,color]"</span>&gt;</span></span><br><span class="line">  ss</span><br><span class="line"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<h2 id="细说v-model"><a href="#细说v-model" class="headerlink" title="细说v-model"></a>细说v-model</h2><p>上面也说到，v-model其实是<code>:value=&quot;msg&quot; v-on:input</code>的语法糖。</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!-- v-model input输入框来一波玩耍  --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"text"</span> <span class="attr">:value</span>=<span class="string">"msg"</span> <span class="attr">v-on:input</span>=<span class="string">"fn($event,1)"</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"text"</span> <span class="attr">v-model</span>=<span class="string">"msg"</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 别忘了逗号</span></span><br><span class="line">methods:&#123;</span><br><span class="line">  <span class="comment">// 当参数多的时候，可以传，这边是示例，无意义</span></span><br><span class="line">  fn(e,other)&#123;</span><br><span class="line">    vm.msg = e.target.value</span><br><span class="line">    <span class="built_in">console</span>.log(other)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="select与v-model"><a href="#select与v-model" class="headerlink" title="select与v-model"></a>select与v-model</h3><p>select的时候，option分两拨，一拨是请选择，一拨是循环列表。<br>如果有默认选中的，selectvalue可以等于选中的option的value的值<br>select的绑定的是，选中的option的value的值。如果没有就算选中的option的innerHTML。</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">   <span class="comment">&lt;!--  </span></span><br><span class="line"><span class="comment">        data: &#123;</span></span><br><span class="line"><span class="comment">          // 存放数据</span></span><br><span class="line"><span class="comment">          msg: "hello",flag:true,fruits:['apple','banana'] ,</span></span><br><span class="line"><span class="comment">          selectvalue:'c2',</span></span><br><span class="line"><span class="comment">          lists:[&#123;value:'c1',id:1,cnt:'菜1'&#125;,&#123;value:'c2',id:2,cnt:'菜2'&#125;]</span></span><br><span class="line"><span class="comment">        &#125;,</span></span><br><span class="line"><span class="comment">     --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">select</span> <span class="attr">name</span>=<span class="string">""</span> <span class="attr">id</span>=<span class="string">""</span> <span class="attr">v-model</span>=<span class="string">"selectvalue"</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">option</span>  <span class="attr">disabled</span>&gt;</span> 请选择<span class="tag">&lt;/<span class="name">option</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">option</span>  <span class="attr">v-for</span>=<span class="string">"(list,key) in lists"</span> <span class="attr">:value</span>=<span class="string">"list.value"</span> <span class="attr">:key</span>=<span class="string">"id"</span>&gt;</span>&#123;&#123;list.cnt&#125;&#125;<span class="tag">&lt;/<span class="name">option</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">select</span>&gt;</span>&#123;&#123;selectvalue&#125;&#125;</span><br><span class="line"><span class="comment">&lt;!-- 控制台来一个 vm.selectvalue = '请选择' --&gt;</span></span><br></pre></td></tr></table></figure>
+<h3 id="radio和v-model"><a href="#radio和v-model" class="headerlink" title="radio和v-model"></a>radio和v-model</h3><p>radio可以根据v-model来进行分组，v-model的值是某个radio的值，就是默认的选中项。</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!-- data添加radioValue:'male', --&gt;</span></span><br><span class="line"><span class="comment">&lt;!-- radio可以根据v-model来进行分组，更准确的说，同一组的v-model绑定的值是一样的 --&gt;</span></span><br><span class="line">    男<span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"radio"</span> <span class="attr">v-model</span>=<span class="string">"radioValue"</span> <span class="attr">name</span>=<span class="string">"gender"</span> <span class="attr">value</span>=<span class="string">"male"</span> <span class="attr">id</span>=<span class="string">""</span>&gt;</span></span><br><span class="line">    女<span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"radio"</span> <span class="attr">v-model</span>=<span class="string">"radioValue"</span> <span class="attr">name</span>=<span class="string">"gender"</span> <span class="attr">value</span>=<span class="string">"female"</span> <span class="attr">id</span>=<span class="string">""</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">div</span>&gt;</span></span><br><span class="line">      &#123;&#123;radioValue&#125;&#125;</span><br><span class="line">    <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">    <span class="comment">&lt;!-- 点击看看 --&gt;</span></span><br></pre></td></tr></table></figure>
+<h3 id="checkbox和v-model"><a href="#checkbox和v-model" class="headerlink" title="checkbox和v-model"></a>checkbox和v-model</h3><p>checkbox情况比较复杂点。<br>单个复选框的话：选中的话checkboxValue的值是true否则false，也就是普通的布尔值，适用于同意协议之类的。<br>多个复选框的话，checkboxValues必须是个数组，如果还是布尔值的话，true就是所以都选中，false是都不选中，不是本意。数组里面是选中的checkbox的value。</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"> <span class="comment">&lt;!-- </span></span><br><span class="line"><span class="comment">      checkboxValue:true,</span></span><br><span class="line"><span class="comment">      checkboxValues:[],</span></span><br><span class="line"><span class="comment">  --&gt;</span></span><br><span class="line"> 单个<span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"checkbox"</span> <span class="attr">v-model</span>=<span class="string">"checkboxValue"</span> <span class="attr">name</span>=<span class="string">""</span> <span class="attr">value</span>=<span class="string">"singel"</span> <span class="attr">id</span>=<span class="string">""</span>&gt;</span></span><br><span class="line"> <span class="tag">&lt;<span class="name">div</span>&gt;</span>&#123;&#123;checkboxValue&#125;&#125;<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"></span><br><span class="line"> <span class="comment">&lt;!-- 爱好 --&gt;</span></span><br><span class="line">    游泳<span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"checkbox"</span> <span class="attr">v-model</span>=<span class="string">"checkboxValues"</span> <span class="attr">name</span>=<span class="string">""</span> <span class="attr">value</span>=<span class="string">"swim"</span> <span class="attr">id</span>=<span class="string">""</span>&gt;</span></span><br><span class="line">    健身<span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"checkbox"</span> <span class="attr">v-model</span>=<span class="string">"checkboxValues"</span> <span class="attr">name</span>=<span class="string">""</span> <span class="attr">value</span>=<span class="string">"run"</span> <span class="attr">id</span>=<span class="string">""</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">div</span>&gt;</span></span><br><span class="line">  &#123;&#123;checkboxValues&#125;&#125;</span><br><span class="line"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<h3 id="修饰符"><a href="#修饰符" class="headerlink" title="修饰符"></a>修饰符</h3><p>修饰符 <code>.number .trim</code>，默认在input里输入的都是字符串类型，需要number类型的需要加修饰符， <code>v-model.number = &quot;&quot;</code>，还有需要去掉前后空格的，<code>v-model.trim = &quot;&quot;</code></p>
+<p>键盘修饰符也常用，希望按下某个特定的键触发事件,必须同时多个按键的话用点连接即可，<code>v-on:keyup.enter=&quot;fn()&quot;</code>，也可以使用键盘码。配置一个键盘code别名<code>Vue.config.keyCodes={&#39;f1&#39;:112}</code><br>`</p>
+<h3 id="练习复选框全选"><a href="#练习复选框全选" class="headerlink" title="练习复选框全选"></a>练习复选框全选</h3><p>上面基本看看<a href="https://cn.vuejs.org/v2/guide/forms.html" target="_blank" rel="noopener">官方文档</a>，没啥大难度。练习个小例子，全选中的需求，很多个复选框，其中有个全选中的复选框</p>
+<ul>
+<li>全选中的复选框点✅，所有项都选中，把✅点掉都不选中了。</li>
+<li>如果所有项的都选中了，全选中的也会自动变成✅。</li>
+<li>如果在点击全选中之后，如果将某项去掉勾选，则全选中也会自动去掉✅</li>
+</ul>
+<p>搭建例子。</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!-- data添加checkboxAll:false --&gt;</span></span><br><span class="line">游泳<span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"checkbox"</span> <span class="attr">v-model</span>=<span class="string">"checkboxValues"</span> <span class="attr">name</span>=<span class="string">""</span> <span class="attr">value</span>=<span class="string">"swim"</span> <span class="attr">id</span>=<span class="string">""</span>&gt;</span></span><br><span class="line">健身<span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"checkbox"</span> <span class="attr">v-model</span>=<span class="string">"checkboxValues"</span> <span class="attr">name</span>=<span class="string">""</span> <span class="attr">value</span>=<span class="string">"run"</span> <span class="attr">id</span>=<span class="string">""</span>&gt;</span></span><br><span class="line">全选<span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"checkbox"</span> <span class="attr">v-model</span>=<span class="string">"checkboxAll"</span> <span class="attr">name</span>=<span class="string">""</span> <span class="attr">id</span>=<span class="string">""</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>好，接下来就是实现！</p>
+<h4 id="全选的1-0版本"><a href="#全选的1-0版本" class="headerlink" title="全选的1.0版本"></a>全选的1.0版本</h4><p>其实思路，针对需求，第一条就是给全选中这个绑定change事件，判断checkboxAll值控制checkboxValues。其他两条就是给所有项绑定change事件，判断checkboxValues值控制checkboxAll。于是</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!-- 爱好 --&gt;</span></span><br><span class="line">游泳<span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"checkbox"</span> <span class="attr">v-model</span>=<span class="string">"checkboxValues"</span> <span class="attr">name</span>=<span class="string">""</span> <span class="attr">value</span>=<span class="string">"swim"</span> <span class="attr">id</span>=<span class="string">""</span> @<span class="attr">change</span>=<span class="string">"checkSingleFn($event)"</span>&gt;</span></span><br><span class="line">健身<span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"checkbox"</span> <span class="attr">v-model</span>=<span class="string">"checkboxValues"</span> <span class="attr">name</span>=<span class="string">""</span> <span class="attr">value</span>=<span class="string">"run"</span> <span class="attr">id</span>=<span class="string">""</span> @<span class="attr">change</span>=<span class="string">"checkSingleFn($event)"</span>&gt;</span></span><br><span class="line">全选<span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"checkbox"</span> <span class="attr">v-model</span>=<span class="string">"checkboxAll"</span> <span class="attr">name</span>=<span class="string">""</span> <span class="attr">id</span>=<span class="string">""</span> @<span class="attr">change</span>=<span class="string">"checkAllFn($event)"</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// methods那边加</span></span><br><span class="line">checkAllFn(e)&#123;</span><br><span class="line">  <span class="keyword">this</span>.checkboxAll ? (<span class="keyword">this</span>.checkboxValues = [<span class="string">'swim'</span>,<span class="string">'run'</span>]):(<span class="keyword">this</span>.checkboxValues = [])</span><br><span class="line">&#125;,</span><br><span class="line">checkSingleFn(e)&#123;</span><br><span class="line">  <span class="comment">// 这里因为选中的顺序不一样，可能是['run','swim']，所以需要琢个判断是不是在选中的列表里</span></span><br><span class="line">  <span class="keyword">this</span>.checkboxAll = [<span class="string">'swim'</span>,<span class="string">'run'</span>].every(<span class="function"><span class="params">item</span>=&gt;</span><span class="keyword">this</span>.checkboxValues.includes(item))</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>但是每项都绑定事件感觉很麻烦呐，虽然一般这种都是写在循环里，但还是有点麻烦，有没有更优雅的实现！？</p>
+<h4 id="全选的2-0版本"><a href="#全选的2-0版本" class="headerlink" title="全选的2.0版本"></a>全选的2.0版本</h4><p>其实再仔细分析。可以这样想，checkAll始终和checkValues相关。当checkValues变化的时候，checkAll变化，而当checkValues变化的时候，checkValues也会变化，但是这里更重要的主体其实是checkValues，于是，想想vue里有这种能力的，还有一个人，computed。通常的使用方法就是平时使用的样子，还有种类似于get和set的方法，在这种时候，就可以拿出来晒晒了。</p>
+<p>于是</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!-- 我是懒惰的分界线 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">br</span>&gt;</span></span><br><span class="line">游泳<span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"checkbox"</span> <span class="attr">v-model</span>=<span class="string">"checkboxValues_c"</span> <span class="attr">name</span>=<span class="string">""</span> <span class="attr">value</span>=<span class="string">"swim"</span> <span class="attr">id</span>=<span class="string">""</span>&gt;</span></span><br><span class="line">健身<span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"checkbox"</span> <span class="attr">v-model</span>=<span class="string">"checkboxValues_c"</span> <span class="attr">name</span>=<span class="string">""</span> <span class="attr">value</span>=<span class="string">"run"</span> <span class="attr">id</span>=<span class="string">""</span>&gt;</span></span><br><span class="line">全选<span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"checkbox"</span> <span class="attr">v-model</span>=<span class="string">"checkboxAll_c"</span> <span class="attr">name</span>=<span class="string">""</span> <span class="attr">id</span>=<span class="string">""</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// data 那边增加checkboxValues_c:[]</span></span><br><span class="line">computed:&#123;</span><br><span class="line">  checkboxAll_c:&#123;</span><br><span class="line">    <span class="keyword">get</span>()&#123;</span><br><span class="line">      <span class="comment">// 所有项都选中的时候，也就是在选中列表的时候，为选中状态</span></span><br><span class="line">      <span class="keyword">return</span> [<span class="string">'swim'</span>,<span class="string">'run'</span>].every(<span class="function"><span class="params">item</span>=&gt;</span><span class="keyword">this</span>.checkboxValues_c.includes(item))</span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="comment">// 全选项变化的时候</span></span><br><span class="line">    <span class="keyword">set</span>(newValue)&#123;</span><br><span class="line">      newValue? (<span class="keyword">this</span>.checkboxValues_c = [<span class="string">'swim'</span>,<span class="string">'run'</span>]):(<span class="keyword">this</span>.checkboxValues_c = [])</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>搞定，不需要监听事件~</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/vue/" rel="tag"># vue</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/04/28/vue-data-arr/" rel="next" title="vue的数据劫持以及操作数组的坑">
+                <i class="fa fa-chevron-left"></i> vue的数据劫持以及操作数组的坑
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/04/28/vue-computed/" rel="prev" title="computed的get和set用法">
+                computed的get和set用法 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+          
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2019/04/28/vue-$-directives-checkbox-all/" data-title="简单总结vm的方法、指令以及复选框全选的实现" data-url="http://yoursite.com/2019/04/28/vue-$-directives-checkbox-all/">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image" src="http://omizt4opc.bkt.clouddn.com/avatar.jpg" alt="John Doe">
+          <p class="site-author-name" itemprop="name">John Doe</p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+           
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">75</span>
+                <span class="site-state-item-name">posts</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              
+                <span class="site-state-item-count">21</span>
+                <span class="site-state-item-name">categories</span>
+              
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              
+                <span class="site-state-item-count">35</span>
+                <span class="site-state-item-name">tags</span>
+              
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#TL-DR"><span class="nav-number">1.</span> <span class="nav-text">TL;DR</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#vm实例上的方法"><span class="nav-number">2.</span> <span class="nav-text">vm实例上的方法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#mutache"><span class="nav-number">3.</span> <span class="nav-text">mutache</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#vue中的指令"><span class="nav-number">4.</span> <span class="nav-text">vue中的指令</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#细说v-model"><span class="nav-number">5.</span> <span class="nav-text">细说v-model</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#select与v-model"><span class="nav-number">5.1.</span> <span class="nav-text">select与v-model</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#radio和v-model"><span class="nav-number">5.2.</span> <span class="nav-text">radio和v-model</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#checkbox和v-model"><span class="nav-number">5.3.</span> <span class="nav-text">checkbox和v-model</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#修饰符"><span class="nav-number">5.4.</span> <span class="nav-text">修饰符</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#练习复选框全选"><span class="nav-number">5.5.</span> <span class="nav-text">练习复选框全选</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#全选的1-0版本"><span class="nav-number">5.5.1.</span> <span class="nav-text">全选的1.0版本</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#全选的2-0版本"><span class="nav-number">5.5.2.</span> <span class="nav-text">全选的2.0版本</span></a></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">John Doe</span>
+</div>
+
+
+<div class="powered-by">
+  Powered by <a class="theme-link" href="https://hexo.io">Hexo</a>
+</div>
+
+<div class="theme-info">
+  Theme -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+    
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"frontzhm"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+    
+    <script src="/lib/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+    <script src="/js/src/hook-duoshuo.js"></script>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+</body>
+</html>

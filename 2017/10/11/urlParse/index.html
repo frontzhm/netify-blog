@@ -1,0 +1,772 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang>
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css">
+
+
+  <meta name="keywords" content="node,">
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0">
+
+
+
+
+
+
+<meta name="description" content="TL;DR url = origin + pathname + search + hash js中解析url主要利用a标签，常用的是query node有url模块 querystring模块">
+<meta name="keywords" content="node">
+<meta property="og:type" content="article">
+<meta property="og:title" content="url解析">
+<meta property="og:url" content="http://yoursite.com/2017/10/11/urlParse/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="TL;DR url = origin + pathname + search + hash js中解析url主要利用a标签，常用的是query node有url模块 querystring模块">
+<meta property="og:locale" content="default">
+<meta property="og:image" content="data:image/png;base64,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">
+<meta property="og:updated_time" content="2019-03-28T06:19:44.078Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="url解析">
+<meta name="twitter:description" content="TL;DR url = origin + pathname + search + hash js中解析url主要利用a标签，常用的是query node有url模块 querystring模块">
+<meta name="twitter:image" content="data:image/png;base64,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">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    sidebar: {"position":"right","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2017/10/11/urlParse/">
+
+
+
+
+
+  <title> url解析 | Hexo </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="default">
+
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?60f2cb5747a596a24f2a053f1650c30b";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-right page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Hexo</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <h1 class="site-subtitle" itemprop="description"></h1>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            Tags
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/10/11/urlParse/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="John Doe">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="http://omizt4opc.bkt.clouddn.com/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hexo">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+            
+            
+              
+                url解析
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-10-11T14:41:47+08:00">
+                2017-10-11
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/node/" itemprop="url" rel="index">
+                    <span itemprop="name">node</span>
+                  </a>
+                </span>
+
+                
+                
+                  , 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/node/js/" itemprop="url" rel="index">
+                    <span itemprop="name">js</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2017/10/11/urlParse/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2017/10/11/urlParse/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="TL-DR"><a href="#TL-DR" class="headerlink" title="TL;DR"></a>TL;DR</h2><ul>
+<li>url = origin + pathname + search + hash</li>
+<li>js中解析url主要利用a标签，常用的是query</li>
+<li>node有url模块</li>
+<li>querystring模块<a id="more"></a>
+</li>
+</ul>
+<h2 id="url的组成"><a href="#url的组成" class="headerlink" title="url的组成"></a>url的组成</h2><p><img src="data:image/png;base64,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" alt="url组成"></p>
+<ul>
+<li>href是链接，<code>https://user:pass@sub.host.com:8080/p/a/t/h?query=string&amp;query2=string2#hash</code></li>
+<li>origin包括协议和host，<code>https://user:pass@sub.host.com:8080</code></li>
+<li>protocol协议名， <code>https:</code></li>
+<li>auth包括username和password，<code>user:pass</code></li>
+<li>host包括hostname和port，<code>sub.host.com:8080</code></li>
+<li>path包括pathname和search，<code>/p/a/t/h?query=string&amp;query2=string2</code></li>
+<li>search包括问号和query，<code>?query=string&amp;query2=string2</code></li>
+<li>hash，<code>#hash</code></li>
+<li>protocol，search，hash，pathname全部带标点符号</li>
+<li>hostname，pathname均是字面意思，host和path包括其他部分</li>
+<li>url = origin + pathname + search + hash</li>
+</ul>
+<h2 id="js中解析url"><a href="#js中解析url" class="headerlink" title="js中解析url"></a>js中解析url</h2><p>利用a标签的自身的属性。<br>query是用正则得到其对象形式。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">parseURL</span>(<span class="params">url</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">var</span> parser = <span class="built_in">document</span>.createElement(<span class="string">'a'</span>);</span><br><span class="line">  parser.href = url;</span><br><span class="line">  parser.query = &#123;&#125;;</span><br><span class="line">  parser.search.replace(<span class="regexp">/([^?=&amp;]+)=([^?=&amp;]+)/g</span>, <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="built_in">arguments</span>);</span><br><span class="line">    parser.query[<span class="built_in">arguments</span>[<span class="number">1</span>]] = <span class="built_in">arguments</span>[<span class="number">2</span>];</span><br><span class="line">  &#125;)</span><br><span class="line">  <span class="keyword">return</span> &#123;</span><br><span class="line">    <span class="comment">// 常用的</span></span><br><span class="line">    query: parser.query,</span><br><span class="line">    origin: parser.origin,</span><br><span class="line">    pathname: parser.pathname,</span><br><span class="line">    hash: parser.hash,</span><br><span class="line">    <span class="comment">// 不常用的</span></span><br><span class="line">    <span class="comment">// protocol: parser.protocol,</span></span><br><span class="line">    <span class="comment">// username: parser.username,</span></span><br><span class="line">    <span class="comment">// password: parser.password,</span></span><br><span class="line">    <span class="comment">// host: parser.host,</span></span><br><span class="line">    <span class="comment">// port: parser.port,</span></span><br><span class="line">    <span class="comment">// hostname: parser.hostname,</span></span><br><span class="line">    <span class="comment">// search: parser.search,</span></span><br><span class="line">    <span class="comment">// href: parser.href</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> x = parseURL(<span class="string">'https://user:pass@sub.host.com:8080/p/a/t/h?query=string&amp;query2=string2#hash'</span>)</span><br><span class="line">x = &#123;</span><br><span class="line">  query: &#123; <span class="attr">query</span>: <span class="string">"string"</span>, <span class="attr">query2</span>: <span class="string">"string2"</span> &#125;,</span><br><span class="line">  origin: <span class="string">"https://sub.host.com:8080"</span>,</span><br><span class="line">  pathname: <span class="string">"/p/a/t/h"</span>,</span><br><span class="line">  hash: <span class="string">"#hash"</span>,</span><br><span class="line">  <span class="comment">// host: "sub.host.com:8080",</span></span><br><span class="line">  <span class="comment">// hostname: "sub.host.com",</span></span><br><span class="line">  <span class="comment">// href: "https://user:pass@sub.host.com:8080/p/a/t/h?query=string&amp;query2=string2#hash",</span></span><br><span class="line">  <span class="comment">// password: "pass",</span></span><br><span class="line">  <span class="comment">// port: "8080",</span></span><br><span class="line">  <span class="comment">// protocol: "https:",</span></span><br><span class="line">  <span class="comment">// search: "?query=string&amp;query2=string2",</span></span><br><span class="line">  <span class="comment">// username: "user"</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="node中解析url"><a href="#node中解析url" class="headerlink" title="node中解析url"></a>node中解析url</h2><p>node有自身的url模块。<br>node版本7以上就可以用url类了，以下是7以前写法，具体见<a href="http://nodejs.cn/api/url.html" target="_blank" rel="noopener">官网介绍</a><br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> url = <span class="built_in">require</span>(<span class="string">'url'</span>);</span><br><span class="line"><span class="keyword">var</span> x = url.parse(<span class="string">'https://user:pass@sub.host.com:8080/p/a/t/h?query=string&amp;query2=string2#hash'</span>,<span class="literal">true</span>)</span><br><span class="line">x = &#123;</span><br><span class="line">  query: &#123; <span class="attr">query</span>: <span class="string">"string"</span>, <span class="attr">query2</span>: <span class="string">"string2"</span> &#125;,</span><br><span class="line">  pathname: <span class="string">'/path/to/file'</span>,</span><br><span class="line">  hash: <span class="string">'#hash'</span>,</span><br><span class="line">  <span class="comment">// 没有origin,可以自己拼接</span></span><br><span class="line">  protocol: <span class="string">'http:'</span>,</span><br><span class="line">  slashes: <span class="literal">true</span>,</span><br><span class="line">  auth: <span class="string">'user:pass'</span>,</span><br><span class="line">  host: <span class="string">'host.com:8080'</span>,</span><br><span class="line">  port: <span class="string">'8080'</span>,</span><br><span class="line">  hostname: <span class="string">'host.com'</span>,</span><br><span class="line">  search: <span class="string">'?query=string'</span>,</span><br><span class="line">  path: <span class="string">'/path/to/file?query=string'</span>,</span><br><span class="line">  href: <span class="string">'http://user:pass@host.com:8080/path/to/file?query=string#hash'</span> </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h2 id="js中解析queryString"><a href="#js中解析queryString" class="headerlink" title="js中解析queryString"></a>js中解析queryString</h2><p>queryString就是<code>x=1&amp;g=7&amp;h=9</code>，解析就是将这个变成对象<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">parseQueryString</span>(<span class="params">queryString</span>)</span>&#123;</span><br><span class="line">  <span class="keyword">var</span> result = &#123;&#125;;</span><br><span class="line">  queryString.replace(<span class="regexp">/([^?=&amp;]+)=([^?=&amp;]+)/g</span>, <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    result[<span class="built_in">arguments</span>[<span class="number">1</span>]] = <span class="built_in">arguments</span>[<span class="number">2</span>];</span><br><span class="line">  &#125;)  </span><br><span class="line">&#125;</span><br><span class="line">parseQueryString(<span class="string">'x=1&amp;g=7&amp;h=9'</span>)</span><br><span class="line"><span class="comment">// &#123;x:1,g:7,h:9&#125;</span></span><br></pre></td></tr></table></figure></p>
+<p>反过来也可以将对象变成queryString，当然这里的对象注意只能是基本类型的属性值<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">stringifyQuery</span>(<span class="params">obj</span>)</span>&#123;</span><br><span class="line">    <span class="keyword">var</span> result = <span class="string">""</span>;</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">var</span> key <span class="keyword">in</span> obj)&#123;</span><br><span class="line">      <span class="keyword">if</span>(obj.hasOwnProperty(key))&#123;</span><br><span class="line">        result+=key+<span class="string">'='</span>+obj[key]+<span class="string">'&amp;'</span>;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    result = result.slice(<span class="number">0</span>,<span class="number">-1</span>);</span><br><span class="line">    <span class="keyword">return</span> result;</span><br><span class="line">&#125;</span><br><span class="line">stringifyQuery(&#123;<span class="attr">x</span>:<span class="number">1</span>,<span class="attr">g</span>:<span class="number">7</span>,<span class="attr">h</span>:<span class="number">9</span>&#125;)</span><br><span class="line"><span class="comment">// x=1&amp;g=7&amp;h=9</span></span><br></pre></td></tr></table></figure></p>
+<h2 id="node中解析queryString"><a href="#node中解析queryString" class="headerlink" title="node中解析queryString"></a>node中解析queryString</h2><p>node中有querystring模块。<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">querystring.parse(<span class="string">'x=1&amp;g=7&amp;h=9'</span>)</span><br><span class="line"><span class="comment">// &#123;x:1,g:7,h:9&#125;</span></span><br><span class="line"></span><br><span class="line">querystring.stringify(&#123;<span class="attr">x</span>:<span class="number">1</span>,<span class="attr">g</span>:<span class="number">7</span>,<span class="attr">h</span>:<span class="number">9</span>&#125;)</span><br><span class="line"><span class="comment">// x=1&amp;g=7&amp;h=9</span></span><br></pre></td></tr></table></figure></p>
+<blockquote>
+<p><a href="http://nodejs.cn/api/querystring.html" target="_blank" rel="noopener">官方文档</a><br><a href="http://www.jianshu.com/p/aed6a885db61" target="_blank" rel="noopener">node.js之Url &amp; QueryString模块</a></p>
+</blockquote>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/node/" rel="tag"># node</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/09/30/scp-server/" rel="next" title="scp远程服务器和本地的相互拷贝">
+                <i class="fa fa-chevron-left"></i> scp远程服务器和本地的相互拷贝
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/10/12/nodeStudy/" rel="prev" title="学习node">
+                学习node <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+          
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2017/10/11/urlParse/" data-title="url解析" data-url="http://yoursite.com/2017/10/11/urlParse/">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image" src="http://omizt4opc.bkt.clouddn.com/avatar.jpg" alt="John Doe">
+          <p class="site-author-name" itemprop="name">John Doe</p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+           
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">75</span>
+                <span class="site-state-item-name">posts</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              
+                <span class="site-state-item-count">21</span>
+                <span class="site-state-item-name">categories</span>
+              
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              
+                <span class="site-state-item-count">35</span>
+                <span class="site-state-item-name">tags</span>
+              
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#TL-DR"><span class="nav-number">1.</span> <span class="nav-text">TL;DR</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#url的组成"><span class="nav-number">2.</span> <span class="nav-text">url的组成</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#js中解析url"><span class="nav-number">3.</span> <span class="nav-text">js中解析url</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#node中解析url"><span class="nav-number">4.</span> <span class="nav-text">node中解析url</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#js中解析queryString"><span class="nav-number">5.</span> <span class="nav-text">js中解析queryString</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#node中解析queryString"><span class="nav-number">6.</span> <span class="nav-text">node中解析queryString</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">John Doe</span>
+</div>
+
+
+<div class="powered-by">
+  Powered by <a class="theme-link" href="https://hexo.io">Hexo</a>
+</div>
+
+<div class="theme-info">
+  Theme -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+    
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"frontzhm"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+    
+    <script src="/lib/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+    <script src="/js/src/hook-duoshuo.js"></script>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+</body>
+</html>

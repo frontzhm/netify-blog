@@ -1,0 +1,799 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang>
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css">
+
+
+  <meta name="keywords" content="babel,">
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0">
+
+
+
+
+
+
+<meta name="description" content="TL;DR 初始化项目 babel命令行安装 babel-preset babel单个文件，文件夹的编译 source-map 和gulp的合作">
+<meta name="keywords" content="babel">
+<meta property="og:type" content="article">
+<meta property="og:title" content="学习babel">
+<meta property="og:url" content="http://yoursite.com/2017/05/25/babel/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="TL;DR 初始化项目 babel命令行安装 babel-preset babel单个文件，文件夹的编译 source-map 和gulp的合作">
+<meta property="og:locale" content="default">
+<meta property="og:updated_time" content="2019-03-28T06:16:56.790Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="学习babel">
+<meta name="twitter:description" content="TL;DR 初始化项目 babel命令行安装 babel-preset babel单个文件，文件夹的编译 source-map 和gulp的合作">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    sidebar: {"position":"right","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2017/05/25/babel/">
+
+
+
+
+
+  <title> 学习babel | Hexo </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="default">
+
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?60f2cb5747a596a24f2a053f1650c30b";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-right page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Hexo</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <h1 class="site-subtitle" itemprop="description"></h1>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            Tags
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/05/25/babel/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="John Doe">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="http://omizt4opc.bkt.clouddn.com/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hexo">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+            
+            
+              
+                学习babel
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-05-25T11:01:13+08:00">
+                2017-05-25
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/js/" itemprop="url" rel="index">
+                    <span itemprop="name">js</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2017/05/25/babel/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2017/05/25/babel/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="TL-DR"><a href="#TL-DR" class="headerlink" title="TL;DR"></a>TL;DR</h2><ul>
+<li>初始化项目</li>
+<li>babel命令行安装</li>
+<li>babel-preset</li>
+<li>babel单个文件，文件夹的编译</li>
+<li>source-map</li>
+<li>和gulp的合作</li>
+</ul>
+<a id="more"></a>
+<h2 id="初始化项目"><a href="#初始化项目" class="headerlink" title="初始化项目"></a>初始化项目</h2><ol>
+<li>登录github，在github上新建目录，选择忽略类型是node(才知道，爽到爆)，证书选择ISC</li>
+<li><p>本地</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">git clone 目录地址</span><br><span class="line">cd 目录</span><br><span class="line">npm init (偷懒的话直接生成 npm init -y)</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<h2 id="babel的环境配置和常用命令"><a href="#babel的环境配置和常用命令" class="headerlink" title="babel的环境配置和常用命令"></a>babel的环境配置和常用命令</h2><p>必须参考<a href="https://babeljs.io/" target="_blank" rel="noopener">官网</a>，更新其实挺快的，我看参考博客的时候和写这篇博客，有些东西就变了，以后肯定还会变化，请时刻关注官网。</p>
+<h3 id="安装cli和preset"><a href="#安装cli和preset" class="headerlink" title="安装cli和preset"></a>安装cli和preset</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install --save-dev babel-cli babel-preset-env</span><br></pre></td></tr></table></figure>
+<p><code>babel-cli</code>是为了运行babel的命令的，<code>babel-preset-env</code>是转化es2015的语法以让浏览器识别。<br>考虑到暂时需要使用babel命令，所以还需要<code>npm install -g babel-cli</code>，不然在控制台可能无法使用命令，其他命令也是如此，必须安装全局。后面会改良。</p>
+<p>然后，新建<code>.babelrc</code>(rc特意查了下，应该是 runtime-config的缩写，新建的命令用touch .babelrc)，写上</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="string">"presets"</span>: [<span class="string">"env"</span>]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>凡是<code>babel-preset</code>开头的，都需要在配置在这里。<br><code>babel-preset</code>表示转换器，比如将es2015转换成普通的js</p>
+<h3 id="babel-polyfill"><a href="#babel-polyfill" class="headerlink" title="babel-polyfill"></a>babel-polyfill</h3><p><code>babel-polyfill</code>是针对es2015新方法的支持，<code>babel-preset-env</code>是语法支持，但对某些函数和属性不一定支持</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install --save babel-polyfill</span><br></pre></td></tr></table></figure>
+<p>使用这个的时候，哪个文件需要就在文件顶部写<code>import &quot;babel-polyfill&quot;;</code>。<br>一般入口文件写一次即可。</p>
+<h3 id="babel-runtime"><a href="#babel-runtime" class="headerlink" title="babel-runtime"></a>babel-runtime</h3><p>与 babel-polyfill 一样，babel-runtime 的作用也是模拟 ES2015 环境。只不过，babel-polyfill 是针对全局环境的，引入它，我们的浏览器就好像具备了规范里定义的完整的特性 – 虽然原生并未实现。</p>
+<p>babel-runtime 更像是分散的 polyfill 模块，我们可以在自己的模块里单独引入，比如 require(‘babel-runtime/core-js/promise’) ，它们不会在全局环境添加未实现的方法，只是，这样手动引用每个 polyfill 会非常低效。我们借助 <a href="http://babeljs.io/docs/plugins/transform-runtime/" target="_blank" rel="noopener">Runtime transform</a> 插件来自动化处理这一切。</p>
+<h3 id="编译JSX和Flow"><a href="#编译JSX和Flow" class="headerlink" title="编译JSX和Flow"></a>编译JSX和Flow</h3><p>如果想要转换JSX的语法,preset还有其他的，有需要的再看。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">npm install --save-dev babel-preset-react</span><br><span class="line">// .babelrc</span><br><span class="line">&#123;</span><br><span class="line">  "presets": ["env","react"]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="编译单个文件"><a href="#编译单个文件" class="headerlink" title="编译单个文件"></a>编译单个文件</h3><p>参考<a href="http://babeljs.io/docs/usage/cli/" target="_blank" rel="noopener">cli的文档</a></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">mkdir src</span><br><span class="line">cd src/</span><br><span class="line">touch index.js</span><br></pre></td></tr></table></figure>
+<p>在index.js里写</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> a = <span class="number">1</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span>(<span class="literal">true</span>)&#123;</span><br><span class="line">  <span class="keyword">let</span> a = <span class="number">8</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(a)</span><br></pre></td></tr></table></figure>
+<p>主要是下面的命令</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">// 转化后直接输出在控制台</span><br><span class="line">babel index.js</span><br><span class="line"></span><br><span class="line">// 转化后输出到indexT.js文件中，--out-file可以简写为-o</span><br><span class="line">babel index.js --out-file indexT.js</span><br><span class="line"></span><br><span class="line">// 想一直监听的话，可以加--watch 或 -w，这里顺序不能写错，不然会报错</span><br><span class="line">babel index.js -w -o  indexT.js</span><br></pre></td></tr></table></figure>
+<h3 id="source-map的助力"><a href="#source-map的助力" class="headerlink" title="source-map的助力"></a>source-map的助力</h3><p>首先在根目录下，建个<code>index.html</code>,引入<code>src/index-compiled.js</code>。</p>
+<p>然后进入src,在index.js里面随便写个错误的代码，再运行</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">// --source-maps也可以写成-s，--source-maps inline命令会让转义的最后一行发生变化，还没弄清楚是啥</span><br><span class="line">babel inedx.js --out-file inedx-compiled.js --source-maps</span><br></pre></td></tr></table></figure>
+<p>此时会发现，目录下多个<code>index-compiled.js.map</code><br>在谷歌浏览器中打开<code>index.html</code>,会发现报错信息，且报错信息显示的是<code>index.js</code>的错<br>这就是source-map的威力了，虽然页面上引入的是<code>inedx-compiled.js</code>,但转义的时候，source-map将相应的代码进行挂钩，这样可以寻到<code>index.js</code>，<a href="http://www.ruanyifeng.com/blog/2013/01/javascript_source_map.html" target="_blank" rel="noopener">点击这里看具体详情</a>。<br>目前好像只有谷歌浏览器支持<code>source-map</code>。</p>
+<h3 id="编译整个文件夹里的js"><a href="#编译整个文件夹里的js" class="headerlink" title="编译整个文件夹里的js"></a>编译整个文件夹里的js</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">// 将src中所有的js文件编译到build文件夹</span><br><span class="line">babel src --out-dir build</span><br><span class="line">// 这个方式，会将src里面所有的js文件编译后合并到script-compiled.js,不推荐使用</span><br><span class="line">babel src --out-file script-compiled.js</span><br><span class="line">// 将src里面，除了spec.js,test.js其他都编译到build文件夹中</span><br><span class="line">babel src --out-dir build --ignore a.js</span><br></pre></td></tr></table></figure>
+<p>其他命令不再赘述。</p>
+<h2 id="改造命令"><a href="#改造命令" class="headerlink" title="改造命令"></a>改造命令</h2><p>上面说过，安装全局和安装项目一份，挺麻烦，而且项目在别人手下运行的时候很麻烦，一般都会改装命令，让其在项目里可以直接运行，不依赖全局。<br>上面的项目，此时假设我们想当src里面的文件发生变化的时候就自动编译到build，用到的命令是：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">// 或者 -wd</span><br><span class="line">babel src -w -d build</span><br></pre></td></tr></table></figure>
+<p>那么，打开package.json，在scripts这个字段，加上</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">"scripts"</span>: &#123;</span><br><span class="line">  <span class="string">"test"</span>: <span class="string">"echo \"Error: no test specified\" &amp;&amp; exit 1"</span>,</span><br><span class="line">  <span class="string">"babel"</span>: <span class="string">"./node_modules/.bin/babel src -w -d build"</span></span><br><span class="line">&#125;,</span><br></pre></td></tr></table></figure>
+<p>此时运行 <code>npm run babel</code>，因为这里的命令地址已经转换到项目里，所以不需要全局的命令了。</p>
+<h2 id="和gulp的合作"><a href="#和gulp的合作" class="headerlink" title="和gulp的合作"></a>和gulp的合作</h2><p>一般babel和别的工具一起使用，这里说下gulp。</p>
+<ol>
+<li>安装相应的插件：</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install gulp gulp-babel --save-dev</span><br></pre></td></tr></table></figure>
+<ol start="2">
+<li>创建<code>gulpfile.js</code></li>
+</ol>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> gulp = <span class="built_in">require</span>(<span class="string">'gulp'</span>);</span><br><span class="line"><span class="keyword">var</span> babel = <span class="built_in">require</span>(<span class="string">'gulp-babel'</span>);</span><br><span class="line">gulp.task(<span class="string">'babel'</span>,<span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">    <span class="keyword">return</span> gulp.src(<span class="string">'src/*.js'</span>)</span><br><span class="line">                    .pipe(babel())</span><br><span class="line">                    .pipe(gulp.dest(<span class="string">'build'</span>))</span><br><span class="line">&#125;)</span><br><span class="line">gulp.task(<span class="string">'default'</span>,[<span class="string">'babel'</span>])</span><br></pre></td></tr></table></figure>
+<ol start="3">
+<li>在package.json配置命令，这样不用全局安装gulp</li>
+</ol>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">"scripts"</span>: &#123;</span><br><span class="line">  <span class="string">"test"</span>: <span class="string">"echo \"Error: no test specified\" &amp;&amp; exit 1"</span>,</span><br><span class="line">  <span class="string">"babel"</span>: <span class="string">"./node_modules/.bin/babel src -w -d build"</span>,</span><br><span class="line">  <span class="string">"gulp"</span>: <span class="string">"./node_modules/.bin/gulp"</span></span><br><span class="line">&#125;,</span><br></pre></td></tr></table></figure>
+<ol start="4">
+<li>删除build文件夹，和src里其他不需要的js文件，运行</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm run gulp</span><br></pre></td></tr></table></figure>
+<ol start="5">
+<li>就说到这里，需要深入的再查阅相关文档。</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">git add .</span><br><span class="line">git ci -am"init"</span><br><span class="line">git push origin master</span><br><span class="line">git st</span><br></pre></td></tr></table></figure>
+<p><a href="https://github.com/frontzhm/babel-demo-self" target="_blank" rel="noopener">查看demo</a></p>
+<blockquote>
+<p>引用<br>参考<a href="https://guoyongfeng.github.io/book/05/01-%E6%A6%82%E8%BF%B0.html" target="_blank" rel="noopener">郭永峰的博客</a><br>参考<a href="https://www.zfanw.com/blog/babel-6.html" target="_blank" rel="noopener">陈三的文档</a></p>
+</blockquote>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/babel/" rel="tag"># babel</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/05/17/vueComponent10/" rel="next" title="vue的组件">
+                <i class="fa fa-chevron-left"></i> vue的组件
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/05/25/fetch/" rel="prev" title="学习fetch">
+                学习fetch <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+          
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2017/05/25/babel/" data-title="学习babel" data-url="http://yoursite.com/2017/05/25/babel/">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image" src="http://omizt4opc.bkt.clouddn.com/avatar.jpg" alt="John Doe">
+          <p class="site-author-name" itemprop="name">John Doe</p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+           
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">75</span>
+                <span class="site-state-item-name">posts</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              
+                <span class="site-state-item-count">21</span>
+                <span class="site-state-item-name">categories</span>
+              
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              
+                <span class="site-state-item-count">35</span>
+                <span class="site-state-item-name">tags</span>
+              
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#TL-DR"><span class="nav-number">1.</span> <span class="nav-text">TL;DR</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#初始化项目"><span class="nav-number">2.</span> <span class="nav-text">初始化项目</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#babel的环境配置和常用命令"><span class="nav-number">3.</span> <span class="nav-text">babel的环境配置和常用命令</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#安装cli和preset"><span class="nav-number">3.1.</span> <span class="nav-text">安装cli和preset</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#babel-polyfill"><span class="nav-number">3.2.</span> <span class="nav-text">babel-polyfill</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#babel-runtime"><span class="nav-number">3.3.</span> <span class="nav-text">babel-runtime</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#编译JSX和Flow"><span class="nav-number">3.4.</span> <span class="nav-text">编译JSX和Flow</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#编译单个文件"><span class="nav-number">3.5.</span> <span class="nav-text">编译单个文件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#source-map的助力"><span class="nav-number">3.6.</span> <span class="nav-text">source-map的助力</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#编译整个文件夹里的js"><span class="nav-number">3.7.</span> <span class="nav-text">编译整个文件夹里的js</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#改造命令"><span class="nav-number">4.</span> <span class="nav-text">改造命令</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#和gulp的合作"><span class="nav-number">5.</span> <span class="nav-text">和gulp的合作</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">John Doe</span>
+</div>
+
+
+<div class="powered-by">
+  Powered by <a class="theme-link" href="https://hexo.io">Hexo</a>
+</div>
+
+<div class="theme-info">
+  Theme -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+    
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"frontzhm"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+    
+    <script src="/lib/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+    <script src="/js/src/hook-duoshuo.js"></script>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+</body>
+</html>

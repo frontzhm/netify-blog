@@ -1,0 +1,805 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang>
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css">
+
+
+  <meta name="keywords" content="react,">
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0">
+
+
+
+
+
+
+<meta name="description" content="TL;DR Router，broserHistory Route，IndexRoute，Redirect，Link，IndexLink props.params，props.loacation.query，props.children component，components this.props.router.setRouterLeaveHook(router，callback)，callbac">
+<meta name="keywords" content="react">
+<meta property="og:type" content="article">
+<meta property="og:title" content="学习 react-router">
+<meta property="og:url" content="http://yoursite.com/2017/06/02/react-router/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="TL;DR Router，broserHistory Route，IndexRoute，Redirect，Link，IndexLink props.params，props.loacation.query，props.children component，components this.props.router.setRouterLeaveHook(router，callback)，callbac">
+<meta property="og:locale" content="default">
+<meta property="og:updated_time" content="2017-06-02T01:12:19.500Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="学习 react-router">
+<meta name="twitter:description" content="TL;DR Router，broserHistory Route，IndexRoute，Redirect，Link，IndexLink props.params，props.loacation.query，props.children component，components this.props.router.setRouterLeaveHook(router，callback)，callbac">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    sidebar: {"position":"right","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2017/06/02/react-router/">
+
+
+
+
+
+  <title> 学习 react-router | Hexo </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="default">
+
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?60f2cb5747a596a24f2a053f1650c30b";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-right page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Hexo</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <h1 class="site-subtitle" itemprop="description"></h1>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            Tags
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/06/02/react-router/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="John Doe">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="http://omizt4opc.bkt.clouddn.com/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hexo">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+            
+            
+              
+                学习 react-router
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-06-02T09:12:19+08:00">
+                2017-06-02
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/js/" itemprop="url" rel="index">
+                    <span itemprop="name">js</span>
+                  </a>
+                </span>
+
+                
+                
+                  , 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/js/react/" itemprop="url" rel="index">
+                    <span itemprop="name">react</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2017/06/02/react-router/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2017/06/02/react-router/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="TL-DR"><a href="#TL-DR" class="headerlink" title="TL;DR"></a>TL;DR</h2><ul>
+<li>Router，broserHistory</li>
+<li>Route，IndexRoute，Redirect，Link，IndexLink</li>
+<li>props.params，props.loacation.query，props.children</li>
+<li>component，components</li>
+<li>this.props.router.setRouterLeaveHook(router，callback)，callback自带nextLocation的参数<a id="more"></a>
+</li>
+</ul>
+<h2 id="Router-Route-broserHistory"><a href="#Router-Route-broserHistory" class="headerlink" title="Router,Route,broserHistory"></a>Router,Route,broserHistory</h2><p><a href="https://github.com/ReactTraining/react-router/blob/master/packages/react-router/docs/api" target="_blank" rel="noopener">github的文档</a><br><a href="https://github.com/reactjs/react-router-tutorial/tree/master/lessons/01-setting-up" target="_blank" rel="noopener">react-router的github练习地址</a><br>以下是2.x的版本，router的中文是路由器，route的中文是路由，也就是router控制route<br>首先 index.html<br><figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;!DOCTYPE html&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">html</span> <span class="attr">lang</span>=<span class="string">"en"</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">head</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">meta</span> <span class="attr">charset</span>=<span class="string">"UTF-8"</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">title</span>&gt;</span> boilerplate <span class="tag">&lt;/<span class="name">title</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">meta</span> <span class="attr">http-equiv</span>=<span class="string">"X-UA-Compatible"</span> <span class="attr">content</span>=<span class="string">"IE=edge"</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">meta</span> <span class="attr">name</span>=<span class="string">"renderer"</span> <span class="attr">content</span>=<span class="string">"webkit"</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">meta</span> <span class="attr">name</span>=<span class="string">"viewport"</span> <span class="attr">content</span>=<span class="string">"width=device-width, initial-scale=1"</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">meta</span> <span class="attr">name</span>=<span class="string">"keywords"</span> <span class="attr">content</span>=<span class="string">" boilerplate"</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">meta</span> <span class="attr">name</span>=<span class="string">"description"</span> <span class="attr">content</span>=<span class="string">" boilerplate "</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">meta</span> <span class="attr">content</span>=<span class="string">"telephone=no"</span> <span class="attr">name</span>=<span class="string">"format-detection"</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">meta</span> <span class="attr">content</span>=<span class="string">"address=no"</span> <span class="attr">name</span>=<span class="string">"format-detection"</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">meta</span> <span class="attr">name</span>=<span class="string">"apple-mobile-web-app-status-bar-style"</span> <span class="attr">content</span>=<span class="string">"black"</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">meta</span> <span class="attr">name</span>=<span class="string">"apple-mobile-web-app-capable"</span> <span class="attr">content</span>=<span class="string">"yes"</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">"app"</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure></p>
+<p>重点index.js<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> React <span class="keyword">from</span> <span class="string">'react'</span>;</span><br><span class="line"><span class="keyword">import</span> &#123;render&#125; <span class="keyword">from</span> <span class="string">'react-dom'</span>;</span><br><span class="line"><span class="keyword">import</span> &#123;Router, Route, browserHistory&#125; <span class="keyword">from</span> <span class="string">'react-router'</span>;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> app = <span class="built_in">document</span>.getElementById(<span class="string">'app'</span>);</span><br><span class="line"><span class="keyword">const</span> Hi = <span class="function"><span class="params">()</span> =&gt;</span> (<span class="xml"><span class="tag">&lt;<span class="name">div</span>&gt;</span>Hi<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span>)</span><br><span class="line"><span class="keyword">const</span> Hello = <span class="function"><span class="params">()</span> =&gt;</span> (<span class="xml"><span class="tag">&lt;<span class="name">div</span>&gt;</span>Hello<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span>)</span><br><span class="line">render(</span><br><span class="line">  &lt;Router history=&#123;browserHistory&#125;&gt;</span><br><span class="line">    &lt;Route  path=<span class="string">"/"</span> component=&#123;Hi&#125;/&gt;</span><br><span class="line">    &lt;Route  path=<span class="string">"/hello"</span> component=&#123;Hello&#125;/&gt;</span><br><span class="line">  &lt;<span class="regexp">/Router&gt;</span></span><br><span class="line"><span class="regexp">  ,</span></span><br><span class="line"><span class="regexp">app)</span></span><br></pre></td></tr></table></figure></p>
+<ul>
+<li>node_moudles/react-router/lib/index.js 查看可用的api</li>
+<li>Router组件本身只是一个容器，真正的路由要通过Route组件定义。</li>
+<li>必须有Router(有history属性)，Route(有path和component属性)。</li>
+<li>组件，如果是纯函数的话，可以直接用箭头函数</li>
+<li></li>
+</ul>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">&lt;Router history=&#123;browserHistory&#125;&gt;</span><br><span class="line">  &lt;Route  path=<span class="string">"/"</span> component=&#123;Hi&#125;/&gt;</span><br><span class="line">&lt;<span class="regexp">/Router&gt;</span></span><br><span class="line"><span class="regexp">/</span><span class="regexp">/ 路径是 "/</span><span class="string">" ,相当于 </span></span><br><span class="line"><span class="string">&lt;Hi /&gt;</span></span><br><span class="line"><span class="string">// 路径是 "</span>/hello<span class="string">",相当于</span></span><br><span class="line"><span class="string">&lt;Hello /&gt;</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>path的路径不分大小写，也就是 “/hello” 等价于 “/Hello”</li>
+<li>子路由也可以不写在Router组件里面，单独传入Router组件的routes属性。<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> routes = (</span><br><span class="line">  &lt;Route  path=<span class="string">"/"</span> component=&#123;Hi&#125;/&gt;</span><br><span class="line">  &lt;Route  path=<span class="string">"/hello"</span> component=&#123;Hello&#125;/&gt;</span><br><span class="line">)</span><br><span class="line">&lt;Router routes=&#123;routes&#125; history=&#123;browserHistory&#125;&gt;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h2 id="Link"><a href="#Link" class="headerlink" title="Link"></a>Link</h2><p>react中，也有类似的a标签就是Link。其to属性就相当于href属性。<br>当location.pathname包含to的值时，Link上面的activeClassName或activeStyle就能生效。<br>还有个IndexLink，一般和activeClassName或activeStyle相配合，只有当该路由被渲染的时候，才会active。<br>如果不使用IndexLink，也可以加上<code>onlyActiveOnIndex={true}</code>这个属性，达到相同的效果。<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> React <span class="keyword">from</span> <span class="string">'react'</span>;</span><br><span class="line"><span class="keyword">import</span> &#123;render&#125; <span class="keyword">from</span> <span class="string">'react-dom'</span>;</span><br><span class="line"><span class="keyword">import</span> &#123;Router, Route, browserHistory,Link&#125; <span class="keyword">from</span> <span class="string">'react-router'</span>;</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(Router)</span><br><span class="line"><span class="keyword">const</span> app = <span class="built_in">document</span>.getElementById(<span class="string">'app'</span>);</span><br><span class="line"><span class="keyword">const</span> Nav = <span class="function"><span class="params">()</span> =&gt;</span> (</span><br><span class="line">  &lt;nav&gt;</span><br><span class="line">    &lt;Link to=<span class="string">"/"</span>  activeStyle=&#123;&#123;<span class="attr">color</span>:<span class="string">'red'</span>&#125;&#125;&gt;Hi &lt;<span class="regexp">/Link&gt;&lt;br /</span>&gt;</span><br><span class="line">    &lt;Link to=<span class="string">"/hello"</span>&gt;Hello &lt;<span class="regexp">/Link&gt;&lt;br /</span>&gt;</span><br><span class="line">  &lt;<span class="regexp">/nav&gt;</span></span><br><span class="line"><span class="regexp">)</span></span><br><span class="line"><span class="regexp">const Hi = () =&gt; (&lt;div&gt;&lt;Nav /</span>&gt;Hi&lt;<span class="regexp">/div&gt;);</span></span><br><span class="line"><span class="regexp">const Hello = () =&gt; (&lt;div&gt;&lt;Nav /</span>&gt;Hello&lt;<span class="regexp">/div&gt;);</span></span><br><span class="line"><span class="regexp"></span></span><br><span class="line"><span class="regexp">render(</span></span><br><span class="line"><span class="regexp">  &lt;Router history=&#123;browserHistory&#125;&gt;</span></span><br><span class="line"><span class="regexp">    &lt;Route  path="/</span><span class="string">" component=&#123;Hi&#125;/&gt;</span></span><br><span class="line"><span class="string">    &lt;Route  path="</span>/hello<span class="string">" component=&#123;Hello&#125;/&gt;</span></span><br><span class="line"><span class="string">  &lt;/Router&gt;</span></span><br><span class="line"><span class="string">  ,</span></span><br><span class="line"><span class="string">app)</span></span><br></pre></td></tr></table></figure></p>
+<h2 id="嵌套路由"><a href="#嵌套路由" class="headerlink" title="嵌套路由"></a>嵌套路由</h2><p>嵌套路由，就是访问 /dear/huahua。<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> React <span class="keyword">from</span> <span class="string">'react'</span>;</span><br><span class="line"><span class="keyword">import</span> &#123;render&#125; <span class="keyword">from</span> <span class="string">'react-dom'</span>;</span><br><span class="line"><span class="keyword">import</span> &#123;Router, Route, browserHistory,Link,IndexLink,IndexRoute&#125; <span class="keyword">from</span> <span class="string">'react-router'</span>;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> app = <span class="built_in">document</span>.getElementById(<span class="string">'app'</span>);</span><br><span class="line"><span class="keyword">const</span> Nav = <span class="function"><span class="params">()</span> =&gt;</span> (</span><br><span class="line">  &lt;nav&gt;</span><br><span class="line">    &lt;Link to=<span class="string">"/"</span> activeStyle=&#123;&#123;<span class="attr">color</span>:<span class="string">'red'</span>&#125;&#125;&gt;Hi &lt;<span class="regexp">/Link&gt;&lt;br /</span>&gt;</span><br><span class="line">    &lt;Link to=<span class="string">"/dear"</span>&gt;dear &lt;<span class="regexp">/Link&gt;&lt;br /</span>&gt;</span><br><span class="line">    &lt;Link to=<span class="string">"/dear/huahua"</span>&gt;dear/huahua &lt;<span class="regexp">/Link&gt;&lt;br /</span>&gt;</span><br><span class="line">  &lt;<span class="regexp">/nav&gt;</span></span><br><span class="line"><span class="regexp">)</span></span><br><span class="line"><span class="regexp">const Hi = (props) =&gt; (&lt;div&gt;&lt;Nav /</span>&gt; <span class="xml"><span class="tag">&lt;<span class="name">br</span>/&gt;</span></span>Hi&#123;props.children&#125;&lt;<span class="regexp">/div&gt;);</span></span><br><span class="line"><span class="regexp">const Dear = (props) =&gt; &#123;console.log(props);return (&lt;div&gt;Dear&#123;props.children&#125;&lt;/</span>div&gt;)&#125;;</span><br><span class="line"><span class="keyword">const</span> Huahua = <span class="function"><span class="params">()</span> =&gt;</span> (<span class="xml"><span class="tag">&lt;<span class="name">div</span>&gt;</span>Huahua<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span>);</span><br><span class="line"><span class="keyword">const</span> Bun = <span class="function"><span class="params">()</span> =&gt;</span> (<span class="xml"><span class="tag">&lt;<span class="name">div</span>&gt;</span>Bun<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span>);</span><br><span class="line"></span><br><span class="line">render(</span><br><span class="line">  &lt;Router history=&#123;browserHistory&#125;&gt;</span><br><span class="line">    &lt;Route path=<span class="string">"/"</span> component=&#123;Hi&#125;&gt;</span><br><span class="line">      &lt;IndexRoute component=&#123;Bun&#125; /&gt;</span><br><span class="line">      &lt;Route path=<span class="string">"dear"</span> component=&#123;Dear&#125;&gt;</span><br><span class="line">        &lt;Route path=<span class="string">"huahua"</span>  component=&#123;Huahua&#125; /&gt;</span><br><span class="line">      &lt;<span class="regexp">/Route&gt; </span></span><br><span class="line"><span class="regexp">    &lt;/</span>Route&gt;</span><br><span class="line">  &lt;<span class="regexp">/Router&gt;</span></span><br><span class="line"><span class="regexp">  ,</span></span><br><span class="line"><span class="regexp">app)</span></span><br></pre></td></tr></table></figure></p>
+<p>IndexRoute表示父路径自动加上该组件<br>上面一串的route表示<br>/   =&gt;    <hi> 且将这个组件里面的{props.children} 换成<bun><br>/dear  =&gt; <hi> 且将这个组件里面的{props.children} 换成<dear><br>/dear/hua  =&gt; <hi> 且将这个组件里面的{props.children} 换成<dear><br>              <dear>里面的{props.children} 换成<huahua></huahua></dear></dear></hi></dear></hi></bun></hi></p>
+<ul>
+<li>若当前的Router标签的path路径cur，其父标签是parent，那么访问parent/cur路径的时候，相当于渲染父标签的component，且将其{props.children} 换成当前标签的component。</li>
+<li>IndexRoute相当于访问parent的时候，自动将parent组件里面的{props.children}自动换成IndexRoute的组件了</li>
+<li>除了根目录带着/，其他路径不带/ </li>
+<li>可以看下打印出来的props里面有啥</li>
+</ul>
+<h2 id="params"><a href="#params" class="headerlink" title="params"></a>params</h2><p>就是路径里面有变量，路径不一样，显示的内容不一样。本质是通过props.params获得路径里面的变量值。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> React <span class="keyword">from</span> <span class="string">'react'</span>;</span><br><span class="line"><span class="keyword">import</span> &#123;render&#125; <span class="keyword">from</span> <span class="string">'react-dom'</span>;</span><br><span class="line"><span class="keyword">import</span> &#123;Router, Route, browserHistory,Link,IndexLink,IndexRoute&#125; <span class="keyword">from</span> <span class="string">'react-router'</span>;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> app = <span class="built_in">document</span>.getElementById(<span class="string">'app'</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> Hi = <span class="function">(<span class="params">props</span>) =&gt;</span> &#123;<span class="built_in">console</span>.log(<span class="keyword">this</span>);<span class="keyword">return</span> (<span class="xml"><span class="tag">&lt;<span class="name">div</span>&gt;</span>Hi<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span>)&#125;;</span><br><span class="line"><span class="keyword">const</span> Nav = <span class="function"><span class="params">()</span> =&gt;</span> (<span class="xml"><span class="tag">&lt;<span class="name">div</span>&gt;</span><span class="tag">&lt;<span class="name">Link</span> <span class="attr">to</span>=<span class="string">"/a"</span>&gt;</span>a<span class="tag">&lt;/<span class="name">Link</span>&gt;</span><span class="tag">&lt;<span class="name">br</span>/&gt;</span><span class="tag">&lt;<span class="name">Link</span> <span class="attr">to</span>=<span class="string">"/b"</span>&gt;</span>b<span class="tag">&lt;/<span class="name">Link</span>&gt;</span><span class="tag">&lt;<span class="name">br</span>/&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> Message = <span class="function">(<span class="params">props</span>) =&gt;</span> &#123;<span class="built_in">console</span>.log(props);<span class="keyword">return</span> (<span class="xml"><span class="tag">&lt;<span class="name">div</span>&gt;</span><span class="tag">&lt;<span class="name">Nav</span> /&gt;</span>&#123;props.params.message || 'ee'&#125;<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span>)&#125;;</span><br><span class="line"></span><br><span class="line">render(</span><br><span class="line">  &lt;Router history=&#123;browserHistory&#125;&gt;</span><br><span class="line">    &lt;Route path=<span class="string">"/(:message)"</span> component=&#123;Message&#125; /&gt;</span><br><span class="line">  &lt;<span class="regexp">/Router&gt;</span></span><br><span class="line"><span class="regexp">  ,</span></span><br><span class="line"><span class="regexp">app)</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>“/(:message)”记得括号</li>
+<li>{props.params.message || ‘ee’}容错的判断</li>
+<li>Link标签和变量路径的结合使用，如列表页面跳到详情页面</li>
+</ul>
+<h2 id="query"><a href="#query" class="headerlink" title="query"></a>query</h2><p>query和params有点类似。</p>
+<ul>
+<li>组件都可以获得到query和params的值</li>
+<li>都可以和Link配合使用</li>
+<li>{(obj &amp;&amp; obj.attr) || ‘none’} 表示obj存在的就是obj.attr，obj不存在的话就’none’</li>
+<li>属性是对象的时候</li>
+</ul>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> React <span class="keyword">from</span> <span class="string">'react'</span>;</span><br><span class="line"><span class="keyword">import</span> &#123;render&#125; <span class="keyword">from</span> <span class="string">'react-dom'</span>;</span><br><span class="line"><span class="keyword">import</span> &#123;Router, Route, browserHistory,Link,IndexLink,IndexRoute,Redirect&#125; <span class="keyword">from</span> <span class="string">'react-router'</span>;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> app = <span class="built_in">document</span>.getElementById(<span class="string">'app'</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> Nav = <span class="function"><span class="params">()</span> =&gt;</span> (<span class="xml"><span class="tag">&lt;<span class="name">div</span>&gt;</span><span class="tag">&lt;<span class="name">Link</span> <span class="attr">to</span>=<span class="string">&#123;&#123;pathname:</span>"/",<span class="attr">query:</span> &#123;<span class="attr">message:</span>"<span class="attr">1</span>"&#125;&#125;&#125;&gt;</span>a<span class="tag">&lt;/<span class="name">Link</span>&gt;</span><span class="tag">&lt;<span class="name">br</span>/&gt;</span><span class="tag">&lt;<span class="name">Link</span> <span class="attr">to</span>=<span class="string">&#123;&#123;pathname:</span>"/<span class="attr">a</span>",<span class="attr">query:</span>&#123;<span class="attr">message:</span>"<span class="attr">2</span>"&#125;&#125;&#125;&gt;</span>b<span class="tag">&lt;/<span class="name">Link</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span>)</span><br><span class="line"><span class="keyword">const</span> Message = <span class="function">(<span class="params">props</span>) =&gt;</span> &#123;<span class="built_in">console</span>.log(props);<span class="keyword">return</span> (<span class="xml"><span class="tag">&lt;<span class="name">div</span>&gt;</span><span class="tag">&lt;<span class="name">Nav</span> /&gt;</span> Home &#123;props.children&#125;  &#123;props.location.query&amp;&amp;props.location.query.message || 'none'&#125;<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span>)&#125;;</span><br><span class="line"></span><br><span class="line">render(</span><br><span class="line">  &lt;Router history=&#123;browserHistory&#125;&gt;</span><br><span class="line">    &lt;Route path=<span class="string">"/"</span> component=&#123;Message&#125;/&gt;</span><br><span class="line">    &lt;Route path=<span class="string">"/a"</span> component=&#123;Message&#125;/&gt;</span><br><span class="line">  &lt;<span class="regexp">/Router&gt;</span></span><br><span class="line"><span class="regexp">  ,</span></span><br><span class="line"><span class="regexp">app)</span></span><br></pre></td></tr></table></figure>
+<h2 id="Redirect"><a href="#Redirect" class="headerlink" title="Redirect"></a>Redirect</h2><p>标题为params的demo稍微改下：<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123;Router, Route, browserHistory,Link,IndexLink,IndexRoute,Redirect&#125; <span class="keyword">from</span> <span class="string">'react-router'</span>;</span><br><span class="line"></span><br><span class="line">&lt;Router history=&#123;browserHistory&#125;&gt;</span><br><span class="line">  &lt;Redirect <span class="keyword">from</span>=<span class="string">"/w"</span> to=<span class="string">"/r"</span>/&gt;</span><br><span class="line">  &lt;Route path=<span class="string">"/(:message)"</span> component=&#123;Message&#125; /&gt;</span><br><span class="line">&lt;<span class="regexp">/Router&gt;</span></span><br></pre></td></tr></table></figure></p>
+<ul>
+<li>Redirect访问from的时候就跳到to</li>
+<li>注意顺序，这里将Route放在Redirect的前面的时候，/w是可以被渲染出来的。</li>
+<li>Redirect和嵌套有关，规则等同Route<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> React <span class="keyword">from</span> <span class="string">'react'</span>;</span><br><span class="line"><span class="keyword">import</span> &#123;render&#125; <span class="keyword">from</span> <span class="string">'react-dom'</span>;</span><br><span class="line"><span class="keyword">import</span> &#123;Router, Route, browserHistory,Link,IndexLink,IndexRoute,Redirect&#125; <span class="keyword">from</span> <span class="string">'react-router'</span>;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> app = <span class="built_in">document</span>.getElementById(<span class="string">'app'</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> Nav = <span class="function"><span class="params">()</span> =&gt;</span> (<span class="xml"><span class="tag">&lt;<span class="name">div</span>&gt;</span><span class="tag">&lt;<span class="name">Link</span> <span class="attr">to</span>=<span class="string">"/a"</span>&gt;</span>a<span class="tag">&lt;/<span class="name">Link</span>&gt;</span><span class="tag">&lt;<span class="name">br</span>/&gt;</span><span class="tag">&lt;<span class="name">Link</span> <span class="attr">to</span>=<span class="string">"/a/b"</span>&gt;</span>b<span class="tag">&lt;/<span class="name">Link</span>&gt;</span><span class="tag">&lt;<span class="name">br</span>/&gt;</span><span class="tag">&lt;<span class="name">Link</span> <span class="attr">to</span>=<span class="string">"/a/c"</span>&gt;</span>c<span class="tag">&lt;/<span class="name">Link</span>&gt;</span><span class="tag">&lt;<span class="name">br</span>/&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span>)</span><br><span class="line"><span class="keyword">const</span> A = <span class="function">(<span class="params">props</span>) =&gt;</span> (<span class="xml"><span class="tag">&lt;<span class="name">div</span>&gt;</span>&#123;props.children&#125;a<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span>)</span><br><span class="line"><span class="keyword">const</span> B = <span class="function">(<span class="params">props</span>) =&gt;</span> (<span class="xml"><span class="tag">&lt;<span class="name">div</span>&gt;</span>&#123;props.children&#125;B<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> Message = <span class="function">(<span class="params">props</span>) =&gt;</span> &#123;<span class="built_in">console</span>.log(props);<span class="keyword">return</span> (<span class="xml"><span class="tag">&lt;<span class="name">div</span>&gt;</span><span class="tag">&lt;<span class="name">Nav</span> /&gt;</span> Home &#123;props.children&#125;<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span>)&#125;;</span><br><span class="line"></span><br><span class="line">render(</span><br><span class="line">  &lt;Router history=&#123;browserHistory&#125;&gt;</span><br><span class="line">    &lt;Route path=<span class="string">"/"</span> component=&#123;Message&#125;&gt;</span><br><span class="line">      &lt;Route path=<span class="string">"a"</span> component=&#123;A&#125;&gt;</span><br><span class="line">        &lt;Route  path=<span class="string">"b"</span> component=&#123;B&#125; /&gt;</span><br><span class="line">        &lt;Redirect <span class="keyword">from</span>=<span class="string">"c"</span> to=<span class="string">"b"</span> /&gt;</span><br><span class="line">      &lt;<span class="regexp">/Route&gt;</span></span><br><span class="line"><span class="regexp">    &lt;/</span>Route&gt;</span><br><span class="line">  &lt;<span class="regexp">/Router&gt;</span></span><br><span class="line"><span class="regexp">  ,</span></span><br><span class="line"><span class="regexp">app)</span></span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h2 id="components"><a href="#components" class="headerlink" title="components"></a>components</h2><p>Route上components=obj的属性，该父标签的props里面就会有components的键，props.key对应着obj.key的组件。<br>目前这个属性，应该必须和组件嵌套配合使用。<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> React <span class="keyword">from</span> <span class="string">'react'</span>;</span><br><span class="line"><span class="keyword">import</span> &#123;render&#125; <span class="keyword">from</span> <span class="string">'react-dom'</span>;</span><br><span class="line"><span class="keyword">import</span> &#123;Router, Route, browserHistory,Link,IndexLink,IndexRoute,Redirect&#125; <span class="keyword">from</span> <span class="string">'react-router'</span>;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> app = <span class="built_in">document</span>.getElementById(<span class="string">'app'</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> Container = <span class="function">(<span class="params">props</span>)=&gt;</span>&#123;<span class="built_in">console</span>.log(props);<span class="keyword">return</span> (<span class="xml"><span class="tag">&lt;<span class="name">div</span>&gt;</span><span class="tag">&lt;<span class="name">Nav</span> /&gt;</span>&#123;props.header&#125; &#123;props.body&#125;<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span>)&#125;</span><br><span class="line"><span class="keyword">const</span> Nav = <span class="function"><span class="params">()</span>=&gt;</span>((<span class="xml"><span class="tag">&lt;<span class="name">div</span>&gt;</span><span class="tag">&lt;<span class="name">Link</span> <span class="attr">to</span>=<span class="string">"/"</span>&gt;</span>home<span class="tag">&lt;/<span class="name">Link</span>&gt;</span><span class="tag">&lt;<span class="name">br</span>/&gt;</span><span class="tag">&lt;<span class="name">Link</span> <span class="attr">to</span>=<span class="string">"/about"</span>&gt;</span>about<span class="tag">&lt;/<span class="name">Link</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span>))</span><br><span class="line"> </span><br><span class="line"><span class="keyword">const</span> HomeHeader = <span class="function"><span class="params">()</span>=&gt;</span>(<span class="xml"><span class="tag">&lt;<span class="name">div</span>&gt;</span>homeHeader<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span>),</span><br><span class="line">      HomeBody = <span class="function"><span class="params">()</span>=&gt;</span>(<span class="xml"><span class="tag">&lt;<span class="name">div</span>&gt;</span>homeBody<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span>),</span><br><span class="line">      AboutHeader = <span class="function"><span class="params">()</span>=&gt;</span>(<span class="xml"><span class="tag">&lt;<span class="name">div</span>&gt;</span>AboutHeader<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span>),</span><br><span class="line">      AboutBody = <span class="function"><span class="params">()</span>=&gt;</span>(<span class="xml"><span class="tag">&lt;<span class="name">div</span>&gt;</span>AboutBody<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span>);</span><br><span class="line"></span><br><span class="line">render(</span><br><span class="line">  &lt;Router history=&#123;browserHistory&#125;&gt;</span><br><span class="line">    &lt;Route path=<span class="string">"/"</span> component=&#123;Container&#125;&gt;</span><br><span class="line">      &lt;IndexRoute  components=&#123;&#123;<span class="attr">header</span>:HomeHeader,<span class="attr">body</span>:HomeBody&#125;&#125; /&gt;</span><br><span class="line">      &lt;Route path=<span class="string">"/about"</span> components=&#123;&#123;<span class="attr">header</span>:AboutHeader,<span class="attr">body</span>:AboutBody&#125;&#125; /&gt;</span><br><span class="line">    &lt;<span class="regexp">/Route&gt;</span></span><br><span class="line"><span class="regexp">  &lt;/</span>Router&gt;</span><br><span class="line">  ,</span><br><span class="line">app)</span><br></pre></td></tr></table></figure></p>
+<h2 id="setRouteLeaveHook"><a href="#setRouteLeaveHook" class="headerlink" title="setRouteLeaveHook"></a>setRouteLeaveHook</h2><p>切换路由之前要做啥。<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> React,&#123;Component&#125; <span class="keyword">from</span> <span class="string">'react'</span>;</span><br><span class="line"><span class="keyword">import</span> &#123;render&#125; <span class="keyword">from</span> <span class="string">'react-dom'</span>;</span><br><span class="line"><span class="keyword">import</span> &#123;Router, Route, browserHistory,Link,IndexLink,IndexRoute,Redirect&#125; <span class="keyword">from</span> <span class="string">'react-router'</span>;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> app = <span class="built_in">document</span>.getElementById(<span class="string">'app'</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> Container = <span class="function">(<span class="params">props</span>)=&gt;</span>&#123;<span class="built_in">console</span>.log(props);<span class="keyword">return</span> (<span class="xml"><span class="tag">&lt;<span class="name">div</span>&gt;</span><span class="tag">&lt;<span class="name">Nav</span> /&gt;</span>&#123;props.header&#125; &#123;props.body&#125; <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span>)&#125;</span><br><span class="line"><span class="keyword">const</span> Nav = <span class="function"><span class="params">()</span>=&gt;</span>((<span class="xml"><span class="tag">&lt;<span class="name">div</span>&gt;</span><span class="tag">&lt;<span class="name">Link</span> <span class="attr">to</span>=<span class="string">"/"</span>&gt;</span>home<span class="tag">&lt;/<span class="name">Link</span>&gt;</span><span class="tag">&lt;<span class="name">br</span>/&gt;</span><span class="tag">&lt;<span class="name">Link</span> <span class="attr">to</span>=<span class="string">"/about"</span>&gt;</span>about<span class="tag">&lt;/<span class="name">Link</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span>))</span><br><span class="line"> </span><br><span class="line"><span class="keyword">const</span> Home = <span class="function"><span class="params">()</span>=&gt;</span>(<span class="xml"><span class="tag">&lt;<span class="name">div</span>&gt;</span><span class="tag">&lt;<span class="name">Nav</span> /&gt;</span>home<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span>);</span><br><span class="line"><span class="comment">/**/</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">About</span> <span class="keyword">extends</span> <span class="title">Component</span></span>&#123;</span><br><span class="line">  <span class="keyword">constructor</span>(props)&#123;</span><br><span class="line">    <span class="keyword">super</span>(props);</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="keyword">this</span>.props)</span><br><span class="line">  &#125;</span><br><span class="line">  componentDidMount()&#123;</span><br><span class="line">    <span class="keyword">this</span>.props.router.setRouteLeaveHook(<span class="keyword">this</span>.props.route,<span class="keyword">this</span>.callback);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  callback(nextLocation )&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="built_in">arguments</span>)</span><br><span class="line">    <span class="comment">// return false</span></span><br><span class="line">    <span class="keyword">return</span>  <span class="string">`将离开这个页面去往<span class="subst">$&#123;nextLocation.pathname &#125;</span>吗？`</span></span><br><span class="line">  &#125;</span><br><span class="line">  render()&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="xml"><span class="tag">&lt;<span class="name">div</span>&gt;</span><span class="tag">&lt;<span class="name">Nav</span> /&gt;</span> about<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span></span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">render(</span><br><span class="line">  &lt;Router history=&#123;browserHistory&#125;&gt;</span><br><span class="line">    &lt;Route path=<span class="string">"/"</span> component=&#123;Home&#125; /&gt;</span><br><span class="line">    &lt;Route path=<span class="string">"/about"</span> component=&#123;About&#125; /&gt;</span><br><span class="line">  &lt;<span class="regexp">/Router&gt;</span></span><br><span class="line"><span class="regexp">  ,</span></span><br><span class="line"><span class="regexp">app)</span></span><br></pre></td></tr></table></figure></p>
+<ul>
+<li>this.props.router.setRouteLeaveHook(this.props.route,this.callback)表示离开this.props.route这个路由的时候，做this.callback</li>
+<li>callback默认有一个参数nextLocation，值是obj</li>
+<li>callback返回的字符串是询问句，确定就会返回true跳转，取消返回false不跳转，所以直接返回false的时候就无法跳转。</li>
+</ul>
+<h2 id="跳转到别的页面"><a href="#跳转到别的页面" class="headerlink" title="跳转到别的页面"></a>跳转到别的页面</h2><p>稍微改下上面的例子。this.props.router.push(‘/s’)或者browserHistory.push(‘/s’)。前者优先。<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">handleClick = <span class="function">(<span class="params">event</span>)=&gt;</span>&#123;</span><br><span class="line">  <span class="keyword">this</span>.props.router.push(<span class="string">'/s'</span>);</span><br><span class="line">  <span class="comment">// browserHistory.push('/s');</span></span><br><span class="line">&#125;</span><br><span class="line">render()&#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="xml"><span class="tag">&lt;<span class="name">div</span>&gt;</span><span class="tag">&lt;<span class="name">Nav</span> /&gt;</span>  <span class="tag">&lt;<span class="name">button</span> <span class="attr">onClick</span>=<span class="string">&#123;this.handleClick&#125;</span>&gt;</span>点击跳转<span class="tag">&lt;/<span class="name">button</span>&gt;</span> about<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<blockquote>
+<p><a href="https://github.com/reactjs/react-router-tutorial/tree/master/lessons/01-setting-up" target="_blank" rel="noopener">react-router的github练习地址</a><br><a href="https://guoyongfeng.github.io/book/12/01-%E6%A6%82%E8%BF%B0.html" target="_blank" rel="noopener">郭永峰的文档</a><br><a href="http://www.ruanyifeng.com/blog/2016/05/react_router.html" target="_blank" rel="noopener">阮一峰的文档</a></p>
+</blockquote>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/react/" rel="tag"># react</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/05/30/react2/" rel="next" title="react">
+                <i class="fa fa-chevron-left"></i> react
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/06/02/react1/" rel="prev" title="react的小入门">
+                react的小入门 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+          
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2017/06/02/react-router/" data-title="学习 react-router" data-url="http://yoursite.com/2017/06/02/react-router/">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image" src="http://omizt4opc.bkt.clouddn.com/avatar.jpg" alt="John Doe">
+          <p class="site-author-name" itemprop="name">John Doe</p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+           
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">75</span>
+                <span class="site-state-item-name">posts</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              
+                <span class="site-state-item-count">21</span>
+                <span class="site-state-item-name">categories</span>
+              
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              
+                <span class="site-state-item-count">35</span>
+                <span class="site-state-item-name">tags</span>
+              
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#TL-DR"><span class="nav-number">1.</span> <span class="nav-text">TL;DR</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Router-Route-broserHistory"><span class="nav-number">2.</span> <span class="nav-text">Router,Route,broserHistory</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Link"><span class="nav-number">3.</span> <span class="nav-text">Link</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#嵌套路由"><span class="nav-number">4.</span> <span class="nav-text">嵌套路由</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#params"><span class="nav-number">5.</span> <span class="nav-text">params</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#query"><span class="nav-number">6.</span> <span class="nav-text">query</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Redirect"><span class="nav-number">7.</span> <span class="nav-text">Redirect</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#components"><span class="nav-number">8.</span> <span class="nav-text">components</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#setRouteLeaveHook"><span class="nav-number">9.</span> <span class="nav-text">setRouteLeaveHook</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#跳转到别的页面"><span class="nav-number">10.</span> <span class="nav-text">跳转到别的页面</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">John Doe</span>
+</div>
+
+
+<div class="powered-by">
+  Powered by <a class="theme-link" href="https://hexo.io">Hexo</a>
+</div>
+
+<div class="theme-info">
+  Theme -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+    
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"frontzhm"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+    
+    <script src="/lib/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+    <script src="/js/src/hook-duoshuo.js"></script>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+</body>
+</html>

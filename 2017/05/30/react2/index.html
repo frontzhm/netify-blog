@@ -1,0 +1,788 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang>
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css">
+
+
+  <meta name="keywords" content="react,">
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0">
+
+
+
+
+
+
+<meta name="description" content="TL;DRgit clone git@github.com:GuoYongfeng/react-fundamental.gitcd react-fundamental/npm installnpm run dev webpack gulp-webpack 功能webpack特性：plugin loader react jquery react webpack redux koa 123456789">
+<meta name="keywords" content="react">
+<meta property="og:type" content="article">
+<meta property="og:title" content="react">
+<meta property="og:url" content="http://yoursite.com/2017/05/30/react2/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="TL;DRgit clone git@github.com:GuoYongfeng/react-fundamental.gitcd react-fundamental/npm installnpm run dev webpack gulp-webpack 功能webpack特性：plugin loader react jquery react webpack redux koa 123456789">
+<meta property="og:locale" content="default">
+<meta property="og:updated_time" content="2017-05-30T02:49:13.338Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="react">
+<meta name="twitter:description" content="TL;DRgit clone git@github.com:GuoYongfeng/react-fundamental.gitcd react-fundamental/npm installnpm run dev webpack gulp-webpack 功能webpack特性：plugin loader react jquery react webpack redux koa 123456789">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    sidebar: {"position":"right","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2017/05/30/react2/">
+
+
+
+
+
+  <title> react | Hexo </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="default">
+
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?60f2cb5747a596a24f2a053f1650c30b";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-right page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Hexo</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <h1 class="site-subtitle" itemprop="description"></h1>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            Tags
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/05/30/react2/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="John Doe">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="http://omizt4opc.bkt.clouddn.com/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hexo">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+            
+            
+              
+                react
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-05-30T10:49:13+08:00">
+                2017-05-30
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/js/" itemprop="url" rel="index">
+                    <span itemprop="name">js</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2017/05/30/react2/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2017/05/30/react2/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="TL-DR"><a href="#TL-DR" class="headerlink" title="TL;DR"></a>TL;DR</h2><p>git clone <a href="mailto:git@github.com" target="_blank" rel="noopener">git@github.com</a>:GuoYongfeng/react-fundamental.git<br>cd react-fundamental/<br>npm install<br>npm run dev</p>
+<p>webpack gulp-webpack 功能<br>webpack特性：plugin loader</p>
+<p>react jquery</p>
+<p>react webpack redux koa</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">import React,&#123;Component&#125; from &apos;react&apos;;</span><br><span class="line">import ReactDom,&#123;render&#125; from &apos;react-dom&apos;;</span><br><span class="line"></span><br><span class="line">class Hi extends Component&#123;</span><br><span class="line">  render()&#123;</span><br><span class="line">    return &lt;div&gt;a&lt;/div&gt;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">render(&lt;Hi/&gt;,document.getElementById(&apos;app&apos;))</span><br></pre></td></tr></table></figure>
+<p>console.log(React) // 11个api<br>console.log(ReactDOM) // 5个api</p>
+<h2 id="jsx"><a href="#jsx" class="headerlink" title="jsx"></a>jsx</h2><p>浏览器插件  React  redux<br>jsx里面的注释</p>
+<p>{/**/ // }</p>
+<p>组件类注意：</p>
+<ul>
+<li>驼峰式</li>
+<li>首字母大写</li>
+<li>必须有根节点</li>
+</ul>
+<p>变量{varibel}</p>
+<p>定义样式</p>
+<p>可以通过{…obj}来批量设置一个对象键值对到组件的属性<br>属性名不能和js关键字冲突，className forHtml</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">import React,&#123;Component&#125; from &apos;react&apos;;</span><br><span class="line">import ReactDOM,&#123;render&#125; from &apos;react-dom&apos;;</span><br><span class="line">import HandleEvent from &apos;./components/DOMComponent&apos;</span><br><span class="line">class Hi extends Component&#123;</span><br><span class="line">  constructor(props)&#123;</span><br><span class="line">    super(props)</span><br><span class="line">  &#125;</span><br><span class="line">  render()&#123;</span><br><span class="line">    var styles = &#123;</span><br><span class="line">      color:&quot;blue&quot;,</span><br><span class="line">      fontSize:&quot;16px&quot;</span><br><span class="line">    &#125;</span><br><span class="line">    return &lt;div className=&quot;en&quot; style=&#123;styles&#125;&gt;&#123;this.props.name&#125; &#123;this.props.type&#125;&lt;/div&gt;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">var obj = &#123;</span><br><span class="line">  name: &apos;gaga&apos;,</span><br><span class="line">  type:&apos;demo&apos;</span><br><span class="line">&#125;</span><br><span class="line">render(&lt;div&gt;&lt;Hi &#123;...obj&#125;/&gt;&lt;HandleEvent name=&#123;obj.name&#125; type=&#123;obj.type&#125;/&gt;&lt;/div&gt;,document.getElementById(&apos;app&apos;))</span><br><span class="line">console.log(React) // 11个api</span><br><span class="line">console.log(ReactDOM) // 5个api</span><br></pre></td></tr></table></figure>
+<p>数据流（states）</p>
+<p>组件是状态机<br>组件的props（输入）<br>-&gt; 组件内部逻辑（state）,管理组件内部的状态<br>-&gt; html</p>
+<p>this.state<br>this.defaultProps = {}</p>
+<p>this.props.children<br>this.props.map<br>this.props.filter</p>
+<p>propTypes保持接口的一致性<br><a href="https://facebook.github.io/react/docs/typechecking-with-proptypes.html" target="_blank" rel="noopener">https://facebook.github.io/react/docs/typechecking-with-proptypes.html</a></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">// 15.5</span><br><span class="line">npm install --save prop-types</span><br><span class="line"></span><br><span class="line">import PropTypes from &apos;prop-types&apos;</span><br></pre></td></tr></table></figure>
+<h2 id="定义组件"><a href="#定义组件" class="headerlink" title="定义组件"></a>定义组件</h2><p>props<br>propType<br>state<br>mixins</p>
+<p><a href="https://facebook.github.io/react/docs/react-component.html" target="_blank" rel="noopener">https://facebook.github.io/react/docs/react-component.html</a></p>
+<p>创建 -&gt; 渲染 -&gt; 销毁</p>
+<p>getDefaultProps<br>getInitialState<br>componentWillMount<br>render<br>componentDidMount<br>componentWillUnmount</p>
+<h2 id="更新"><a href="#更新" class="headerlink" title="更新"></a>更新</h2><p>componentWillReceiveProps()<br>shouldComponentUpdate()<br>componentWillUpdate<br>render<br>componentDidUpdate</p>
+<p>// 渲染组件<br>getDefaultProps<br>getInitialState<br>componentWillMount<br>render<br>componentDidMount</p>
+<p>// 更新组件 （props发射变化的时候，某种程度是别的组件调用的时候）<br>componentWillReceiveProps()<br>shouldComponentUpdate()<br>componentWillUpdate<br>render<br>componentDidUpdate</p>
+<p>// 销毁组件<br>componentWillUnmount</p>
+<p>增加1销毁组件 试试demo</p>
+<h2 id="react获取DOM"><a href="#react获取DOM" class="headerlink" title="react获取DOM"></a>react获取DOM</h2><p>ReactDOM.findDOMNode()<br>this.refs.xx</p>
+<p>input range调整demo</p>
+<h2 id="事件"><a href="#事件" class="headerlink" title="事件"></a>事件</h2><p>react的事件系统和浏览器不太一样。</p>
+<p>onClick = {this.handleClick}<br>onClick = {this.handleClickDiv}</p>
+<!-- 这里用下箭头函数,里面的this始终指向实例  不然要bind(this) -->
+<p>handleClick = ()=&gt;{<br>  this.setState((prevState)=&gt;{<br>          var c = prevState.text ===’like’ ?’dont like’ :’like’<br>          return {text:c}<br>          // text:prevState.text+”ok”<br>        })<br>}</p>
+<h2 id="组件嵌套"><a href="#组件嵌套" class="headerlink" title="组件嵌套"></a>组件嵌套</h2><ol>
+<li>不要有硬编码，就是值尽量是活的</li>
+<li>组合组件</li>
+<li>this.props.children   ul&gt;li</li>
+</ol>
+<h2 id="表单控件"><a href="#表单控件" class="headerlink" title="表单控件"></a>表单控件</h2><ul>
+<li>value/checked属性设置后，用户输入无效,defaultValue=’’</li>
+<li><p>textarea的值 要设置<code>value</code>属性</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;textarea value=&quot;&quot; /&gt;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>select 的value属性可以是数组，不建议使用selected属性</p>
+</li>
+<li>input/textarea onChange每次输入都会触发（即使不失去焦点）</li>
+<li>radio/checkbox/option只要点击就会触发onChange</li>
+</ul>
+<h2 id="mixins"><a href="#mixins" class="headerlink" title="mixins"></a>mixins</h2><p>公用方法</p>
+<p>高阶组件<br>decorator</p>
+<h2 id="TODO"><a href="#TODO" class="headerlink" title="TODO"></a>TODO</h2><p>增加1销毁组件 试试demo<br>input range调整demo</p>
+<h2 id="app"><a href="#app" class="headerlink" title="app"></a>app</h2><p>npm install react-router history –save</p>
+<p>react-router 管理路由<br>history 管理浏览器历史</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/react/" rel="tag"># react</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/05/25/es6-memory/" rel="next" title="es6的常用语法之小手册版">
+                <i class="fa fa-chevron-left"></i> es6的常用语法之小手册版
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/06/02/react-router/" rel="prev" title="学习 react-router">
+                学习 react-router <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+          
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2017/05/30/react2/" data-title="react" data-url="http://yoursite.com/2017/05/30/react2/">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image" src="http://omizt4opc.bkt.clouddn.com/avatar.jpg" alt="John Doe">
+          <p class="site-author-name" itemprop="name">John Doe</p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+           
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">75</span>
+                <span class="site-state-item-name">posts</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              
+                <span class="site-state-item-count">21</span>
+                <span class="site-state-item-name">categories</span>
+              
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              
+                <span class="site-state-item-count">35</span>
+                <span class="site-state-item-name">tags</span>
+              
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#TL-DR"><span class="nav-number">1.</span> <span class="nav-text">TL;DR</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#jsx"><span class="nav-number">2.</span> <span class="nav-text">jsx</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#定义组件"><span class="nav-number">3.</span> <span class="nav-text">定义组件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#更新"><span class="nav-number">4.</span> <span class="nav-text">更新</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#react获取DOM"><span class="nav-number">5.</span> <span class="nav-text">react获取DOM</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#事件"><span class="nav-number">6.</span> <span class="nav-text">事件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#组件嵌套"><span class="nav-number">7.</span> <span class="nav-text">组件嵌套</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#表单控件"><span class="nav-number">8.</span> <span class="nav-text">表单控件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#mixins"><span class="nav-number">9.</span> <span class="nav-text">mixins</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#TODO"><span class="nav-number">10.</span> <span class="nav-text">TODO</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#app"><span class="nav-number">11.</span> <span class="nav-text">app</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">John Doe</span>
+</div>
+
+
+<div class="powered-by">
+  Powered by <a class="theme-link" href="https://hexo.io">Hexo</a>
+</div>
+
+<div class="theme-info">
+  Theme -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+    
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"frontzhm"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+    
+    <script src="/lib/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+    <script src="/js/src/hook-duoshuo.js"></script>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+</body>
+</html>

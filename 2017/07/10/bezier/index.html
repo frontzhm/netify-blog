@@ -1,0 +1,787 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang>
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css">
+
+
+  <meta name="keywords" content="动画,">
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0">
+
+
+
+
+
+
+<meta name="description" content="TL;DRBezier曲线的由来1962年，法国工程师贝塞尔发表，他运用贝塞尔曲线来为汽车的主体进行设计 Bezier曲线的作用Bezier曲线是用一系列点控制曲线状态的。主要分为  数据点：确定曲线的起始和结束位置 控制点：确定曲线的弯曲程度  举例理解：想在AC（起始点和结束点）之间画一个曲线，用B点（控制点）控制这个曲线的弯曲程度 但是控制点是可以多个的，比如两个控制点。以此类推，可以有很多">
+<meta name="keywords" content="动画">
+<meta property="og:type" content="article">
+<meta property="og:title" content="贝塞尔曲线的理解">
+<meta property="og:url" content="http://yoursite.com/2017/07/10/bezier/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="TL;DRBezier曲线的由来1962年，法国工程师贝塞尔发表，他运用贝塞尔曲线来为汽车的主体进行设计 Bezier曲线的作用Bezier曲线是用一系列点控制曲线状态的。主要分为  数据点：确定曲线的起始和结束位置 控制点：确定曲线的弯曲程度  举例理解：想在AC（起始点和结束点）之间画一个曲线，用B点（控制点）控制这个曲线的弯曲程度 但是控制点是可以多个的，比如两个控制点。以此类推，可以有很多">
+<meta property="og:locale" content="default">
+<meta property="og:image" content="http://yoursite.com/2017/07/10/bezier/bezier/bezier-quadratic-start.png">
+<meta property="og:image" content="http://yoursite.com/2017/07/10/bezier/bezier/bezier-quadratic-end.png">
+<meta property="og:image" content="http://yoursite.com/2017/07/10/bezier/bezier/bezier-cubic-end.png">
+<meta property="og:image" content="http://yoursite.com/2017/07/10/bezier/bezier/bezier-quadratic-end.png">
+<meta property="og:image" content="http://yoursite.com/2017/07/10/bezier/bezier/bezier-quadratic-animation.gif">
+<meta property="og:image" content="http://yoursite.com/2017/07/10/bezier/bezier/bezier-cubic-points.png">
+<meta property="og:image" content="http://yoursite.com/2017/07/10/bezier/bezier/bezier-cubic-end.png">
+<meta property="og:image" content="http://yoursite.com/2017/07/10/bezier/bezier/cubic.gif">
+<meta property="og:image" content="http://yoursite.com/2017/07/10/bezier/bezier/complex-bezier-curve.gif">
+<meta property="og:image" content="http://yoursite.com/2017/07/10/bezier/bezier/linear.gif">
+<meta property="og:image" content="http://yoursite.com/2017/07/10/bezier/bezier/bezier-quadratic-animation.gif">
+<meta property="og:image" content="http://yoursite.com/2017/07/10/bezier/bezier/two.jpg">
+<meta property="og:image" content="http://yoursite.com/2017/07/10/bezier/bezier/two.jpg">
+<meta property="og:image" content="http://yoursite.com/2017/07/10/bezier/bezier/three.png">
+<meta property="og:updated_time" content="2017-07-10T07:07:15.179Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="贝塞尔曲线的理解">
+<meta name="twitter:description" content="TL;DRBezier曲线的由来1962年，法国工程师贝塞尔发表，他运用贝塞尔曲线来为汽车的主体进行设计 Bezier曲线的作用Bezier曲线是用一系列点控制曲线状态的。主要分为  数据点：确定曲线的起始和结束位置 控制点：确定曲线的弯曲程度  举例理解：想在AC（起始点和结束点）之间画一个曲线，用B点（控制点）控制这个曲线的弯曲程度 但是控制点是可以多个的，比如两个控制点。以此类推，可以有很多">
+<meta name="twitter:image" content="http://yoursite.com/2017/07/10/bezier/bezier/bezier-quadratic-start.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    sidebar: {"position":"right","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2017/07/10/bezier/">
+
+
+
+
+
+  <title> 贝塞尔曲线的理解 | Hexo </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="default">
+
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?60f2cb5747a596a24f2a053f1650c30b";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-right page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Hexo</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <h1 class="site-subtitle" itemprop="description"></h1>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            Tags
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/07/10/bezier/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="John Doe">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="http://omizt4opc.bkt.clouddn.com/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hexo">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+            
+            
+              
+                贝塞尔曲线的理解
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-07-10T15:07:15+08:00">
+                2017-07-10
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/js/" itemprop="url" rel="index">
+                    <span itemprop="name">js</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2017/07/10/bezier/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2017/07/10/bezier/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="TL-DR"><a href="#TL-DR" class="headerlink" title="TL;DR"></a>TL;DR</h2><h2 id="Bezier曲线的由来"><a href="#Bezier曲线的由来" class="headerlink" title="Bezier曲线的由来"></a>Bezier曲线的由来</h2><p>1962年，法国工程师贝塞尔发表，他运用贝塞尔曲线来为汽车的主体进行设计</p>
+<h2 id="Bezier曲线的作用"><a href="#Bezier曲线的作用" class="headerlink" title="Bezier曲线的作用"></a>Bezier曲线的作用</h2><p>Bezier曲线是用一系列点控制曲线状态的。主要分为</p>
+<ul>
+<li>数据点：确定曲线的起始和结束位置</li>
+<li>控制点：确定曲线的弯曲程度</li>
+</ul>
+<p>举例理解：想在AC（起始点和结束点）之间画一个曲线，用B点（控制点）控制这个曲线的弯曲程度<br><img src="bezier/bezier-quadratic-start.png" alt><br><img src="bezier/bezier-quadratic-end.png" alt></p>
+<p>但是控制点是可以多个的，比如两个控制点。以此类推，可以有很多个。<br><img src="bezier/bezier-cubic-end.png" alt></p>
+<blockquote>
+<p><strong>起点和终点都只有一个，但是控制点可以多个，甚至是0，0的时候就是直线啦！</strong></p>
+</blockquote>
+<h2 id="Bezier曲线的原理"><a href="#Bezier曲线的原理" class="headerlink" title="Bezier曲线的原理"></a>Bezier曲线的原理</h2><p>为什么几个点就可以得到一个曲线？<br>先说一个控制点的情况，如图所示：<br><img src="bezier/bezier-quadratic-end.png" alt></p>
+<ol>
+<li>A/B/C三点是确定的</li>
+<li>在AB上任取一点D，得到ratio = AD/AB</li>
+<li>再由BE/BC = ratio 得到E点</li>
+<li>连接DE，同理DF/DE = ratio得到F</li>
+<li>而F点就是曲线上的一点，当然凭着这一点是无法得到整条曲线的</li>
+<li>于是，再来一遍，重新取D点得到新的F点，以此类推，如图<br><img src="bezier/bezier-quadratic-animation.gif" alt><br>那么两个控制点呢？<br>道理是一样的，在AB上任取一点E，得到曲线上的J点。<br>AE/AB = BF/BC = CG/CD = EH/EF = FI/FG = HJ/HI<br><img src="bezier/bezier-cubic-points.png" alt><br><img src="bezier/bezier-cubic-end.png" alt><br><img src="bezier/cubic.gif" alt></li>
+</ol>
+<p>最后来个炫酷的四个控制点：<br><img src="bezier/complex-bezier-curve.gif" alt></p>
+<h2 id="理解Bezier曲线的公式"><a href="#理解Bezier曲线的公式" class="headerlink" title="理解Bezier曲线的公式"></a>理解Bezier曲线的公式</h2><h3 id="一次贝塞尔曲线"><a href="#一次贝塞尔曲线" class="headerlink" title="一次贝塞尔曲线"></a>一次贝塞尔曲线</h3><p><img src="bezier/linear.gif" alt><br>一次贝塞尔曲线（也是线性贝塞尔曲线）公式：B(t) = (1 - t) * P<sub>0</sub> + tP<sub>1</sub></p>
+<ul>
+<li>t表示在 P<sub>0</sub>P<sub>1</sub>/P<sub>0</sub>P<sub>1</sub>之间任取一点P<sub>2</sub>，t = P<sub>0</sub>P<sub>2</sub>/P<sub>0</sub>P<sub>1</sub>，也就是比例，公式里的P<sub>0</sub>和P<sub>1</sub>同步表示其x轴坐标或者y轴坐标。</li>
+<li>已知P<sub>0</sub>的坐标是（a,b），P<sub>1</sub>的坐标是（c,d），那么假设P<sub>2</sub>的坐标是（x,y）</li>
+<li>(1-t)/(c-x) = t/(x-a) =&gt; x = (1-t)c + ta</li>
+<li>同理 y = (1-t)d + tb</li>
+<li>于是简写成 B(t) = (1 - t) * P<sub>0</sub> + tP<sub>1</sub></li>
+</ul>
+<h3 id="二次贝塞尔曲线"><a href="#二次贝塞尔曲线" class="headerlink" title="二次贝塞尔曲线"></a>二次贝塞尔曲线</h3><p><img src="bezier/bezier-quadratic-animation.gif" alt><br>二次贝塞尔曲线（也是线性贝塞尔曲线）公式：<img src="bezier/two.jpg" alt></p>
+<ul>
+<li>t同上</li>
+<li>在P<sub>0</sub>P<sub>1</sub>上的点是A，在P<sub>1</sub>P<sub>2</sub>上的点是B，在AB上的点是C，C也就是曲线上的一点。</li>
+<li>A ： tP<sub>1</sub> + (1-t)P<sub>0</sub></li>
+<li>B ： tP<sub>2</sub> + (1-t)P<sub>1</sub></li>
+<li>C ： tB + (1-t)A 将A、B换成上式，进行合并同类项</li>
+<li>最后得到<img src="bezier/two.jpg" alt></li>
+</ul>
+<p>同理可得三次贝塞尔曲线：<img src="bezier/three.png" alt></p>
+<p><br><br><br><br><br><br><br></p>
+<blockquote>
+<p><a href="http://blog.csdn.net/venshine/article/details/51758841" target="_blank" rel="noopener"> Android 绘制N阶Bezier曲线</a><br><a href="http://www.html-js.com/article/1628" target="_blank" rel="noopener">贝塞尔曲线扫盲</a><br><a href="https://www.wuchengkai.com/svg-curve/" target="_blank" rel="noopener">理解 SVG 当中的贝塞尔曲线</a></p>
+</blockquote>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/动画/" rel="tag"># 动画</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/07/07/mobileCss/" rel="next" title="css的一些技巧">
+                <i class="fa fa-chevron-left"></i> css的一些技巧
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/07/17/animation/" rel="prev" title="初探动画">
+                初探动画 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+          
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2017/07/10/bezier/" data-title="贝塞尔曲线的理解" data-url="http://yoursite.com/2017/07/10/bezier/">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image" src="http://omizt4opc.bkt.clouddn.com/avatar.jpg" alt="John Doe">
+          <p class="site-author-name" itemprop="name">John Doe</p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+           
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">75</span>
+                <span class="site-state-item-name">posts</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              
+                <span class="site-state-item-count">21</span>
+                <span class="site-state-item-name">categories</span>
+              
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              
+                <span class="site-state-item-count">35</span>
+                <span class="site-state-item-name">tags</span>
+              
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#TL-DR"><span class="nav-number">1.</span> <span class="nav-text">TL;DR</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Bezier曲线的由来"><span class="nav-number">2.</span> <span class="nav-text">Bezier曲线的由来</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Bezier曲线的作用"><span class="nav-number">3.</span> <span class="nav-text">Bezier曲线的作用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Bezier曲线的原理"><span class="nav-number">4.</span> <span class="nav-text">Bezier曲线的原理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#理解Bezier曲线的公式"><span class="nav-number">5.</span> <span class="nav-text">理解Bezier曲线的公式</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#一次贝塞尔曲线"><span class="nav-number">5.1.</span> <span class="nav-text">一次贝塞尔曲线</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#二次贝塞尔曲线"><span class="nav-number">5.2.</span> <span class="nav-text">二次贝塞尔曲线</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">John Doe</span>
+</div>
+
+
+<div class="powered-by">
+  Powered by <a class="theme-link" href="https://hexo.io">Hexo</a>
+</div>
+
+<div class="theme-info">
+  Theme -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+    
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"frontzhm"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+    
+    <script src="/lib/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+    <script src="/js/src/hook-duoshuo.js"></script>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+</body>
+</html>

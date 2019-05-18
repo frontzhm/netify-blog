@@ -1,0 +1,811 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang>
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css">
+
+
+  <meta name="keywords" content="js,">
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0">
+
+
+
+
+
+
+<meta name="description" content="TL;DR 异步：先干一件事，中间去干其他的事，最终再回来干这件事 高阶函数是函数作为参数或者函数作为返回值 ，作用是批量生成函数和预置函数做为参数（可以缓存函数，当达到条件时执行该函数） 异步的发展流程：callback -&amp;gt;  promise -&amp;gt; generator + co -&amp;gt; async+await(语法糖) 回调函数金字塔处理多请求 -&amp;gt; 哨兵函数处理多请求">
+<meta name="keywords" content="js">
+<meta property="og:type" content="article">
+<meta property="og:title" content="异步的发展，顺手学会怎么处理并发请求">
+<meta property="og:url" content="http://yoursite.com/2019/02/15/1_async_history/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="TL;DR 异步：先干一件事，中间去干其他的事，最终再回来干这件事 高阶函数是函数作为参数或者函数作为返回值 ，作用是批量生成函数和预置函数做为参数（可以缓存函数，当达到条件时执行该函数） 异步的发展流程：callback -&amp;gt;  promise -&amp;gt; generator + co -&amp;gt; async+await(语法糖) 回调函数金字塔处理多请求 -&amp;gt; 哨兵函数处理多请求">
+<meta property="og:locale" content="default">
+<meta property="og:updated_time" content="2020-08-18T19:20:00.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="异步的发展，顺手学会怎么处理并发请求">
+<meta name="twitter:description" content="TL;DR 异步：先干一件事，中间去干其他的事，最终再回来干这件事 高阶函数是函数作为参数或者函数作为返回值 ，作用是批量生成函数和预置函数做为参数（可以缓存函数，当达到条件时执行该函数） 异步的发展流程：callback -&amp;gt;  promise -&amp;gt; generator + co -&amp;gt; async+await(语法糖) 回调函数金字塔处理多请求 -&amp;gt; 哨兵函数处理多请求">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    sidebar: {"position":"right","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2019/02/15/1_async_history/">
+
+
+
+
+
+  <title> 异步的发展，顺手学会怎么处理并发请求 | Hexo </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="default">
+
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?60f2cb5747a596a24f2a053f1650c30b";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-right page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Hexo</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <h1 class="site-subtitle" itemprop="description"></h1>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            Tags
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/02/15/1_async_history/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="John Doe">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="http://omizt4opc.bkt.clouddn.com/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hexo">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+            
+            
+              
+                异步的发展，顺手学会怎么处理并发请求
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-02-15T11:31:58+08:00">
+                2019-02-15
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/js/" itemprop="url" rel="index">
+                    <span itemprop="name">js</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2019/02/15/1_async_history/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2019/02/15/1_async_history/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="TL-DR"><a href="#TL-DR" class="headerlink" title="TL;DR"></a>TL;DR</h2><ul>
+<li>异步：先干一件事，中间去干其他的事，最终再回来干这件事</li>
+<li>高阶函数是函数作为参数或者函数作为返回值 ，作用是批量生成函数和预置函数做为参数（可以缓存函数，当达到条件时执行该函数）</li>
+<li>异步的发展流程：callback -&gt;  promise -&gt; generator + co -&gt; async+await(语法糖)</li>
+<li>回调函数金字塔处理多请求 -&gt; 哨兵函数处理多请求 -&gt; promise处理多请求 -&gt; co处理多请求 -&gt; async处理多请求</li>
+<li>手写实现co、bluebird的promisify和promisifyAll</li>
+</ul>
+<a id="more"></a>
+<h2 id="异步的发展流程"><a href="#异步的发展流程" class="headerlink" title="异步的发展流程"></a>异步的发展流程</h2><ul>
+<li><p>异步：先干一件事 中间去干其他的事，最终在回来干这件事  </p>
+</li>
+<li><p>同步：同步连续执行</p>
+</li>
+<li><p>异步的发展流程：callback -&gt;  promise -&gt; generator + co -&gt; async+await(语法糖)</p>
+</li>
+<li><p>异步发展的最终结果就是，像同步一样的写法，简单优雅易懂</p>
+</li>
+</ul>
+<h2 id="回调函数的金字塔地狱版本1-0"><a href="#回调函数的金字塔地狱版本1-0" class="headerlink" title="回调函数的金字塔地狱版本1.0"></a>回调函数的金字塔地狱版本1.0</h2><p>普通的读到2个文件之后才能进行某件事，可能最开始的手段：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 本地写3文件，index.js写以下代码 template.txt写些html的代码，data.txt写些json数据，然后命令行运行 node index.js</span></span><br><span class="line"><span class="keyword">let</span> fs = <span class="built_in">require</span>(<span class="string">'fs'</span>)</span><br><span class="line">fs.readFile(<span class="string">'template.txt'</span>,<span class="string">'utf8'</span>,<span class="function"><span class="keyword">function</span>(<span class="params">err,template</span>)</span>&#123; <span class="comment">// error-first</span></span><br><span class="line">    fs.readFile(<span class="string">'data.txt'</span>,<span class="string">'utf8'</span>,<span class="function"><span class="keyword">function</span>(<span class="params">err,data</span>)</span>&#123; <span class="comment">// error-first</span></span><br><span class="line">        <span class="built_in">console</span>.log(&#123;<span class="attr">template</span>:template,<span class="attr">data</span>:data&#125;);</span><br><span class="line">    &#125;);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<h2 id="理解高阶函数"><a href="#理解高阶函数" class="headerlink" title="理解高阶函数"></a>理解高阶函数</h2><p>先介绍高阶函数的含义和用法。  </p>
+<ul>
+<li><p>含义：函数作为参数或者函数作为返回值  </p>
+</li>
+<li><p>用法：批量生成函数和预置函数做为参数</p>
+</li>
+</ul>
+<h3 id="批量生成函数"><a href="#批量生成函数" class="headerlink" title="批量生成函数"></a>批量生成函数</h3><p>比如判断变量是不是对象或者数组</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">isObject</span>(<span class="params">content</span>)</span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">Object</span>.prototype.toString.call(content) === <span class="string">'[object Object]'</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">isArray</span>(<span class="params">content</span>)</span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">Object</span>.prototype.toString.call(content) === <span class="string">'[object Array]'</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>但这样一个个写很麻烦，可以写一个函数生成这些函数，这样简单粗暴。在平时你发现函数里有重复代码的时候，可以考虑封装一个高阶函数生成函数~</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">isType</span>(<span class="params">type</span>)</span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="function"><span class="keyword">function</span>(<span class="params">content</span>)</span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">Object</span>.prototype.toString.call(content) === <span class="string">`[object <span class="subst">$&#123;type&#125;</span>]`</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> isObject = isType(<span class="string">'Object'</span>)</span><br><span class="line"><span class="keyword">const</span> isArray = isType(<span class="string">'Array'</span>)</span><br></pre></td></tr></table></figure>
+<h3 id="预置函数做为参数"><a href="#预置函数做为参数" class="headerlink" title="预置函数做为参数"></a>预置函数做为参数</h3><p>lodash里面有个after的函数，功能是函数调用几次之后才真正执行函数，很神奇是吧，走一个~</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">after</span>(<span class="params">times,fn</span>)</span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">            <span class="keyword">if</span>(--times===<span class="number">0</span>)&#123;</span><br><span class="line">            fn()</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">let</span> eat = after(<span class="number">3</span>,<span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">'饱了'</span>)</span><br><span class="line">&#125;)</span><br><span class="line">eat();</span><br><span class="line">eat();</span><br><span class="line">eat(); <span class="comment">// 这次才会执行</span></span><br></pre></td></tr></table></figure>
+<p>举一反三，换句话说这样可以缓存函数，当达到条件时执行该函数。这就超级厉害了~</p>
+<h2 id="高阶函数的哨兵变量版2-0"><a href="#高阶函数的哨兵变量版2-0" class="headerlink" title="高阶函数的哨兵变量版2.0"></a>高阶函数的哨兵变量版2.0</h2><p>由上面例子得到的启发，再看前面的例子</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 本地写3文件，index.js写以下代码 template.txt写些html的代码，data.txt写些json数据，然后命令行运行 node index.js</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">after</span>(<span class="params">requestCounts,fn</span>)</span>&#123;</span><br><span class="line">    <span class="keyword">let</span> dataSet = &#123;&#125; <span class="comment">// 数据收集，请求跟结果一一对应，所以存为对象，这个变量通常称为哨兵变量</span></span><br><span class="line">    <span class="comment">// return的函数就是单个读取到结果之后在其回调函数里执行的函数，所以可以拿到数据</span></span><br><span class="line">    <span class="keyword">return</span> <span class="function"><span class="keyword">function</span>(<span class="params">key,data</span>)</span>&#123;</span><br><span class="line">        dataSet[key] = data</span><br><span class="line">        <span class="comment">// 所有请求都拿到结果之后</span></span><br><span class="line">        <span class="keyword">if</span>(<span class="built_in">Object</span>.keys(dataSet).length ===requestCounts)&#123;</span><br><span class="line">            fn(dataSet)</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> out = after(<span class="number">2</span>,<span class="function"><span class="keyword">function</span>(<span class="params">res</span>)</span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(res);</span><br><span class="line">&#125;)</span><br><span class="line"><span class="keyword">let</span> fs = <span class="built_in">require</span>(<span class="string">'fs'</span>)</span><br><span class="line">fs.readFile(<span class="string">'template.txt'</span>,<span class="string">'utf8'</span>,<span class="function"><span class="keyword">function</span>(<span class="params">err,data</span>)</span>&#123;out(<span class="string">'template'</span>,data)&#125;)</span><br><span class="line">fs.readFile(<span class="string">'data.txt'</span>,<span class="string">'utf8'</span>,<span class="function"><span class="keyword">function</span>(<span class="params">err,data</span>)</span>&#123;out(<span class="string">'data'</span>,data)&#125;);</span><br></pre></td></tr></table></figure>
+<p>这样很方便处理并发请求，请求的数量传入即可。</p>
+<h2 id="理解promise"><a href="#理解promise" class="headerlink" title="理解promise"></a>理解promise</h2><p>可以对照<a href="http://www.promisesaplus.com" target="_blank" rel="noopener">promise的网站</a>，自己试着实现promise。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 大概用法</span></span><br><span class="line"><span class="keyword">var</span> y = <span class="keyword">new</span> <span class="built_in">Promise</span>(<span class="function">(<span class="params">resolve,reject</span>)=&gt;</span>&#123;</span><br><span class="line">    setTimeout(<span class="function"><span class="params">()</span>=&gt;</span>&#123;</span><br><span class="line">        <span class="keyword">let</span> x = <span class="built_in">Math</span>.random()</span><br><span class="line">        <span class="keyword">if</span>(x &gt;<span class="number">0.5</span>)&#123;</span><br><span class="line">            resolve(x)</span><br><span class="line">        &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">            reject(x)</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;,<span class="number">100</span>)</span><br><span class="line">&#125;)</span><br><span class="line"><span class="built_in">console</span>.log(y)</span><br><span class="line"><span class="keyword">var</span> yThen = y.then(<span class="function">(<span class="params">data</span>)=&gt;</span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">'then'</span>,data)</span><br><span class="line">&#125;,(data)=&gt;&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">'catch'</span>,data)</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<h2 id="promise版本3-0"><a href="#promise版本3-0" class="headerlink" title="promise版本3.0"></a>promise版本3.0</h2><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> fs = <span class="built_in">require</span>(<span class="string">'fs'</span>)</span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">readFilePro</span>(<span class="params">filename</span>)</span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> <span class="built_in">Promise</span>(<span class="function">(<span class="params">resolve,reject</span>)=&gt;</span>&#123;</span><br><span class="line">        fs.readFile(filename,<span class="string">'utf8'</span>,<span class="function"><span class="keyword">function</span>(<span class="params">err,data</span>)</span>&#123;err?reject(err):resolve(data)&#125;);</span><br><span class="line">    &#125;)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="built_in">Promise</span>.all([readFilePro(<span class="string">'template.txt'</span>),readFilePro(<span class="string">'data.txt'</span>)]).then(<span class="function"><span class="params">res</span>=&gt;</span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(&#123;<span class="attr">template</span>:res[<span class="number">0</span>],<span class="attr">data</span>:res[<span class="number">1</span>]&#125;)</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<h2 id="理解生成器generator"><a href="#理解生成器generator" class="headerlink" title="理解生成器generator"></a>理解生成器generator</h2><p>生成器函数虽然是一个函数，但和普通函数不一样，普通函数一旦调用就会执行完。</p>
+<ul>
+<li>生成器函数用* 来标识</li>
+<li>调用的结果是一个迭代器 迭代器有一个next方法</li>
+<li>遇到暂停点yield就停下来，直到执行迭代器的next，最后才能返回这个函数的return</li>
+<li>yield后面跟着的是value的值</li>
+<li>yield等号前面的是我们当前调用next传进来的值</li>
+<li>第一次next传值是无效的</li>
+<li>当done为true的时候就是value就是生成器return的值</li>
+</ul>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 生成器函数有个特点需要加个*</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> *<span class="title">go</span>(<span class="params">a</span>)</span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="number">1</span>)</span><br><span class="line">    <span class="comment">// 此处b是外界输入，这行代码实现输入输出</span></span><br><span class="line">    <span class="keyword">let</span> b = <span class="keyword">yield</span> a</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="number">2</span>)</span><br><span class="line">    <span class="keyword">let</span> c = <span class="keyword">yield</span> b</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="number">3</span>)</span><br><span class="line">    <span class="keyword">return</span> <span class="string">'o'</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 生成器函数和普通函数不一样调用他函数不会立刻执行</span></span><br><span class="line"><span class="comment">// 返回生成器的迭代器，迭代器是一个对象</span></span><br><span class="line"><span class="keyword">let</span> it = go(<span class="string">'a'</span>)</span><br><span class="line"><span class="comment">// next第一次执行不需要传参数,想想也是，没有意义</span></span><br><span class="line"><span class="keyword">let</span> r1 = it.next()</span><br><span class="line"><span class="built_in">console</span>.log(r1) <span class="comment">// &#123;value:'a',done:false&#125;</span></span><br><span class="line"><span class="keyword">let</span> r2 = it.next(<span class="string">'B'</span>)</span><br><span class="line"><span class="built_in">console</span>.log(r2) <span class="comment">// &#123;value:'B',done:false&#125;</span></span><br><span class="line"><span class="keyword">let</span> r3 = it.next(<span class="string">'C'</span>)</span><br><span class="line"><span class="comment">// 当done为true的时候就是return的值</span></span><br><span class="line"><span class="built_in">console</span>.log(r3) <span class="comment">// &#123;value:'o',done:true&#125;</span></span><br></pre></td></tr></table></figure>
+<h2 id="理解co，让生成器自动执行"><a href="#理解co，让生成器自动执行" class="headerlink" title="理解co，让生成器自动执行"></a>理解co，让生成器自动执行</h2><p>co是<a href="https://github.com/tj" target="_blank" rel="noopener">大神tj</a>写出来的，超棒的小伙子啊，才23岁好像，再次感慨人与人之间的差距简直比人与狗之间的差距还大，面条泪~<br>co让生成器自动执行的原理其实想想就是让next运行到结束为止。<br>!!!!必须特别强调: co 有个使用条件，generator 函数的 yield 命令后面，只能是 Thunk 函数或 Promise 对象。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// gen是生成器generator的简写</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">co</span>(<span class="params">gen</span>)</span>&#123;</span><br><span class="line">    <span class="keyword">let</span> it = gen()</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> <span class="built_in">Promise</span>(<span class="function">(<span class="params">resolve,reject</span>)=&gt;</span>&#123;</span><br><span class="line">        !<span class="function"><span class="keyword">function</span> <span class="title">next</span>(<span class="params">lastValue</span>)</span>&#123;</span><br><span class="line">            <span class="keyword">let</span> &#123;value,done&#125; = it.next(lastValue)</span><br><span class="line">            <span class="keyword">if</span>(done)&#123;</span><br><span class="line">               resolve(value)</span><br><span class="line">            &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">                <span class="comment">// 递归，这里也看出来，这也是为啥yield后面必须是promise类型</span></span><br><span class="line">                value.then(next)</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;()</span><br><span class="line">    &#125;)</span><br><span class="line">&#125;</span><br><span class="line">co(go)</span><br></pre></td></tr></table></figure>
+<h2 id="promise和co版本的4-0"><a href="#promise和co版本的4-0" class="headerlink" title="promise和co版本的4.0"></a>promise和co版本的4.0</h2><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 本地写3文件，index.js写以下代码 template.txt写些html的代码，data.txt写些json数据，然后命令行运行 node index.js</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> fs = <span class="built_in">require</span>(<span class="string">'fs'</span>)</span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">readFilePro</span>(<span class="params">filename</span>)</span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> <span class="built_in">Promise</span>(<span class="function">(<span class="params">resolve,reject</span>)=&gt;</span>&#123;</span><br><span class="line">        fs.readFile(filename,<span class="string">'utf8'</span>,<span class="function"><span class="keyword">function</span>(<span class="params">err,data</span>)</span>&#123;err?reject(err):resolve(data)&#125;);</span><br><span class="line">    &#125;)</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">function</span> *<span class="title">gen</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">    <span class="comment">// let res = &#123;&#125;</span></span><br><span class="line">    <span class="keyword">let</span> template = <span class="keyword">yield</span> readFilePro(<span class="string">'template.txt'</span>)</span><br><span class="line">    <span class="keyword">let</span> data = <span class="keyword">yield</span> readFilePro(<span class="string">'data.txt'</span>)</span><br><span class="line">    <span class="keyword">return</span> &#123;template,data&#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 也可以直接引入 co的库 npm i co  let co = require('co')</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">co</span>(<span class="params">gen</span>)</span>&#123;</span><br><span class="line">    <span class="keyword">let</span> it = gen()</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> <span class="built_in">Promise</span>(<span class="function">(<span class="params">resolve,reject</span>)=&gt;</span>&#123;</span><br><span class="line">        !<span class="function"><span class="keyword">function</span> <span class="title">next</span>(<span class="params">lastValue</span>)</span>&#123;</span><br><span class="line">            <span class="keyword">let</span> &#123;value,done&#125; = it.next(lastValue)</span><br><span class="line">            <span class="keyword">if</span>(done)&#123;</span><br><span class="line">               resolve(value)</span><br><span class="line">            &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">                <span class="comment">// 递归，这里也看出来，这也是为啥yield后面必须是promise类型</span></span><br><span class="line">                value.then(next)</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;()</span><br><span class="line">    &#125;)</span><br><span class="line">&#125;</span><br><span class="line">co(gen).then(<span class="function"><span class="params">res</span>=&gt;</span><span class="built_in">console</span>.log(res))</span><br></pre></td></tr></table></figure>
+<h2 id="async和await版本5-0"><a href="#async和await版本5-0" class="headerlink" title="async和await版本5.0"></a>async和await版本5.0</h2><p>async和await是promise和generator的语法糖。其实go函数就是gen函数里面的yield变成await~<br>因为async函数其实有点co的感觉，await后面必须是promise~  </p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 本地写3文件，index.js写以下代码 template.txt写些html的代码，data.txt写些json数据，然后命令行运行 node index.js</span></span><br><span class="line"><span class="keyword">let</span> fs = <span class="built_in">require</span>(<span class="string">'fs'</span>)</span><br><span class="line"><span class="comment">// readFilePro也可以用bluebird生成</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">readFilePro</span>(<span class="params">filename</span>)</span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> <span class="built_in">Promise</span>(<span class="function">(<span class="params">resolve,reject</span>)=&gt;</span>&#123;</span><br><span class="line">        fs.readFile(filename,<span class="string">'utf8'</span>,<span class="function"><span class="keyword">function</span>(<span class="params">err,data</span>)</span>&#123;err?reject(err):resolve(data)&#125;);</span><br><span class="line">    &#125;)</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">async</span> <span class="function"><span class="keyword">function</span> <span class="title">go</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">    <span class="keyword">let</span> template = <span class="keyword">await</span> readFilePro(<span class="string">'template.txt'</span>)</span><br><span class="line">    <span class="keyword">let</span> data = <span class="keyword">await</span> readFilePro(<span class="string">'data.txt'</span>)</span><br><span class="line">    <span class="comment">// 这里的return必须用then才能拿到值，因为是语法糖啊~</span></span><br><span class="line">    <span class="keyword">return</span> &#123;template,data&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">go().then(<span class="function"><span class="params">res</span>=&gt;</span><span class="built_in">console</span>.log(res))</span><br></pre></td></tr></table></figure>
+<p>这也是最终版啦，异步写成同步的感觉~</p>
+<h2 id="bluebird"><a href="#bluebird" class="headerlink" title="bluebird"></a>bluebird</h2><p>再叨叨点bluebird，它能把任意通过回调函数实现的异步API换成promiseApi。<br>常用的方法两个：promisify和promisifyAll。<br>promisify将回调函数实现的异步API换成promiseApi。<br>promisifyAll遍历对象上所有的方法 然后对每个方法添加一个新的方法 Async。  </p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> fs = <span class="built_in">require</span>(<span class="string">'fs'</span>)</span><br><span class="line"><span class="comment">// npm i bluebird</span></span><br><span class="line"><span class="keyword">let</span> <span class="built_in">Promise</span> = <span class="built_in">require</span>(<span class="string">'bluebird'</span>)</span><br><span class="line"><span class="keyword">let</span> readFilePro = <span class="built_in">Promise</span>.promisify(fs.readFile)</span><br><span class="line"><span class="comment">// 好像很眼熟是不是 哈哈哈哈</span></span><br><span class="line">readFilePro(<span class="string">'template.txt'</span>,<span class="string">'utf8'</span>).then(<span class="function">(<span class="params">template</span>)=&gt;</span>&#123;<span class="built_in">console</span>.log(template)&#125;)</span><br><span class="line"><span class="built_in">Promise</span>.promisifyAll(fs)</span><br><span class="line"><span class="comment">// console.log(fs) // 发现fs的方法多了</span></span><br><span class="line">fs.readFileAsync(<span class="string">'template.txt'</span>,<span class="string">'utf8'</span>).then(<span class="function">(<span class="params">template</span>)=&gt;</span>&#123;<span class="built_in">console</span>.log(template)&#125;)</span><br></pre></td></tr></table></figure>
+<p>其实感觉可以手写实现的有木有，来走一个~</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> fs = <span class="built_in">require</span>(<span class="string">'fs'</span>)</span><br><span class="line"><span class="comment">// 先看简单版的</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">readFilePro</span>(<span class="params">filename,encode</span>)</span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> <span class="built_in">Promise</span>(<span class="function">(<span class="params">resolve,reject</span>)=&gt;</span>&#123;</span><br><span class="line">        fs.readFile(filename,encode,<span class="function"><span class="keyword">function</span>(<span class="params">err,data</span>)</span>&#123;err?reject(err):resolve(data)&#125;);</span><br><span class="line">    &#125;)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 高阶函数生成上面的函数</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">promisify</span>(<span class="params">fn</span>)</span>&#123;</span><br><span class="line">    <span class="comment">// 这里生成readFilePro类似的函数，这里因为参数不一定，所以用args</span></span><br><span class="line">    <span class="keyword">return</span> <span class="function"><span class="keyword">function</span>(<span class="params">...args</span>)</span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> <span class="built_in">Promise</span>(<span class="function">(<span class="params">resolve,reject</span>)=&gt;</span>&#123;</span><br><span class="line">            <span class="comment">// 因为回调函数在最后一个，所以用拼接的方式，call的用法知道哈~</span></span><br><span class="line">            fn.call(<span class="literal">null</span>,...args,<span class="function"><span class="keyword">function</span>(<span class="params">err,data</span>)</span>&#123;err?reject(err):resolve(data)&#125;)</span><br><span class="line">        &#125;)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">promisifyAll</span>(<span class="params">object</span>)</span>&#123;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">const</span> key <span class="keyword">in</span> object) &#123;</span><br><span class="line">        <span class="keyword">if</span> (object.hasOwnProperty(key) &amp;&amp; <span class="keyword">typeof</span> object[key]===<span class="string">'function'</span>) &#123;</span><br><span class="line">            object[<span class="string">`<span class="subst">$&#123;key&#125;</span>Async`</span>] = promisify(object[key])</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> object</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">let</span> readFilePro = promisify(fs.readFile)</span><br><span class="line"><span class="comment">// 好像很眼熟是不是 哈哈哈哈</span></span><br><span class="line">readFilePro(<span class="string">'template.txt'</span>,<span class="string">'utf8'</span>).then(<span class="function">(<span class="params">template</span>)=&gt;</span>&#123;<span class="built_in">console</span>.log(template)&#125;)</span><br><span class="line"></span><br><span class="line">promisifyAll(fs)</span><br><span class="line"><span class="comment">// console.log(fs)</span></span><br><span class="line">fs.readFileAsync(<span class="string">'template.txt'</span>,<span class="string">'utf8'</span>).then(<span class="function">(<span class="params">template</span>)=&gt;</span>&#123;<span class="built_in">console</span>.log(template)&#125;)</span><br></pre></td></tr></table></figure>
+<h2 id="多请求"><a href="#多请求" class="headerlink" title="多请求"></a>多请求</h2><p>其实如果看懂到这里，对于多请求的实现也就不是大难事了。请求能用<a href="https://developer.mozilla.org/zh-CN/docs/Web/API/Fetch_API/Using_Fetch" target="_blank" rel="noopener">fetch</a>用fetch哈。<br>多请求分为并发请求（请求之间没有关系，但需要拿到所有请求结果）和串发请求（后面请求必须要拿到前面请求的结果）。<br>对于并发请求，感觉<code>Promise.all</code>处理更简单，串发请求那就用<code>await</code>吧~  </p>
+<!--
+## 最开始的回调函数
+
+比如需要读文件之后写文件，回调函数的形式。异步不支持try/catch,try/catch只针对同步代码且不支持return。
+
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">fs.readFile(<span class="string">'template.txt'</span>,<span class="string">'utf8'</span>,(err,data)=&gt;&#123;</span><br><span class="line">    <span class="keyword">if</span>(!err)&#123;</span><br><span class="line">        <span class="comment">// fs.writeFile....</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">fs.readFile(<span class="string">'./template.txt'</span>,<span class="string">'utf-8'</span>,<span class="function"><span class="keyword">function</span>(<span class="params">err,data</span>)</span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(err)&#123;</span><br><span class="line">        <span class="built_in">console</span>.log(err)</span><br><span class="line">    &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">        <span class="built_in">console</span>.log(<span class="string">'ok'</span>)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;)</span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">read</span>(<span class="params">filename</span>)</span>&#123;</span><br><span class="line">   fs.readFile(<span class="string">'./template.txt'</span>,<span class="string">'utf-8'</span>,<span class="function"><span class="keyword">function</span>(<span class="params">err,data</span>)</span>&#123;</span><br><span class="line">        <span class="keyword">if</span>(err)&#123;</span><br><span class="line">            <span class="built_in">console</span>.log(err)</span><br><span class="line">        &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">            <span class="built_in">console</span>.log(<span class="string">'ok'</span>)</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>请求一个html文件的时候，服务器需要读取模板和数据，回调函数就会嵌套，多的话形成恶魔金字塔。 </p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">fs.readFile(<span class="string">'./template.txt'</span>,<span class="string">'utf-8'</span>,<span class="function"><span class="keyword">function</span>(<span class="params">err,template</span>)</span>&#123;</span><br><span class="line">        <span class="comment">//...</span></span><br><span class="line">       fs.readFile(<span class="string">'./data.txt'</span>,<span class="string">'utf-8'</span>,<span class="function"><span class="keyword">function</span>(<span class="params">err,data&#123;</span></span></span><br><span class="line"><span class="function"><span class="params">           <span class="regexp">//</span> ...</span></span></span><br><span class="line"><span class="function"><span class="params">        &#125;</span>)</span></span><br><span class="line"><span class="function">    &#125;)</span></span><br></pre></td></tr></table></figure>
+<p>恶魔金字塔的问题：难以维护和效率低下，因为是串行的。  </p>
+<p>解决这个金字塔问题：</p>
+<ol>
+<li>事件发布订阅实现</li>
+</ol>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// events是创建事件发射器。on注册监听，emit发射事件。这两个很像是jquery的on和trigger</span></span><br><span class="line"><span class="keyword">let</span> EventEmitter = <span class="built_in">require</span>(<span class="string">'events'</span>)</span><br><span class="line"><span class="keyword">let</span> eve = <span class="keyword">new</span> EventEmitter()</span><br><span class="line"><span class="keyword">let</span> html = &#123;&#125; <span class="comment">// template data属性</span></span><br><span class="line">eve.on(<span class="string">'ready'</span>,<span class="function"><span class="keyword">function</span>(<span class="params">key,value</span>)</span>&#123;</span><br><span class="line">    html[key] = value</span><br><span class="line">    <span class="comment">// 两个属性都存在的时候就完成了</span></span><br><span class="line">    <span class="keyword">if</span>(<span class="built_in">Object</span>.keys(html).length === <span class="number">2</span>)&#123;</span><br><span class="line">        <span class="built_in">console</span>.log(html)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;)</span><br><span class="line">fs.readFile(<span class="string">'./template.txt'</span>,<span class="string">'utf-8'</span>,<span class="function"><span class="keyword">function</span>(<span class="params">err,template</span>)</span>&#123;</span><br><span class="line">   eve.emit(<span class="string">'ready'</span>,<span class="string">'template'</span>,template)     </span><br><span class="line">&#125;)</span><br><span class="line">fs.readFile(<span class="string">'./data.txt'</span>,<span class="string">'utf-8'</span>,<span class="function"><span class="keyword">function</span>(<span class="params">err,data</span>)</span>&#123;</span><br><span class="line">   eve.emit(<span class="string">'ready'</span>,<span class="string">'data'</span>,data)     </span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">// 以上比较复杂，也可以通过一个哨兵函数处理</span></span><br><span class="line"><span class="keyword">let</span> html = &#123;&#125;</span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">done</span>(<span class="params">key,value</span>)</span>&#123;</span><br><span class="line">    html[key] = value</span><br><span class="line">    <span class="comment">// 两个属性都存在的时候就完成了</span></span><br><span class="line">    <span class="keyword">if</span>(<span class="built_in">Object</span>.keys(html).length === <span class="number">2</span>)&#123;</span><br><span class="line">        <span class="built_in">console</span>.log(html)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">fs.readFile(<span class="string">'./template.txt'</span>,<span class="string">'utf-8'</span>,<span class="function"><span class="keyword">function</span>(<span class="params">err,template</span>)</span>&#123;</span><br><span class="line">   done(<span class="string">'template'</span>,template)</span><br><span class="line">&#125;)</span><br><span class="line">fs.readFile(<span class="string">'./data.txt'</span>,<span class="string">'utf-8'</span>,<span class="function"><span class="keyword">function</span>(<span class="params">err,data</span>)</span>&#123;</span><br><span class="line">   done(<span class="string">'data'</span>,data)</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line"><span class="comment">// 再次升级，并发请求可能不止2个，于是改良,写个生成done的函数</span></span><br><span class="line"><span class="comment">// 有几个请求，当所有数据拿到之后cb</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">render</span>(<span class="params">length,cb</span>)</span>&#123;</span><br><span class="line">    <span class="keyword">let</span> html = &#123;&#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="function"><span class="keyword">function</span>(<span class="params">key,value</span>)</span>&#123;</span><br><span class="line">            html[key] = value</span><br><span class="line">            <span class="comment">// 属性都存在的时候就完成了</span></span><br><span class="line">            <span class="keyword">if</span>(<span class="built_in">Object</span>.keys(html).length === length)&#123;</span><br><span class="line">                cb(html)</span><br><span class="line">            &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> done = render(<span class="number">2</span>,<span class="function"><span class="keyword">function</span>(<span class="params">html</span>)</span>&#123;<span class="built_in">console</span>.log(html)&#125;)</span><br><span class="line">fs.readFile(<span class="string">'./template.txt'</span>,<span class="string">'utf-8'</span>,<span class="function"><span class="keyword">function</span>(<span class="params">err,template</span>)</span>&#123;</span><br><span class="line">   done(<span class="string">'template'</span>,template)</span><br><span class="line">&#125;)</span><br><span class="line">fs.readFile(<span class="string">'./data.txt'</span>,<span class="string">'utf-8'</span>,<span class="function"><span class="keyword">function</span>(<span class="params">err,data</span>)</span>&#123;</span><br><span class="line">   done(<span class="string">'data'</span>,data)</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<h2 id="生成器"><a href="#生成器" class="headerlink" title="生成器"></a>生成器</h2><p>生成器是一个函数，可以用来生成一个迭代器。<br>生成器函数和普通函数不一样，普通函数一旦调用就会执行完。<br>生成器函数遇到暂停点就停下来，直到再次执行。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 生成器函数有个特点需要加个*</span></span><br><span class="line"><span class="comment">// 生成器由若干个阶段如何划分这些个阶段</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> *<span class="title">go</span>(<span class="params">a</span>)</span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="number">1</span>)</span><br><span class="line">    <span class="comment">// 此处b是外界输入，这行代码实现输入输出</span></span><br><span class="line">    <span class="keyword">let</span> b = <span class="keyword">yield</span> a</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="number">2</span>)</span><br><span class="line">    <span class="keyword">let</span> c = <span class="keyword">yield</span> b</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="number">3</span>)</span><br><span class="line">    <span class="keyword">return</span> c</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 生成器函数和普通函数不一样调用他函数不会立刻执行</span></span><br><span class="line"><span class="comment">// 返回生成器的迭代器，迭代器是一个对象</span></span><br><span class="line"><span class="keyword">let</span> it = go(<span class="string">'a'</span>)</span><br><span class="line"><span class="comment">// next第一次执行不需要传参数,想想也是，没有意义</span></span><br><span class="line"><span class="keyword">let</span> r1 = it.next()</span><br><span class="line"><span class="built_in">console</span>.log(r1) <span class="comment">// &#123;value:'a',done:false&#125;</span></span><br><span class="line"><span class="keyword">let</span> r2 = it.next(<span class="string">'B'</span>)</span><br><span class="line"><span class="built_in">console</span>.log(r2) <span class="comment">// &#123;value:'B',done:false&#125;</span></span><br><span class="line"><span class="keyword">let</span> r3 = it.next(<span class="string">'C'</span>)</span><br><span class="line"><span class="built_in">console</span>.log(r3) <span class="comment">// &#123;value:'C',done:true&#125;</span></span><br></pre></td></tr></table></figure>
+<h2 id="promise-A"><a href="#promise-A" class="headerlink" title="promise/A+"></a>promise/A+</h2><p><a href="http://www.promisesaplus.com">promise的网站</a>,对着文档写。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">new</span> <span class="built_in">Promise</span>(<span class="function"><span class="keyword">function</span>(<span class="params">resolve,reject</span>)</span>&#123;</span><br><span class="line">    setTimeout(<span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">        <span class="keyword">let</span> num = <span class="built_in">Math</span>.random()</span><br><span class="line">        <span class="keyword">if</span>(num&gt;<span class="number">0.5</span>)&#123;</span><br><span class="line">            resolve()</span><br><span class="line">        &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">            reject()</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;,<span class="number">1000</span>)</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> PENDING = <span class="string">'pending'</span></span><br><span class="line"><span class="keyword">const</span> FULFILLED = <span class="string">'fulfilled'</span></span><br><span class="line"><span class="keyword">const</span> REJECTED = <span class="string">'rejected'</span></span><br><span class="line"><span class="comment">// 实现Promise的类</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">Promise</span>(<span class="params">executor</span>)</span>&#123;</span><br><span class="line">    <span class="comment">// 缓存当前Promise实例</span></span><br><span class="line">    <span class="keyword">let</span> self = <span class="keyword">this</span></span><br><span class="line">    <span class="comment">// 设置状态</span></span><br><span class="line">    self.status = PENDING</span><br><span class="line">    <span class="comment">// 定义存放成功的回调数组</span></span><br><span class="line">    self.onResolvedCallbacks = []</span><br><span class="line">    <span class="comment">// 定义存放失败的回调数组</span></span><br><span class="line">    self.onRejectedCallbacks = []</span><br><span class="line">    <span class="comment">// 调用此方法的时候，状态是pending的时候转成fulfilled，否则不执行</span></span><br><span class="line">    <span class="function"><span class="keyword">function</span> <span class="title">resolve</span>(<span class="params">value</span>)</span>&#123;</span><br><span class="line">        <span class="keyword">if</span>(self.status === PENDING)&#123;</span><br><span class="line">            self.status = FULFILLED</span><br><span class="line">            <span class="comment">// 成功后会得到一个值不能修改</span></span><br><span class="line">            self.value = value</span><br><span class="line">            <span class="comment">// 调用所有成功的回调</span></span><br><span class="line">            self.onResolvedCallbacks.forEach(<span class="function"><span class="params">cb</span>=&gt;</span>cb(self.value))</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">     <span class="comment">// 调用此方法的时候，状态是pending的时候转成rejected，否则不执行</span></span><br><span class="line">    <span class="function"><span class="keyword">function</span> <span class="title">reject</span>(<span class="params">reason</span>)</span>&#123;</span><br><span class="line">        <span class="keyword">if</span>(self.status === PENDING)&#123;</span><br><span class="line">            self.status = REJECTED</span><br><span class="line">            <span class="comment">// 成功后会得到一个值不能修改</span></span><br><span class="line">            self.value = reason</span><br><span class="line">            <span class="comment">// 调用所有成功的回调</span></span><br><span class="line">            self.onRejectedCallbacks.forEach(<span class="function"><span class="params">cb</span>=&gt;</span>cb(self.reason ))</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">try</span>&#123;</span><br><span class="line">        <span class="comment">// 函数执行可能会出错，所以需要捕获</span></span><br><span class="line">        executor(resolve,reject)</span><br><span class="line">    &#125;<span class="keyword">catch</span>(e)&#123;</span><br><span class="line">        reject(e)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 值的穿透 then(function(data)&#123;..&#125;,function(e)&#123;..&#125;)</span></span><br><span class="line"><span class="built_in">Promise</span>.prototype.then = <span class="function"><span class="keyword">function</span>(<span class="params">onFulfilled,onReject</span>)</span>&#123;</span><br><span class="line">    onFulfilled = <span class="keyword">typeof</span> onFulfilled === <span class="string">'function'</span>?onFulfilled:<span class="function"><span class="params">value</span>=&gt;</span>value;</span><br><span class="line">    onRejected = <span class="keyword">typeof</span> onRejected === <span class="string">'function'</span>?onRejected:<span class="function"><span class="params">reason</span>=&gt;</span>&#123;<span class="keyword">throw</span> reason&#125;;</span><br><span class="line">    <span class="keyword">let</span> self = <span class="keyword">this</span></span><br><span class="line">    <span class="keyword">let</span> promise2</span><br><span class="line">    <span class="keyword">if</span>(self.status === FULFILLED)&#123;</span><br><span class="line">       <span class="keyword">return</span> <span class="keyword">new</span> <span class="built_in">Promise</span>(<span class="function"><span class="keyword">function</span>(<span class="params">resolve,reject</span>)</span>&#123;</span><br><span class="line">           <span class="keyword">try</span>&#123;</span><br><span class="line">               <span class="keyword">let</span> x = onFulfilled(self.value)</span><br><span class="line">           <span class="comment">// 如果获取到了返回值 会走解析promise的过程</span></span><br><span class="line">           resolvePromise(promise2,x,resolve,reject)</span><br><span class="line">           &#125;<span class="keyword">catch</span>(e)&#123;</span><br><span class="line">               reject(e)</span><br><span class="line">           &#125;</span><br><span class="line">       &#125;)</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span>(self.status === REJECTED)&#123;</span><br><span class="line">       <span class="keyword">let</span> x = onRejected(self.value)</span><br><span class="line">       resolvePromise(promise2,x,resolve,reject)</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span>(self.status === PENDING)&#123;</span><br><span class="line">       self.onResolvedCallbacks.push(<span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">           <span class="keyword">let</span> x = onFulfilled(self.value)</span><br><span class="line">           resolvePromise(promise2,x,resolve,reject)</span><br><span class="line"></span><br><span class="line">       &#125;)</span><br><span class="line">       self.onRejectedCallbacks.push(<span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">           <span class="keyword">let</span> x = onRejected(self.value)</span><br><span class="line">           resolvePromise(promise2,x,resolve,reject)</span><br><span class="line"> </span><br><span class="line">       &#125;)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>–!&gt;</p>
+-->
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/js/" rel="tag"># js</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/09/06/cnzz/" rel="next" title="网站加cnzz">
+                <i class="fa fa-chevron-left"></i> 网站加cnzz
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/02/21/vdom/" rel="prev" title="入门理解虚拟DOM以及diff算法的核心">
+                入门理解虚拟DOM以及diff算法的核心 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+          
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2019/02/15/1_async_history/" data-title="异步的发展，顺手学会怎么处理并发请求" data-url="http://yoursite.com/2019/02/15/1_async_history/">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image" src="http://omizt4opc.bkt.clouddn.com/avatar.jpg" alt="John Doe">
+          <p class="site-author-name" itemprop="name">John Doe</p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+           
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">75</span>
+                <span class="site-state-item-name">posts</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              
+                <span class="site-state-item-count">21</span>
+                <span class="site-state-item-name">categories</span>
+              
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              
+                <span class="site-state-item-count">35</span>
+                <span class="site-state-item-name">tags</span>
+              
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#TL-DR"><span class="nav-number">1.</span> <span class="nav-text">TL;DR</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#异步的发展流程"><span class="nav-number">2.</span> <span class="nav-text">异步的发展流程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#回调函数的金字塔地狱版本1-0"><span class="nav-number">3.</span> <span class="nav-text">回调函数的金字塔地狱版本1.0</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#理解高阶函数"><span class="nav-number">4.</span> <span class="nav-text">理解高阶函数</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#批量生成函数"><span class="nav-number">4.1.</span> <span class="nav-text">批量生成函数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#预置函数做为参数"><span class="nav-number">4.2.</span> <span class="nav-text">预置函数做为参数</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#高阶函数的哨兵变量版2-0"><span class="nav-number">5.</span> <span class="nav-text">高阶函数的哨兵变量版2.0</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#理解promise"><span class="nav-number">6.</span> <span class="nav-text">理解promise</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#promise版本3-0"><span class="nav-number">7.</span> <span class="nav-text">promise版本3.0</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#理解生成器generator"><span class="nav-number">8.</span> <span class="nav-text">理解生成器generator</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#理解co，让生成器自动执行"><span class="nav-number">9.</span> <span class="nav-text">理解co，让生成器自动执行</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#promise和co版本的4-0"><span class="nav-number">10.</span> <span class="nav-text">promise和co版本的4.0</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#async和await版本5-0"><span class="nav-number">11.</span> <span class="nav-text">async和await版本5.0</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#bluebird"><span class="nav-number">12.</span> <span class="nav-text">bluebird</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#多请求"><span class="nav-number">13.</span> <span class="nav-text">多请求</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">John Doe</span>
+</div>
+
+
+<div class="powered-by">
+  Powered by <a class="theme-link" href="https://hexo.io">Hexo</a>
+</div>
+
+<div class="theme-info">
+  Theme -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+    
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"frontzhm"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+    
+    <script src="/lib/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+    <script src="/js/src/hook-duoshuo.js"></script>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+</body>
+</html>

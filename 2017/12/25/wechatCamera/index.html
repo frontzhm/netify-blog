@@ -1,0 +1,773 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang>
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css">
+
+
+  <meta name="keywords" content="wechat,">
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0">
+
+
+
+
+
+
+<meta name="description" content="TL;DR 必须配置微信参数,且在jsApiList配置你要的功能 vue历史模式下微信配置的坑 微信拍照的官方文档 出错优先查看官方文档,附录5-常见错误及解决方法 wx.chooseImage 得到localid的数组 wx.getLocalImgData 将localid的图片转化得到其base64,但不同系统的手机转化成的base64略有不同,需要处理才能使用 wx.uploadImage">
+<meta name="keywords" content="wechat">
+<meta property="og:type" content="article">
+<meta property="og:title" content="微信的图像开发接口">
+<meta property="og:url" content="http://yoursite.com/2017/12/25/wechatCamera/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="TL;DR 必须配置微信参数,且在jsApiList配置你要的功能 vue历史模式下微信配置的坑 微信拍照的官方文档 出错优先查看官方文档,附录5-常见错误及解决方法 wx.chooseImage 得到localid的数组 wx.getLocalImgData 将localid的图片转化得到其base64,但不同系统的手机转化成的base64略有不同,需要处理才能使用 wx.uploadImage">
+<meta property="og:locale" content="default">
+<meta property="og:updated_time" content="2017-12-25T06:08:35.503Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="微信的图像开发接口">
+<meta name="twitter:description" content="TL;DR 必须配置微信参数,且在jsApiList配置你要的功能 vue历史模式下微信配置的坑 微信拍照的官方文档 出错优先查看官方文档,附录5-常见错误及解决方法 wx.chooseImage 得到localid的数组 wx.getLocalImgData 将localid的图片转化得到其base64,但不同系统的手机转化成的base64略有不同,需要处理才能使用 wx.uploadImage">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    sidebar: {"position":"right","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2017/12/25/wechatCamera/">
+
+
+
+
+
+  <title> 微信的图像开发接口 | Hexo </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="default">
+
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?60f2cb5747a596a24f2a053f1650c30b";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-right page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Hexo</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <h1 class="site-subtitle" itemprop="description"></h1>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            Tags
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/12/25/wechatCamera/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="John Doe">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="http://omizt4opc.bkt.clouddn.com/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hexo">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+            
+            
+              
+                微信的图像开发接口
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-12-25T14:08:35+08:00">
+                2017-12-25
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/js/" itemprop="url" rel="index">
+                    <span itemprop="name">js</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2017/12/25/wechatCamera/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2017/12/25/wechatCamera/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="TL-DR"><a href="#TL-DR" class="headerlink" title="TL;DR"></a>TL;DR</h2><ul>
+<li>必须配置微信参数,且在jsApiList配置你要的功能</li>
+<li>vue历史模式下微信配置的坑</li>
+<li><a href="https://mp.weixin.qq.com/wiki?t=resource/res_main&amp;id=mp1421141115" target="_blank" rel="noopener">微信拍照的官方文档</a></li>
+<li>出错优先查看官方文档,附录5-常见错误及解决方法</li>
+<li>wx.chooseImage 得到localid的数组</li>
+<li>wx.getLocalImgData 将localid的图片转化得到其base64,但不同系统的手机转化成的base64略有不同,需要处理才能使用</li>
+<li>wx.uploadImage 上传图片(locaiid)到微信服务器 返回其serverid,也就是media_id, 三天之后失效, 可以通过get请求<code>http://file.api.weixin.qq.com/cgi-bin/media/get?access_token=ACCESS_TOKEN&amp;media_id=MEDIA_ID</code> 下载图片(地址栏输入也可以直接下载)</li>
+<li>wx.downloadImage下载微信服务器的图片(serverid)到本地,返回其本地的localid</li>
+<li>wx.previewImage 预览图片,需要http链接或者本地图片的localid(图片必须在本地)</li>
+<li>使用微信拍照和服务器两种交互的方法</li>
+</ul>
+<a id="more"></a>
+<h2 id="准备工作"><a href="#准备工作" class="headerlink" title="准备工作"></a>准备工作</h2><p><a href="https://github.com/Tencent/vConsole" target="_blank" rel="noopener">手机里面的控制台</a><br>腾讯开发的类似谷歌控制台, 在手机里测试网页的时候很方便. 用法很简单, 引入文件然后初始化即可</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">src</span>=<span class="string">"vconsole.min.js"</span>&gt;</span><span class="undefined"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span>&gt;</span><span class="undefined"></span></span><br><span class="line"><span class="javascript">  <span class="comment">// init vConsole</span></span></span><br><span class="line"><span class="javascript">  <span class="keyword">let</span> vConsole = <span class="keyword">new</span> VConsole();</span></span><br><span class="line"><span class="javascript">  <span class="built_in">console</span>.log(<span class="built_in">document</span>.body);</span></span><br><span class="line"><span class="undefined"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 或者npm install vconsole</span></span><br><span class="line"><span class="keyword">import</span> VConsole <span class="keyword">from</span> <span class="string">'vconsole'</span></span><br><span class="line"><span class="comment">// eslint-disable-next-line</span></span><br><span class="line"><span class="keyword">let</span> vConsole = <span class="keyword">new</span> VConsole()</span><br><span class="line"><span class="built_in">console</span>.log(<span class="built_in">document</span>.body);</span><br></pre></td></tr></table></figure>
+<p><a href="http://omixp29af.bkt.clouddn.com/vconsole.html" target="_blank" rel="noopener">demo</a></p>
+<h2 id="基础工作-配置微信参数"><a href="#基础工作-配置微信参数" class="headerlink" title="基础工作, 配置微信参数"></a>基础工作, 配置微信参数</h2><p>页面引入最新版微信js : <code>&lt;script src=&quot;http://res.wx.qq.com/open/js/jweixin-1.2.0.js&quot;&gt;&lt;/script&gt;</code><br>旧版的有兼容问题,这里不展开描述.</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 参数请求服务器接口拿到,一般服务器接口需要当前页面的url window.location.href.split('#')[0]</span></span><br><span class="line"><span class="keyword">let</span> config = &#123;</span><br><span class="line">    debug: <span class="literal">false</span>,</span><br><span class="line">    appId: wxInfo.appId,</span><br><span class="line">    timestamp: wxInfo.timestamp,</span><br><span class="line">    nonceStr: wxInfo.nonceStr,</span><br><span class="line">    signature: wxInfo.signature,</span><br><span class="line">    jsApiList: [</span><br><span class="line">        <span class="comment">// 所有要调用的 API 都要加到这个列表中</span></span><br><span class="line">        <span class="string">'checkJsApi'</span>,</span><br><span class="line">        <span class="comment">// 选择图片</span></span><br><span class="line">        <span class="string">'chooseImage'</span>,</span><br><span class="line">        <span class="comment">// localid转化base64</span></span><br><span class="line">        <span class="string">'getLocalImgData'</span>,</span><br><span class="line">        <span class="comment">// 上传图片到微信服务器 返回其serverid</span></span><br><span class="line">        <span class="string">'uploadImage'</span>,</span><br><span class="line">        <span class="comment">// 下载微信服务器的图片到本地,返回本地的localid</span></span><br><span class="line">        <span class="string">'downloadImage'</span>,</span><br><span class="line">        <span class="comment">// 预览图片,需要http链接或者本地图片的localid,必须在本地</span></span><br><span class="line">        <span class="string">'previewImage'</span></span><br><span class="line">    ]</span><br><span class="line">&#125;</span><br><span class="line">wx.config(config)</span><br></pre></td></tr></table></figure>
+<p>注意在vue的历史模式下,有个坑,ios请求服务端的接口必须是首次进入页面的url,如<code>http://demo.com/index</code>,安卓的依然是<code>window.location.href.split(&#39;#&#39;)[0]</code>,微信的文档也有解释,还有这个<a href="https://github.com/vuejs/vue-router/issues/481" target="_blank" rel="noopener">vue的issue</a></p>
+<h2 id="接口返回数据格式的统一说明"><a href="#接口返回数据格式的统一说明" class="headerlink" title="接口返回数据格式的统一说明"></a>接口返回数据格式的统一说明</h2><p>调用chooseImage,返回的数据格式</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">wx.chooseImage(&#123;</span><br><span class="line">    count: <span class="number">1</span>, <span class="comment">// 默认9</span></span><br><span class="line">    sizeType: [<span class="string">'original'</span>, <span class="string">'compressed'</span>], <span class="comment">// 可以指定是原图还是压缩图，默认二者都有</span></span><br><span class="line">    sourceType: [<span class="string">'album'</span>, <span class="string">'camera'</span>], <span class="comment">// 可以指定来源是相册还是相机，默认二者都有</span></span><br><span class="line">    success: <span class="function"><span class="keyword">function</span> (<span class="params">res</span>) </span>&#123;</span><br><span class="line">      <span class="comment">// 成功</span></span><br><span class="line">      <span class="comment">// &#123;</span></span><br><span class="line">      <span class="comment">//   errMsg: 'chooseImage:ok',</span></span><br><span class="line">      <span class="comment">//   localIds:[</span></span><br><span class="line">      <span class="comment">//     'wxLocalResource://32432432'</span></span><br><span class="line">      <span class="comment">//   ],</span></span><br><span class="line">      <span class="comment">//   sourceType:'camera'</span></span><br><span class="line">      <span class="comment">// &#125;</span></span><br><span class="line">    &#125;,</span><br><span class="line">    fail: <span class="function"><span class="keyword">function</span>(<span class="params">err</span>)</span>&#123;</span><br><span class="line">      <span class="comment">// 失败</span></span><br><span class="line">      <span class="comment">// &#123;</span></span><br><span class="line">      <span class="comment">//   errMsg: 'chooseImage:missing arguments'</span></span><br><span class="line">      <span class="comment">// &#125;</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<p>其他也基本类似,不管成功或失败都会有errMsg,然后是其他数据</p>
+<h2 id="拍照或从手机相册中选图接口-wx-chooseImage"><a href="#拍照或从手机相册中选图接口-wx-chooseImage" class="headerlink" title="拍照或从手机相册中选图接口 wx.chooseImage"></a>拍照或从手机相册中选图接口 wx.chooseImage</h2><p>此接口返回图片的localId</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line">wx.chooseImage(&#123;</span><br><span class="line">    count: <span class="number">1</span>, <span class="comment">// 默认9</span></span><br><span class="line">    sizeType: [<span class="string">'original'</span>, <span class="string">'compressed'</span>], <span class="comment">// 可以指定是原图还是压缩图，默认二者都有</span></span><br><span class="line">    sourceType: [<span class="string">'album'</span>, <span class="string">'camera'</span>], <span class="comment">// 可以指定来源是相册还是相机，默认二者都有</span></span><br><span class="line">    success: <span class="function"><span class="keyword">function</span> (<span class="params">res</span>) </span>&#123;</span><br><span class="line">        <span class="keyword">var</span> localIds = res.localIds; <span class="comment">// 返回选定照片的本地ID列表(数组)，localId可以作为img标签的src属性显示图片</span></span><br><span class="line">    &#125;,</span><br><span class="line">    fail: <span class="function"><span class="keyword">function</span>(<span class="params">err</span>)</span>&#123;</span><br><span class="line">        <span class="built_in">console</span>.log(err)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="comment">// ios</span></span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">&#123;</span></span><br><span class="line"><span class="comment">  errMsg: 'chooseImage:ok',sg: 'chooseImage:ok',</span></span><br><span class="line"><span class="comment">  localIds:[</span></span><br><span class="line"><span class="comment">    'wxLocalResource://32432432'</span></span><br><span class="line"><span class="comment">  ],</span></span><br><span class="line"><span class="comment">  sourceType:'camera'</span></span><br><span class="line"><span class="comment">&#125;</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// android// meizu //vivo</span></span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">&#123;</span></span><br><span class="line"><span class="comment">  errMsg: 'chooseImage:ok',</span></span><br><span class="line"><span class="comment">  localIds:[</span></span><br><span class="line"><span class="comment">    'weixin://resourceid/rtewf9fdas9f32432432'</span></span><br><span class="line"><span class="comment">  ],</span></span><br><span class="line"><span class="comment">  sourceType:'album'</span></span><br><span class="line"><span class="comment">&#125;</span></span><br><span class="line"><span class="comment">*/</span></span><br></pre></td></tr></table></figure>
+<h2 id="获取本地图片接口-wx-getLocalImgData"><a href="#获取本地图片接口-wx-getLocalImgData" class="headerlink" title="获取本地图片接口 wx.getLocalImgData"></a>获取本地图片接口 wx.getLocalImgData</h2><p>此接口可以接受图片的localId返回图片的base64,必须一张张传</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">wx.getLocalImgData(&#123;</span><br><span class="line">    localId: <span class="string">''</span>, <span class="comment">// 图片的localID,字符串,非数组</span></span><br><span class="line">    success: <span class="function"><span class="keyword">function</span> (<span class="params">res</span>) </span>&#123;</span><br><span class="line">        <span class="keyword">var</span> localData = res.localData; <span class="comment">// localData是图片的base64数据，也可以用img标签显示</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">//ios</span></span><br><span class="line"><span class="comment">&#123;</span></span><br><span class="line"><span class="comment">  errMsg: 'getLocalImgData:ok',</span></span><br><span class="line"><span class="comment">  localData: 'data:image/jgp;base64,/9j/4A.......'</span></span><br><span class="line"><span class="comment">&#125;</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment">// android</span></span><br><span class="line"><span class="comment">&#123;</span></span><br><span class="line"><span class="comment">  errMsg: 'getLocalImgData:ok',</span></span><br><span class="line"><span class="comment">  localData: '/9j/4AA.......'</span></span><br><span class="line"><span class="comment">&#125;</span></span><br><span class="line"><span class="comment">*/</span></span><br></pre></td></tr></table></figure>
+<h2 id="上传图片接口-wx-uploadImage"><a href="#上传图片接口-wx-uploadImage" class="headerlink" title="上传图片接口 wx.uploadImage"></a>上传图片接口 wx.uploadImage</h2><p>此接口可以接受图片的localId返回图片在微信服务器的serverId ,上传图片有效期3天,然后可以用微信多媒体接口下载图片到自己的服务器,serverId 即 media_id。但是好像有丢失的情况, 所以有时候不选用此方案<br>下载图片http请求方式: GET, 请求地址<code>http://file.api.weixin.qq.com/cgi-bin/media/get?access_token=ACCESS_TOKEN&amp;media_id=MEDIA_ID</code><br>也必须一张张传,这里有个坑,如果出现”uploadImage:fail”,出现这种localId.toString()</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 上传图片有效期3天，可用微信多媒体接口下载图片到自己的服务器，此处获得的 serverId 即 media_id。</span></span><br><span class="line">wx.uploadImage(&#123;</span><br><span class="line">    localId: <span class="string">''</span>, <span class="comment">// 需要上传的图片的本地ID，由chooseImage接口获得</span></span><br><span class="line">    isShowProgressTips: <span class="number">1</span>, <span class="comment">// 默认为1，显示进度提示</span></span><br><span class="line">    success: <span class="function"><span class="keyword">function</span> (<span class="params">res</span>) </span>&#123;</span><br><span class="line">        <span class="keyword">var</span> serverId = res.serverId; <span class="comment">// 返回图片的服务器端ID</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="comment">// ios</span></span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">&#123;</span></span><br><span class="line"><span class="comment">  errMsg: 'uploadImage:ok',</span></span><br><span class="line"><span class="comment">  localIds: 'wxLocalResource://32432432',</span></span><br><span class="line"><span class="comment">  serverId: 'dcdfdsafdaferewrtwtrwtrwrewtrw-rewttrew-trewtrewtw'</span></span><br><span class="line"><span class="comment">&#125;</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// android</span></span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">&#123;</span></span><br><span class="line"><span class="comment">  errMsg: 'uploadImage:ok',</span></span><br><span class="line"><span class="comment">  mediaUrl: '',</span></span><br><span class="line"><span class="comment">  serverId: 'Pjdsdcdfdsafdaferewrtwtrwtrwrewtrw-rewttrew-trewtrewtw'</span></span><br><span class="line"><span class="comment">&#125;</span></span><br><span class="line"><span class="comment">*/</span></span><br></pre></td></tr></table></figure>
+<h2 id="下载图片接口-wx-downloadImage"><a href="#下载图片接口-wx-downloadImage" class="headerlink" title="下载图片接口 wx.downloadImage"></a>下载图片接口 wx.downloadImage</h2><p>此接口可以接受图片的serverId返回图片下载后的本地的localId</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">wx.downloadImage(&#123;</span><br><span class="line">    serverId: <span class="string">''</span>, <span class="comment">// 需要下载的图片的服务器端ID，由uploadImage接口获得</span></span><br><span class="line">    isShowProgressTips: <span class="number">1</span>, <span class="comment">// 默认为1，显示进度提示</span></span><br><span class="line">    success: <span class="function"><span class="keyword">function</span> (<span class="params">res</span>) </span>&#123;</span><br><span class="line">        <span class="keyword">var</span> localId = res.localId; <span class="comment">// 返回图片下载后的本地ID</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<h2 id="预览图片-wx-previewImage"><a href="#预览图片-wx-previewImage" class="headerlink" title="预览图片 wx.previewImage"></a>预览图片 wx.previewImage</h2><p>背景黑色,图片宽度或者高度100%, current为空的时候默认是urls的第一个<br>url的格式可以是http的绝对链接,也可以是本地图片的localid,ios还可以支持base64但是安卓不支持</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">wx.previewImage(&#123;</span><br><span class="line">    current: <span class="string">''</span>, <span class="comment">// 当前显示图片的http链接</span></span><br><span class="line">    urls: [] <span class="comment">// 需要预览的图片http链接列表</span></span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<h2 id="和服务器的配合"><a href="#和服务器的配合" class="headerlink" title="和服务器的配合"></a>和服务器的配合</h2><p>通用的方法可以先定义</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 请求服务器接口拿到微信的配置参数</span></span><br><span class="line"><span class="keyword">var</span> config = &#123;</span><br><span class="line">  debug: <span class="literal">false</span>,</span><br><span class="line">  appId: wxInfo.appId,</span><br><span class="line">  timestamp: wxInfo.timestamp,</span><br><span class="line">  nonceStr: wxInfo.nonceStr,</span><br><span class="line">  signature: wxInfo.signature,</span><br><span class="line">  jsApiList: [</span><br><span class="line">    <span class="comment">// 所有要调用的 API 都要加到这个列表中</span></span><br><span class="line">    <span class="string">'checkJsApi'</span>,</span><br><span class="line">    <span class="string">'chooseImage'</span>,</span><br><span class="line">    <span class="string">'uploadImage'</span></span><br><span class="line">  ]</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">wx.config(config)</span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">getLocalIds</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="keyword">new</span> <span class="built_in">Promise</span>(<span class="function">(<span class="params">resolve, reject</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="comment">// 返回localIds</span></span><br><span class="line">    wx.chooseImage(&#123;</span><br><span class="line">      count: <span class="number">1</span>, <span class="comment">// 默认9</span></span><br><span class="line">      sizeType: [<span class="string">'compressed'</span>], <span class="comment">// 可以指定是原图还是压缩图，默认二者都有</span></span><br><span class="line">      sourceType: [<span class="string">'camera'</span>], <span class="comment">// 可以指定来源是相册还是相机，默认二者都有</span></span><br><span class="line">      success: <span class="function"><span class="params">res</span> =&gt;</span> resolve(res.localIds),</span><br><span class="line">      fail: <span class="function"><span class="params">res</span> =&gt;</span> reject(res)</span><br><span class="line">    &#125;)</span><br><span class="line">  &#125;)</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">getImgbase64</span> (<span class="params">localId</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="keyword">new</span> <span class="built_in">Promise</span>(<span class="function">(<span class="params">resolve, reject</span>) =&gt;</span> &#123;</span><br><span class="line">    wx.getLocalImgData(&#123;</span><br><span class="line">      localId: localId, <span class="comment">// 图片的localID</span></span><br><span class="line">      success: <span class="function"><span class="params">res</span> =&gt;</span> resolve(res.localData),</span><br><span class="line">      fail: <span class="function"><span class="params">res</span> =&gt;</span> reject(res)</span><br><span class="line">    &#125;)</span><br><span class="line">  &#125;)</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">formatImgBase64</span> (<span class="params">localData</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">const</span> isIos = !!navigator.userAgent.match(<span class="regexp">/\(i[^;]+;( U;)? CPU.+Mac OS X/</span>)</span><br><span class="line">  <span class="keyword">const</span> isAndroid = navigator.userAgent.indexOf(<span class="string">'Android'</span>) &gt; <span class="number">-1</span> || navigator.userAgent.indexOf(<span class="string">'Adr'</span>) &gt; <span class="number">-1</span></span><br><span class="line">  <span class="keyword">const</span> base64Prefix = <span class="string">'data:image/jpeg;base64,'</span></span><br><span class="line">  <span class="keyword">const</span> base64PrefixIosWx = <span class="string">'data:image/jgp;base64,'</span></span><br><span class="line">  <span class="comment">// 格式化base64</span></span><br><span class="line">  <span class="keyword">let</span> pre = <span class="string">''</span></span><br><span class="line">  <span class="comment">// 安卓下,wx得到的base64没有前缀,需要添加</span></span><br><span class="line">  isAndroid &amp;&amp; (pre = base64Prefix)</span><br><span class="line">  <span class="comment">// ios下,wx得到的base64前缀需要修改</span></span><br><span class="line">  isIos &amp;&amp; localData.replace(base64PrefixIosWx, base64Prefix)</span><br><span class="line">  <span class="comment">// localData是图片的base64数据，可以用img标签显示</span></span><br><span class="line">  <span class="keyword">let</span> base64 = pre + localData</span><br><span class="line">  <span class="keyword">return</span> base64</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">getImgServerId</span>(<span class="params">localId</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="keyword">new</span> <span class="built_in">Promise</span>(<span class="function">(<span class="params">resolve, reject</span>) =&gt;</span> &#123;</span><br><span class="line">    wx.uploadImage(&#123;</span><br><span class="line">      localId: localId.toString(), <span class="comment">// 需要上传的图片的本地ID，由chooseImage接口获得</span></span><br><span class="line">      isShowProgressTips: <span class="number">0</span>, <span class="comment">// 默认为1，显示进度提示</span></span><br><span class="line">      success: <span class="function"><span class="params">res</span> =&gt;</span> resolve(res.serverId),</span><br><span class="line">      fail: <span class="function"><span class="params">res</span> =&gt;</span> reject(res)</span><br><span class="line">    &#125;)</span><br><span class="line">  &#125;)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="直接将图片传到微信服务器"><a href="#直接将图片传到微信服务器" class="headerlink" title="直接将图片传到微信服务器"></a>直接将图片传到微信服务器</h3><p>先调用“拍照或从手机相册选择图片接口”—&gt;选择成功图片后—&gt;调用“上传图片接口”—&gt;上传成功后(也就是图片上传到了微信服务器上)-&gt;拿到serverId,然后把serverId传给服务器 (服务器调用“下载图片接口”—&gt;将图片下载到服务器存储。)</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">async</span> <span class="function"><span class="keyword">function</span> <span class="title">callWxPhoto</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">try</span> &#123;</span><br><span class="line">    <span class="keyword">let</span> localIds = <span class="keyword">await</span> getLocalIds()</span><br><span class="line">    <span class="keyword">let</span> serverId = <span class="keyword">await</span> getImgServerId(localIds[<span class="number">0</span>])</span><br><span class="line">    <span class="keyword">return</span> serverId</span><br><span class="line">  &#125; <span class="keyword">catch</span> (error) &#123;</span><br><span class="line">    <span class="built_in">console</span>.log(error)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 调用</span></span><br><span class="line">$(<span class="string">'#uploadBtn'</span>).click(<span class="function"><span class="params">()</span>=&gt;</span>&#123;</span><br><span class="line">  uploadPhotoToWxServer().then(<span class="function"><span class="params">serverid</span> =&gt;</span> ajax传给服务器或者其他事)</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<h3 id="直接将图片base64传给服务器"><a href="#直接将图片base64传给服务器" class="headerlink" title="直接将图片base64传给服务器"></a>直接将图片base64传给服务器</h3><p>先调用“拍照或从手机相册选择图片接口”—&gt;选择成功图片后—&gt;调用“获取本地图片接口”—&gt;拿到图片的base64之后,将其传给服务器。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">async</span> <span class="function"><span class="keyword">function</span> <span class="title">callWxPhoto</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">try</span> &#123;</span><br><span class="line">    <span class="keyword">let</span> localIds = <span class="keyword">await</span> getLocalIds()</span><br><span class="line">    <span class="keyword">let</span> localData = <span class="keyword">await</span> getImgbase64(localIds[<span class="number">0</span>])</span><br><span class="line">    <span class="keyword">return</span> formatImgBase64(localData)</span><br><span class="line">  &#125; <span class="keyword">catch</span> (error) &#123;</span><br><span class="line">    <span class="built_in">console</span>.log(error)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 调用</span></span><br><span class="line">$(<span class="string">'#uploadBtn'</span>).click(<span class="function"><span class="params">()</span>=&gt;</span>&#123;</span><br><span class="line">  callWxPhoto().then(<span class="function"><span class="params">base64</span> =&gt;</span> ajax传给服务器或者其他事)</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<p>如果是一次选择多张图片</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> len = localIds.length</span><br><span class="line"><span class="keyword">let</span> curIndex = <span class="number">0</span></span><br><span class="line"><span class="keyword">let</span> localDatas = []</span><br><span class="line">getAllBase64().then(<span class="function"><span class="params">()</span>=&gt;</span>&#123;</span><br><span class="line">  <span class="comment">// localDatas已经是base64的集合了</span></span><br><span class="line">  <span class="keyword">return</span> localDatas.map(<span class="function"><span class="params">item</span>=&gt;</span>formatImgBase64(item))</span><br><span class="line">&#125;)</span><br><span class="line"><span class="keyword">async</span> <span class="function"><span class="keyword">function</span> <span class="title">getAllBase64</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">  <span class="keyword">if</span>(curIndex===len)&#123;<span class="keyword">return</span>&#125;</span><br><span class="line">  localDatas[curIndex] = <span class="keyword">await</span> getImgbase64(localIds[curIndex])</span><br><span class="line">  curIndex++</span><br><span class="line">  getAllBase64()</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p><a href="http://www.cnblogs.com/it-cen/p/4587812.html" target="_blank" rel="noopener">微信JS-SDK之图像接口开发详解</a><br><a href="https://segmentfault.com/a/1190000005856326" target="_blank" rel="noopener">微信JSSDK一次性上传多张图片卡死解决方案</a></p>
+</blockquote>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/wechat/" rel="tag"># wechat</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/12/05/webpack/" rel="next" title="webpack且学且用">
+                <i class="fa fa-chevron-left"></i> webpack且学且用
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/12/25/baiduMap/" rel="prev" title="百度地图api的使用">
+                百度地图api的使用 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+          
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2017/12/25/wechatCamera/" data-title="微信的图像开发接口" data-url="http://yoursite.com/2017/12/25/wechatCamera/">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image" src="http://omizt4opc.bkt.clouddn.com/avatar.jpg" alt="John Doe">
+          <p class="site-author-name" itemprop="name">John Doe</p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+           
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">75</span>
+                <span class="site-state-item-name">posts</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              
+                <span class="site-state-item-count">21</span>
+                <span class="site-state-item-name">categories</span>
+              
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              
+                <span class="site-state-item-count">35</span>
+                <span class="site-state-item-name">tags</span>
+              
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#TL-DR"><span class="nav-number">1.</span> <span class="nav-text">TL;DR</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#准备工作"><span class="nav-number">2.</span> <span class="nav-text">准备工作</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#基础工作-配置微信参数"><span class="nav-number">3.</span> <span class="nav-text">基础工作, 配置微信参数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#接口返回数据格式的统一说明"><span class="nav-number">4.</span> <span class="nav-text">接口返回数据格式的统一说明</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#拍照或从手机相册中选图接口-wx-chooseImage"><span class="nav-number">5.</span> <span class="nav-text">拍照或从手机相册中选图接口 wx.chooseImage</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#获取本地图片接口-wx-getLocalImgData"><span class="nav-number">6.</span> <span class="nav-text">获取本地图片接口 wx.getLocalImgData</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#上传图片接口-wx-uploadImage"><span class="nav-number">7.</span> <span class="nav-text">上传图片接口 wx.uploadImage</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#下载图片接口-wx-downloadImage"><span class="nav-number">8.</span> <span class="nav-text">下载图片接口 wx.downloadImage</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#预览图片-wx-previewImage"><span class="nav-number">9.</span> <span class="nav-text">预览图片 wx.previewImage</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#和服务器的配合"><span class="nav-number">10.</span> <span class="nav-text">和服务器的配合</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#直接将图片传到微信服务器"><span class="nav-number">10.1.</span> <span class="nav-text">直接将图片传到微信服务器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#直接将图片base64传给服务器"><span class="nav-number">10.2.</span> <span class="nav-text">直接将图片base64传给服务器</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">John Doe</span>
+</div>
+
+
+<div class="powered-by">
+  Powered by <a class="theme-link" href="https://hexo.io">Hexo</a>
+</div>
+
+<div class="theme-info">
+  Theme -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+    
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"frontzhm"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+    
+    <script src="/lib/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+    <script src="/js/src/hook-duoshuo.js"></script>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+</body>
+</html>

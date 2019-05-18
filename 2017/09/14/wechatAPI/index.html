@@ -1,0 +1,771 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang>
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css">
+
+
+  <meta name="keywords" content="wechat,">
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0">
+
+
+
+
+
+
+<meta name="description" content="TL;DR和微信的交互主要分为三种情况：  微信里打开的网页 pc端的网页需要微信登录 app里需要调起微信的相关功能 网页里调用微信接口，注意在微信公众平台点击账号-&amp;gt; 功能设置加上响应的域名，否则接口会调用错误">
+<meta name="keywords" content="wechat">
+<meta property="og:type" content="article">
+<meta property="og:title" content="微信的一些相关功能实现">
+<meta property="og:url" content="http://yoursite.com/2017/09/14/wechatAPI/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="TL;DR和微信的交互主要分为三种情况：  微信里打开的网页 pc端的网页需要微信登录 app里需要调起微信的相关功能 网页里调用微信接口，注意在微信公众平台点击账号-&amp;gt; 功能设置加上响应的域名，否则接口会调用错误">
+<meta property="og:locale" content="default">
+<meta property="og:updated_time" content="2017-09-14T08:55:26.528Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="微信的一些相关功能实现">
+<meta name="twitter:description" content="TL;DR和微信的交互主要分为三种情况：  微信里打开的网页 pc端的网页需要微信登录 app里需要调起微信的相关功能 网页里调用微信接口，注意在微信公众平台点击账号-&amp;gt; 功能设置加上响应的域名，否则接口会调用错误">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    sidebar: {"position":"right","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2017/09/14/wechatAPI/">
+
+
+
+
+
+  <title> 微信的一些相关功能实现 | Hexo </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="default">
+
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?60f2cb5747a596a24f2a053f1650c30b";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-right page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Hexo</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <h1 class="site-subtitle" itemprop="description"></h1>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            Tags
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/09/14/wechatAPI/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="John Doe">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="http://omizt4opc.bkt.clouddn.com/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hexo">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+            
+            
+              
+                微信的一些相关功能实现
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-09-14T16:55:26+08:00">
+                2017-09-14
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/js/" itemprop="url" rel="index">
+                    <span itemprop="name">js</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2017/09/14/wechatAPI/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2017/09/14/wechatAPI/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="TL-DR"><a href="#TL-DR" class="headerlink" title="TL;DR"></a>TL;DR</h2><p>和微信的交互主要分为三种情况：</p>
+<ul>
+<li>微信里打开的网页</li>
+<li>pc端的网页需要微信登录</li>
+<li>app里需要调起微信的相关功能</li>
+<li>网页里调用微信接口，注意在微信公众平台点击账号-&gt; 功能设置加上响应的域名，否则接口会调用错误<a id="more"></a>
+</li>
+</ul>
+<h2 id="微信的各种神坑"><a href="#微信的各种神坑" class="headerlink" title="微信的各种神坑"></a>微信的各种神坑</h2><h3 id="设置分享参数的坑"><a href="#设置分享参数的坑" class="headerlink" title="设置分享参数的坑"></a>设置分享参数的坑</h3><p>设置分享参数的时候，一般这样：<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> shareOptions = &#123;</span><br><span class="line">  title: <span class="string">'我刚刚领取了一度用车北马补给包！'</span>, <span class="comment">// 分享标题</span></span><br><span class="line">  desc: <span class="string">'又到一年一度北马节，一度用车“北马补给站”为跑友全程助力加油！北马期间，跑友可获得用车优惠及比赛日终点免费摆渡服务。助力跑友，一度是认真的。'</span>, <span class="comment">// 分享描述</span></span><br><span class="line">  imgUrl: <span class="string">'http://www.yiduyongche.com/240.png'</span>, <span class="comment">// 分享图标</span></span><br><span class="line">  <span class="comment">// link必须带http</span></span><br><span class="line">  link: result.data.link+<span class="string">'?source='</span>+result.data.source, <span class="comment">// 分享链接</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">var</span> wxInfo = result.data.signPackage;</span><br><span class="line">wx.config(&#123;</span><br><span class="line">  debug: <span class="literal">false</span>,</span><br><span class="line">  appId: wxInfo.appId,</span><br><span class="line">  timestamp: wxInfo.timestamp,</span><br><span class="line">  nonceStr: wxInfo.nonceStr,</span><br><span class="line">  signature: wxInfo.signature,</span><br><span class="line">  jsApiList: [</span><br><span class="line">    <span class="comment">// 所有要调用的 API 都要加到这个列表中</span></span><br><span class="line">    <span class="string">'checkJsApi'</span>,</span><br><span class="line">    <span class="string">'onMenuShareTimeline'</span>,</span><br><span class="line">    <span class="string">'onMenuShareAppMessage'</span></span><br><span class="line">  ]</span><br><span class="line">&#125;);</span><br><span class="line">wx.ready(<span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  wx.onMenuShareTimeline(shareOptions);</span><br><span class="line">  wx.onMenuShareAppMessage(shareOptions);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure></p>
+<p>特别注意shareOptions的link参数，这里必须一定肯定是绝对路径！！！！<br>年少无知，写成相对路径，即使开了debug模式，也根本不会报错，分享出去的页面不带设置的标题和描述，最蛋疼的是安卓部分手机连发送到朋友都调不起来。。。</p>
+<h3 id="上传图片的坑"><a href="#上传图片的坑" class="headerlink" title="上传图片的坑"></a>上传图片的坑</h3><p>开始用的是微信生成的serverId，但是服务器那边有时候下载会发现图片失效，于是为了改变这个bug，决定把图片变成base64上传到服务器，就用到wx.getLocalImgData这个接口。但是，紧接着就有坑了:</p>
+<ol>
+<li>第一项localId传的参数在ios上可以直接用数组，但是安卓不行，所以解决方案是<code>localIds[0]</code>.</li>
+<li>ios生成的图片是自带<code>data:image/jpeg;base64,</code>而且后缀是’.jgp’,对，你没看错，所以判断是果子之后替换</li>
+<li>android生成的图片不带前缀，所以手动加</li>
+<li>最坑的是，目前知道的是魅族手机，因为base64太长，可能其做限制了，所以发送不了请求。我觉得可能有些手机处理不了字符串过长的问题吧。</li>
+</ol>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line">wx.chooseImage(&#123;</span><br><span class="line">  count: <span class="number">1</span>, <span class="comment">// 默认9</span></span><br><span class="line">  sizeType: [<span class="string">'compressed'</span>], <span class="comment">// 可以指定是原图还是压缩图，默认二者都有</span></span><br><span class="line">  sourceType: [<span class="string">'camera'</span>], <span class="comment">// 可以指定来源是相册还是相机，默认二者都有</span></span><br><span class="line">  success: <span class="function"><span class="keyword">function</span> (<span class="params">res</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">var</span> picId;</span><br><span class="line">    <span class="keyword">if</span> (res.errMsg == <span class="string">"chooseImage:ok"</span>) &#123;</span><br><span class="line">      picId = res.localIds[<span class="number">0</span>];</span><br><span class="line">      RenZhengActions.changeUrl(<span class="keyword">this</span>.props.data.name, res.localIds[<span class="number">0</span>]);</span><br><span class="line">      RenZhengActions.saveId(<span class="keyword">this</span>.props.data.name, <span class="string">"picId"</span>, res.localIds[<span class="number">0</span>]);</span><br><span class="line">      RenZhengActions.changeBtnStyle();</span><br><span class="line">      wx.uploadImage(&#123;</span><br><span class="line">        localId: res.localIds.toString(), <span class="comment">// 需要上传的图片的本地ID，由chooseImage接口获得</span></span><br><span class="line">        isShowProgressTips: <span class="number">0</span>, <span class="comment">// 默认为1，显示进度提示</span></span><br><span class="line">        success: <span class="function"><span class="keyword">function</span> (<span class="params">res</span>) </span>&#123;</span><br><span class="line">          <span class="comment">// RenZhengActions.saveId(this.props.data.name, "serverId", res.serverId);</span></span><br><span class="line">          <span class="comment">// TODO DEL START</span></span><br><span class="line">                wx.getLocalImgData(&#123;</span><br><span class="line">                    localId: picId, <span class="comment">// 图片的localID</span></span><br><span class="line">                    success: <span class="function"><span class="keyword">function</span> (<span class="params">res</span>) </span>&#123;</span><br><span class="line">                        <span class="keyword">var</span> pre = IsAndriod() ? <span class="string">"data:image/jpeg;base64,"</span> :<span class="string">""</span>;</span><br><span class="line">                        <span class="keyword">var</span> base64 = pre + res.localData; <span class="comment">// localData是图片的base64数据，可以用img标签显示</span></span><br><span class="line">                        isIos()? base64.replace(<span class="string">'jgp'</span>,<span class="string">'jpg'</span>);</span><br><span class="line">                        RenZhengActions.saveId(_this.props.data.name, <span class="string">"serverId"</span>, base64);</span><br><span class="line">                    &#125;,</span><br><span class="line">                    fail:<span class="function"><span class="keyword">function</span>(<span class="params">res</span>)</span>&#123;</span><br><span class="line">                      alert(<span class="string">"resfail2"</span>+<span class="built_in">JSON</span>.stringify(res));</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;);</span><br><span class="line">          <span class="comment">// TODO DEL END</span></span><br><span class="line">        &#125;.bind(<span class="keyword">this</span>)</span><br><span class="line">      &#125;);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;.bind(<span class="keyword">this</span>),</span><br><span class="line">  fail:<span class="function"><span class="keyword">function</span>(<span class="params">res</span>)</span>&#123;</span><br><span class="line">    alert(<span class="string">"resfail"</span>+<span class="built_in">JSON</span>.stringify(res));</span><br><span class="line">  &#125;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<h2 id="微信里的分享网页"><a href="#微信里的分享网页" class="headerlink" title="微信里的分享网页"></a>微信里的分享网页</h2><p>在微信里打开页面，分享给朋友或者其他，显示相应的标题，描述等。</p>
+<blockquote>
+<p><a href="https://mp.weixin.qq.com/wiki?t=resource/res_main&amp;id=mp1421141115" target="_blank" rel="noopener">官网文档</a></p>
+</blockquote>
+<blockquote>
+<p><a href="http://203.195.235.76/jssdk/#menu-basic" target="_blank" rel="noopener">官网demo</a><br>右击查看源代码</p>
+</blockquote>
+<p>目前已经实现在网页里可以实现很多功能。</p>
+<p>大约步骤是：</p>
+<ul>
+<li>wx.config</li>
+<li>wx.ready(function(){   某些功能接口     })</li>
+</ul>
+<h2 id="微信里的网页需要授权登录"><a href="#微信里的网页需要授权登录" class="headerlink" title="微信里的网页需要授权登录"></a>微信里的网页需要授权登录</h2><p>在微信里打开页面，需要用户授权微信登录，从而获得用户微信的某些信息。</p>
+<blockquote>
+<p><a href="https://mp.weixin.qq.com/wiki?t=resource/res_main&amp;id=mp1421140842" target="_blank" rel="noopener">官网文档</a></p>
+</blockquote>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">window</span>.location.href = <span class="string">'https://open.weixin.qq.com/connect/oauth2/authorize?appid='</span> + wxInfo.appId + <span class="string">'&amp;redirect_uri='</span> + wxInfo.redirect_uri + <span class="string">'&amp;response_type=code&amp;scope=snsapi_userinfo&amp;state='</span>+ wxInfo.state +<span class="string">'#wechat_redirect'</span></span><br></pre></td></tr></table></figure>
+<p>用户授权之后，url变成 redirect_uri/?code=CODE&amp;state=STATE。</p>
+<h2 id="pc网站，需要微信扫二维码登录"><a href="#pc网站，需要微信扫二维码登录" class="headerlink" title="pc网站，需要微信扫二维码登录"></a>pc网站，需要微信扫二维码登录</h2><blockquote>
+<p><a href="https://open.weixin.qq.com/cgi-bin/showdocument?action=dir_list&amp;t=resource/res_list&amp;verify=1&amp;id=open1419316505&amp;token=&amp;lang=zh_CN" target="_blank" rel="noopener">官方文档</a></p>
+</blockquote>
+<h2 id="在自己的app里调起微信的相关功能"><a href="#在自己的app里调起微信的相关功能" class="headerlink" title="在自己的app里调起微信的相关功能"></a>在自己的app里调起微信的相关功能</h2><p>在app调起微信，是需要下载sdk的。<br>app里面的网页需要调起微信相关功能的话，需要app接入sdk之后，再提供给前端接口去调用。换言之，app里的网页用到微信功能必须要app实现功能，才能提供接口让网页调用实现。<br>说一句，如果参数传错，能调起来朋友圈的icon，但是调不起来微信，所以一旦出现这种情况，需要和app对下是否参数传错的问题。</p>
+<p><a href="https://open.weixin.qq.com/cgi-bin/showdocument?action=dir_list&amp;t=resource/res_list&amp;verify=1&amp;id=open1419317332&amp;token=&amp;lang=zh_CN" target="_blank" rel="noopener">官方文档</a> </p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/wechat/" rel="tag"># wechat</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/08/25/how-to-npm/" rel="next" title="npm的简单玩法">
+                <i class="fa fa-chevron-left"></i> npm的简单玩法
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/09/14/interactionInH5AndApp/" rel="prev" title="h5和app交互的一些坑">
+                h5和app交互的一些坑 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+          
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2017/09/14/wechatAPI/" data-title="微信的一些相关功能实现" data-url="http://yoursite.com/2017/09/14/wechatAPI/">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image" src="http://omizt4opc.bkt.clouddn.com/avatar.jpg" alt="John Doe">
+          <p class="site-author-name" itemprop="name">John Doe</p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+           
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">75</span>
+                <span class="site-state-item-name">posts</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              
+                <span class="site-state-item-count">21</span>
+                <span class="site-state-item-name">categories</span>
+              
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              
+                <span class="site-state-item-count">35</span>
+                <span class="site-state-item-name">tags</span>
+              
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#TL-DR"><span class="nav-number">1.</span> <span class="nav-text">TL;DR</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#微信的各种神坑"><span class="nav-number">2.</span> <span class="nav-text">微信的各种神坑</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#设置分享参数的坑"><span class="nav-number">2.1.</span> <span class="nav-text">设置分享参数的坑</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#上传图片的坑"><span class="nav-number">2.2.</span> <span class="nav-text">上传图片的坑</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#微信里的分享网页"><span class="nav-number">3.</span> <span class="nav-text">微信里的分享网页</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#微信里的网页需要授权登录"><span class="nav-number">4.</span> <span class="nav-text">微信里的网页需要授权登录</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#pc网站，需要微信扫二维码登录"><span class="nav-number">5.</span> <span class="nav-text">pc网站，需要微信扫二维码登录</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#在自己的app里调起微信的相关功能"><span class="nav-number">6.</span> <span class="nav-text">在自己的app里调起微信的相关功能</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">John Doe</span>
+</div>
+
+
+<div class="powered-by">
+  Powered by <a class="theme-link" href="https://hexo.io">Hexo</a>
+</div>
+
+<div class="theme-info">
+  Theme -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+    
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"frontzhm"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+    
+    <script src="/lib/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+    <script src="/js/src/hook-duoshuo.js"></script>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+</body>
+</html>

@@ -1,0 +1,805 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang>
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css">
+
+
+  <meta name="keywords" content="es6,">
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0">
+
+
+
+
+
+
+<meta name="description" content="TL;DR 块级作用域 箭头函数 class 对象字面量的增强 字符串字面量的增强 解构：数组，对象，字符串 函数的默认值和...rest Set 和 Map Proxy 模块的导出export和导入import Promise">
+<meta name="keywords" content="es6">
+<meta property="og:type" content="article">
+<meta property="og:title" content="es6的常用语法之小手册版">
+<meta property="og:url" content="http://yoursite.com/2017/05/25/es6-memory/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="TL;DR 块级作用域 箭头函数 class 对象字面量的增强 字符串字面量的增强 解构：数组，对象，字符串 函数的默认值和...rest Set 和 Map Proxy 模块的导出export和导入import Promise">
+<meta property="og:locale" content="default">
+<meta property="og:updated_time" content="2019-03-28T06:25:36.853Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="es6的常用语法之小手册版">
+<meta name="twitter:description" content="TL;DR 块级作用域 箭头函数 class 对象字面量的增强 字符串字面量的增强 解构：数组，对象，字符串 函数的默认值和...rest Set 和 Map Proxy 模块的导出export和导入import Promise">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    sidebar: {"position":"right","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2017/05/25/es6-memory/">
+
+
+
+
+
+  <title> es6的常用语法之小手册版 | Hexo </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="default">
+
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?60f2cb5747a596a24f2a053f1650c30b";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-right page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Hexo</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <h1 class="site-subtitle" itemprop="description"></h1>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            Tags
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/05/25/es6-memory/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="John Doe">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="http://omizt4opc.bkt.clouddn.com/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hexo">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+            
+            
+              
+                es6的常用语法之小手册版
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-05-25T14:09:39+08:00">
+                2017-05-25
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/js/" itemprop="url" rel="index">
+                    <span itemprop="name">js</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2017/05/25/es6-memory/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2017/05/25/es6-memory/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="TL-DR"><a href="#TL-DR" class="headerlink" title="TL;DR"></a>TL;DR</h2><ul>
+<li>块级作用域</li>
+<li>箭头函数</li>
+<li>class</li>
+<li>对象字面量的增强</li>
+<li>字符串字面量的增强</li>
+<li>解构：数组，对象，字符串</li>
+<li>函数的默认值和<code>...rest</code></li>
+<li>Set 和 Map</li>
+<li>Proxy</li>
+<li>模块的导出export和导入import</li>
+<li>Promise</li>
+</ul>
+<a id="more"></a>
+<h2 id="块级作用域"><a href="#块级作用域" class="headerlink" title="块级作用域"></a>块级作用域</h2><p>let，const作用在块级作用域。<br>let定义块级作用域的变量。<br>const定义块级作用域的常量，常量名习惯性大写，如<code>const API = &quot;...&quot;</code><br>注意：只有var，function会预编译。let,const,箭头函数均不会。</p>
+<h2 id="箭头函数"><a href="#箭头函数" class="headerlink" title="箭头函数"></a>箭头函数</h2><ul>
+<li>简化函数写法</li>
+<li>不改变this，换言之箭头函数里面的this就是外层代码块的this</li>
+<li>常用于回调函数中<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">function add(x,y)&#123;</span><br><span class="line">    return x+y</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">(x,y) =&gt; x + y</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h2 id="class"><a href="#class" class="headerlink" title="class"></a>class</h2><ul>
+<li>简化类的写法，更加直观</li>
+<li>继承更简单</li>
+<li>必须new</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">// 类的定义</span><br><span class="line">class Animal &#123;</span><br><span class="line">    // ES6中新型构造器</span><br><span class="line">    constructor(name) &#123;</span><br><span class="line">        // 实例私有属性</span><br><span class="line">        this.name = name;</span><br><span class="line">    &#125;</span><br><span class="line">    // 相当于Animal.prototype.sayName = ...</span><br><span class="line">    sayName() &#123;</span><br><span class="line">        console.log(&apos;My name is &apos;+this.name);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">// 类的继承</span><br><span class="line">class Programmer extends Animal &#123;</span><br><span class="line">    constructor(name) &#123;</span><br><span class="line">        // 直接调用父类构造器进行初始化</span><br><span class="line">        super(name);</span><br><span class="line">    &#125;</span><br><span class="line">    program() &#123;</span><br><span class="line">        console.log(&quot;I&apos;m coding...&quot;);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="增强对象的字面量"><a href="#增强对象的字面量" class="headerlink" title="增强对象的字面量"></a>增强对象的字面量</h2><ul>
+<li>可以在对象字面量里定义此对象的原型</li>
+<li>直接调用父类方法</li>
+<li>定义方法可以不用<code>function</code>关键字</li>
+<li>合并对象Object.assign({},source1,source2)</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">var human = &#123;</span><br><span class="line">  breathe()&#123;</span><br><span class="line">    console.log(&apos;breathe&apos;)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line">var worker = &#123;</span><br><span class="line">  __proto__:hunman,</span><br><span class="line">  work()&#123;</span><br><span class="line">    console.log(&apos;working&apos;)</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line">human.breathe();//输出 ‘breathe’</span><br><span class="line">//调用继承来的breathe方法</span><br><span class="line">worker.breathe();//输出 ‘breathe’</span><br><span class="line">worker.work();//输出 working’</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">var source1 = &#123; b: 2 &#125;;</span><br><span class="line">var source2 = &#123; c: 3 &#125;;</span><br><span class="line">var target = Object.assign( source1, source2);</span><br><span class="line">console.log(target); // &#123; b:2, c:3&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="字符串的字面量"><a href="#字符串的字面量" class="headerlink" title="字符串的字面量"></a>字符串的字面量</h2><p>简化字符串和变量的混合体，<code>${varibel}</code><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">//产生一个随机数</span><br><span class="line">var num = Math.random();</span><br><span class="line">//将这个数字输出到console</span><br><span class="line">console.log(`your num is $&#123;num&#125;`);</span><br></pre></td></tr></table></figure></p>
+<h2 id="解构"><a href="#解构" class="headerlink" title="解构"></a>解构</h2><p>定义：从数组和对象中提取值，对变量进行赋值。<br>请注意是对变量进行赋值。</p>
+<ul>
+<li><p>数组解构：索引一一对应（表象与顺序有关，本质还是key，因为数组的key值就是索引）。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">var [x,y,,z] = [1,2,,3],o:0</span><br><span class="line">console.log(x,y,z) // 1,2,3</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>对象解构：key值必须一一对应(与顺序无关)</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">var &#123;x,y,z&#125; = &#123;y:1,x:3,z:9,o:0&#125;</span><br><span class="line">console.log(x,y,z) // 3,1,9</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>字符串解构：拆成单个字符</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">const [a, b, c, d, e] = &apos;hello&apos;;</span><br><span class="line">console.log(a,b,c,d,e); // &apos;h,e,l,l,o&apos;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h2 id="函数的参数默认值"><a href="#函数的参数默认值" class="headerlink" title="函数的参数默认值"></a>函数的参数默认值</h2><p>直接在定义的时候写<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">function demo(name=&apos;o&apos;)&#123;</span><br><span class="line">  console.log(`Hello $&#123;name&#125;`)</span><br><span class="line">&#125;</span><br><span class="line">demo(); // hello o</span><br><span class="line">demo(&quot;hi&quot;); // hello hi</span><br></pre></td></tr></table></figure></p>
+<h2 id="rest-vs-arguments"><a href="#rest-vs-arguments" class="headerlink" title="rest vs arguments"></a>rest vs arguments</h2><p>之前访问未知参数通过arguments,现在可以用rest。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">var arr = [1,2,3]</span><br><span class="line">// ...arr 相当于 1,2,3，始终记得...后面是数组</span><br><span class="line">function demo(a,...rest)&#123;</span><br><span class="line">  console.log(1)</span><br><span class="line">  console.log(rest)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">demo(1) // 1,[]</span><br><span class="line">demo(1,...arr) // 1, [1,2,3]</span><br><span class="line"></span><br><span class="line">// 将所有参数相加的函数</span><br><span class="line">function add(...x)&#123;</span><br><span class="line">    return x.reduce((m,n)=&gt;m+n);</span><br><span class="line">&#125;</span><br><span class="line">console.log(add(1,2,3));// 6</span><br></pre></td></tr></table></figure></p>
+<h2 id="Map-and-Set"><a href="#Map-and-Set" class="headerlink" title="Map and Set"></a>Map and Set</h2><p>Set类似于数组，但是会自动过滤掉重复的值，Array.from方法可以将 Set 结构转为数组。Set键名和键值是同一个值。<br>Map类似对象，JavaScript 的对象（Object），本质上是键值对的集合（Hash 结构），但是传统上只能用字符串当作键，而Map键可以是各种类型的值（包括对象），是一种更完善的 Hash 结构实现。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">// Sets 重复的值不会再加</span><br><span class="line">var s = new Set();</span><br><span class="line">s.add(&quot;hello&quot;).add(&quot;goodbye&quot;).add(&quot;hello&quot;);</span><br><span class="line">s.size === 2;</span><br><span class="line">s.has(&quot;hello&quot;) === true;</span><br><span class="line"></span><br><span class="line">// Maps</span><br><span class="line">var m = new Map();</span><br><span class="line">m.set(&quot;hello&quot;, 42);</span><br><span class="line">m.set(s, 34);</span><br><span class="line">m.get(s) == 34;</span><br></pre></td></tr></table></figure></p>
+<h2 id="Proxy"><a href="#Proxy" class="headerlink" title="Proxy"></a>Proxy</h2><p>Proxy 可以理解成，在目标对象之前架设一层“拦截”，外界对该对象的访问，都必须先通过这层拦截，因此提供了一种机制，可以对外界的访问进行过滤和改写。Proxy 这个词的原意是代理，用在这里表示由它来“代理”某些操作，可以译为“代理器”。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">var wantWatchObj = &#123;&#125;;</span><br><span class="line">var obj = new Proxy(wantWatchObj, &#123;</span><br><span class="line">  get: function (target, key, receiver) &#123;</span><br><span class="line">    console.log(arguments)</span><br><span class="line">    console.log(`getting $&#123;key&#125;!`);</span><br><span class="line">    return Reflect.get(target, key, receiver);</span><br><span class="line">  &#125;,</span><br><span class="line">  set: function (target, key, value, receiver) &#123;</span><br><span class="line">    console.log(arguments)</span><br><span class="line">    console.log(`setting $&#123;key&#125;!`);</span><br><span class="line">    return Reflect.set(target, key, value, receiver);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;);</span><br><span class="line">// 外界访问wantWatchObj通过代理obj</span><br><span class="line">obj.count = 1</span><br><span class="line">//  setting count!</span><br><span class="line">++obj.count</span><br><span class="line">//  getting count!</span><br><span class="line">//  setting count!</span><br><span class="line">//  2</span><br><span class="line">console.log(wantWatchObj) // &#123;count:2&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="modules"><a href="#modules" class="headerlink" title="modules"></a>modules</h2><ol>
+<li>输出export</li>
+</ol>
+<ul>
+<li>export var x = 1，相当于 export {x:x}</li>
+<li>没有default的export,输出的一定是对象，函数也是一样的</li>
+<li>一般习惯写在最后。</li>
+<li>有default的话，相当于，将值赋给default,也就是输出的就是一个值不是对象</li>
+<li>对于重命名，export {x as y},输出的就是y</li>
+</ul>
+<ol start="2">
+<li>导入inport</li>
+</ol>
+<ul>
+<li>用{}，导入对象，属性名必须一致，<code>import {a,b} from &#39;myModule&#39;</code>，用的时候直接a</li>
+<li>用* ，相当于把导入的值赋值给一个obj对象，用的时候obj.a</li>
+<li>对于default，因为输出的不是一个对象，所以没必要{},而且随意命名，因为值是确定的且是唯一的，<code>import anyName from &#39;myModule&#39;</code></li>
+<li>对于重命名，import {y as z},把y变成z<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">// a.js</span><br><span class="line">var x = 1;</span><br><span class="line">export var y = 1;</span><br><span class="line">export function fn()&#123;&#125;;</span><br><span class="line">var def = 1;</span><br><span class="line">export default def</span><br><span class="line">export &#123;x as renameX&#125;</span><br><span class="line"></span><br><span class="line">// b.js</span><br><span class="line">import defRename,&#123;renameX,y,fn&#125; from &apos;a&apos;</span><br><span class="line">console.log(y); // 1</span><br><span class="line"></span><br><span class="line">// 或者，那么obj=&#123;renameX,y,fn&#125;</span><br><span class="line">import defRename,* as obj from &apos;a&apos;</span><br><span class="line">console.log(obj.y) // 1</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h2 id="promise"><a href="#promise" class="headerlink" title="promise"></a>promise</h2><p>Promise 是异步编程的一种解决方案，比传统的解决方案——回调函数和事件——更合理和更强大。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">var getJSON = function(url) &#123;</span><br><span class="line">  var promise = new Promise(function(resolve, reject)&#123;</span><br><span class="line">    var client = new XMLHttpRequest();</span><br><span class="line">    client.open(&quot;GET&quot;, url);</span><br><span class="line">    client.onreadystatechange = handler;</span><br><span class="line">    client.responseType = &quot;json&quot;;</span><br><span class="line">    client.setRequestHeader(&quot;Accept&quot;, &quot;application/json&quot;);</span><br><span class="line">    client.send();</span><br><span class="line"></span><br><span class="line">    function handler() &#123;</span><br><span class="line">      if ( this.readyState !== 4 ) &#123;</span><br><span class="line">        return;</span><br><span class="line">      &#125;</span><br><span class="line">      if (this.status === 200) &#123;</span><br><span class="line">        resolve(this.response);</span><br><span class="line">      &#125; else &#123;</span><br><span class="line">        reject(new Error(this.statusText));</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;;</span><br><span class="line">  &#125;);</span><br><span class="line"></span><br><span class="line">  return promise;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">getJSON(&quot;/posts.json&quot;).then(function(json) &#123;</span><br><span class="line">  console.log(&apos;Contents: &apos; + json);</span><br><span class="line">&#125;, function(error) &#123;</span><br><span class="line">  console.error(&apos;出错了&apos;, error);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure></p>
+<blockquote>
+<p>参考<a href="https://guoyongfeng.github.io/book/05/01-%E6%A6%82%E8%BF%B0.html" target="_blank" rel="noopener">郭永峰的博客</a><br>参考<a href="http://es6.ruanyifeng.com/#docs/promise" target="_blank" rel="noopener">阮一峰的手册，666</a></p>
+</blockquote>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/es6/" rel="tag"># es6</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/05/25/vuex/" rel="next" title="vuex的理解">
+                <i class="fa fa-chevron-left"></i> vuex的理解
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/05/30/react2/" rel="prev" title="react">
+                react <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+          
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2017/05/25/es6-memory/" data-title="es6的常用语法之小手册版" data-url="http://yoursite.com/2017/05/25/es6-memory/">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image" src="http://omizt4opc.bkt.clouddn.com/avatar.jpg" alt="John Doe">
+          <p class="site-author-name" itemprop="name">John Doe</p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+           
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">75</span>
+                <span class="site-state-item-name">posts</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              
+                <span class="site-state-item-count">21</span>
+                <span class="site-state-item-name">categories</span>
+              
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              
+                <span class="site-state-item-count">35</span>
+                <span class="site-state-item-name">tags</span>
+              
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#TL-DR"><span class="nav-number">1.</span> <span class="nav-text">TL;DR</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#块级作用域"><span class="nav-number">2.</span> <span class="nav-text">块级作用域</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#箭头函数"><span class="nav-number">3.</span> <span class="nav-text">箭头函数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#class"><span class="nav-number">4.</span> <span class="nav-text">class</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#增强对象的字面量"><span class="nav-number">5.</span> <span class="nav-text">增强对象的字面量</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#字符串的字面量"><span class="nav-number">6.</span> <span class="nav-text">字符串的字面量</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#解构"><span class="nav-number">7.</span> <span class="nav-text">解构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#函数的参数默认值"><span class="nav-number">8.</span> <span class="nav-text">函数的参数默认值</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#rest-vs-arguments"><span class="nav-number">9.</span> <span class="nav-text">rest vs arguments</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Map-and-Set"><span class="nav-number">10.</span> <span class="nav-text">Map and Set</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Proxy"><span class="nav-number">11.</span> <span class="nav-text">Proxy</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#modules"><span class="nav-number">12.</span> <span class="nav-text">modules</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#promise"><span class="nav-number">13.</span> <span class="nav-text">promise</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">John Doe</span>
+</div>
+
+
+<div class="powered-by">
+  Powered by <a class="theme-link" href="https://hexo.io">Hexo</a>
+</div>
+
+<div class="theme-info">
+  Theme -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+    
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"frontzhm"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+    
+    <script src="/lib/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+    <script src="/js/src/hook-duoshuo.js"></script>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+</body>
+</html>
